@@ -1,0 +1,19 @@
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+  name = Alexander Rowe
+	email = alex.rowe@senseye.co
+[alias]
+  fl = log --oneline --decor --graph
+  ci = commit
+  l = log
+  d = diff
+  st = stash
+  ff = git pull origin -r 
+  co = checkout
+  b = browse
+  br = branch
+  pr = pull-request
+  f = fetch
+  con = rebase --continue
+  
