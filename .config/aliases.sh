@@ -20,10 +20,21 @@ alias pa='pbpaste -pboard'
 alias gtree='git log --oneline --graph --all --decorate'
 alias diff='colordiff'
 alias erc='vim ~/.zshrc && source ~/.zshrc'
-
-## Dumb these arent defauted
 alias pkill='pkill -lf'
 alias pgrep='pgrep -lf'
 alias vim='nvim'
 
-# Generated
+###################################
+# FASD
+###################################
+alias aa='fasd -a'        # any
+alias ss='fasd -si'       # show / search / select
+alias d='fasd -d'        # directory
+alias f='fasd -f'        # file
+alias sd='fasd -sid'
+alias sf='fasd -sif'
+alias z='fasd_cd -d'     # cd, same functionality as j in autojump
+alias zz='fasd_cd -d -i' # cd with interactive selection
+alias e='fasd -f -e'
+
+alias hist="history | tail -r | peco | sed 's/^\ *[0-9][0-9]*\ *//g'"
