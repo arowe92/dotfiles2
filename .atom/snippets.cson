@@ -1,0 +1,17 @@
+'.source.js':
+  'console.log':
+    'prefix': 'log'
+    'body': 'console.log(${1:"debug"});$2'
+  'debugger':
+    'prefix': 'DD',
+    'body': '\ndebugger;';
+
+'.source.m':
+  'NSLog':
+    'prefix': 'log'
+    'body': 'NSLog(@"%@", ${1:"here"});'
+
+'.source.cpp':
+  'Cout':
+    'prefix': 'log'
+    'body': 'std::cout << ${1:"here"} << std::endl;'

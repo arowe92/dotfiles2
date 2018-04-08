@@ -1,0 +1,154 @@
+"*":
+  Hydrogen: {}
+  "atom-chat":
+    showOnRightSide: false
+    username: "atria"
+  "atom-clock":
+    showClockIcon: true
+  "atom-pair":
+    hipchat_token: "hi"
+  "atom-ternjs":
+    inlineFnCompletionDocumentation: true
+  core:
+    audioBeep: false
+    disabledPackages: [
+      "about"
+      "spell-check"
+    ]
+    ignoredNames: [
+      ".git"
+      ".hg"
+      ".svn"
+      ".DS_Store"
+      "._*"
+      "Thumbs.db"
+      "desktop.ini"
+      "node_modules"
+    ]
+    openEmptyEditorOnStart: false
+    telemetryConsent: "limited"
+    themes: [
+      "city-lights-ui"
+      "city-lights-syntax"
+    ]
+    titleBar: "custom"
+  editor:
+    fontFamily: "Operator Mono"
+    fontSize: 16
+    invisibles: {}
+    preferredLineLength: 100
+    showIndentGuide: true
+    showInvisibles: true
+    tabType: "soft"
+  "exception-reporting":
+    userId: "f2683edc-727b-4336-bd76-e70079f494b1"
+  "file-icons":
+    strategies:
+      hashbangs: false
+      linguist: false
+      modelines: false
+      usertypes: false
+  fonts:
+    fontFamily: "3270"
+    preview: "let asodijasd = asidpaosidpo"
+  "go-plus":
+    format:
+      formatOnSave: false
+    panel:
+      currentHeight: "17.685185185185183vh"
+  linter: {}
+  "linter-eslint":
+    disableWhenNoEslintConfig: false
+    eslintrcPath: "/Users/alexrowe/.eslintrc.js"
+    globalNodePath: "/usr/local"
+    useGlobalEslint: true
+  "linter-mypy":
+    checkUntypedDefs: false
+    disallowAnyDecorated: false
+    disallowAnyExplicit: false
+    disallowAnyExpr: false
+    disallowAnyGenerics: false
+    disallowAnyUnimported: false
+    disallowIncompleteDefs: false
+    disallowSubclassingAny: false
+    disallowUntypedDecorators: false
+    disallowUntypedDefs: false
+    noImplicitOptional: false
+    strictOptional: false
+    warnIncompleteStub: false
+    warnMissingImports: false
+    warnNoReturn: false
+    warnRedundantCasts: false
+    warnReturnAny: false
+    warnUnusedConfigs: false
+    warnUnusedIgnores: false
+  "linter-python":
+    executablePath: "/Users/alexrowe/.miniconda3/bin/pylama"
+  "linter-ui-default":
+    panelHeight: 126
+  "markdown-pdf":
+    border: "7.5mm"
+  minimap:
+    plugins:
+      pigments: true
+      pigmentsDecorationsZIndex: 0
+  motepair: {}
+  "node-debugger":
+    nodePath: "/usr/local/bin/node"
+  "platformio-ide-terminal":
+    ansiColors:
+      normal:
+        black: "#686868"
+        blue: "#60a7ca"
+        cyan: "#e05178"
+        green: "#add877"
+        magenta: "#7d72c8"
+        red: "#f69647"
+        white: "#ffffff"
+        yellow: "#f6f080"
+      zBright:
+        brightBlack: "#d8d8d8"
+        brightBlue: "#72c5d9"
+        brightCyan: "#e05178"
+        brightGreen: "#b4d93a"
+        brightMagenta: "#7d72c8"
+        brightRed: "#dc412f"
+        brightYellow: "#ff9c5a"
+    style:
+      animationSpeed: 0
+      defaultPanelHeight: "400px"
+      fontFamily: "Inconsolata"
+      theme: "one-dark"
+  "pristine-ui": {}
+  "remote-atom":
+    launch_at_startup: true
+    port: 52699
+  "slack-chat":
+    api_key: "2338144120.199653460753"
+    api_secret: "d2e96d29caa8354751e69653268e4d24"
+    api_token: "tFGB2VORgBhaAtnDubxKZXSE"
+    notifications: false
+  tabs:
+    addNewTabsAtEnd: true
+    alwaysShowTabBar: false
+    enableVcsColoring: true
+  "tidy-tabs":
+    runOnSave: true
+  "todo-show":
+    sortAscending: false
+  "tree-view": {}
+  "tree-view-git-branch": {}
+  "vim-mode-plus":
+    keymapSemicolonToInnerAnyPairInOperatorPendingMode: true
+    keymapSemicolonToInnerAnyPairInVisualMode: true
+    keymapYToYankToLastCharacterOfLine: true
+    statusBarModeStringStyle: "long"
+    useClipboardAsDefaultRegister: false
+  welcome:
+    showOnStartup: false
+".python.regexp.source":
+  editor:
+    tabLength: 2
+runner:
+  scopes:
+    go: "go run *.go"

@@ -1,0 +1,29 @@
+"atom-text-editor":
+  'shift-cmd-a': 'editor:auto-indent'
+  'shift-cmd-r': 'run:file'
+  'ctrl-cmd-e': 'linter-ui-default:next-error'
+
+  'ctrl-cmd-k': 'editor:move-line-up'
+  'ctrl-cmd-j': 'editor:move-line-down'
+  'ctrl-cmd-l': 'editor:indent-selected-rows'
+  'ctrl-cmd-h': 'editor:outdent-selected-rows'
+
+  'ctrl-k ctrl-l'  : 'pane:split-right-and-copy-active-item'
+  'ctrl-k ctrl-i'  : 'pane:split-up-and-copy-active-item'
+  'ctrl-k ctrl-k'  : 'pane:split-down-and-copy-active-item'
+  'ctrl-k ctrl-j'  : 'pane:split-left-and-copy-active-item'
+
+  'ctrl-k i'  : 'window:focus-pane-above'
+  'ctrl-k k'  : 'window:focus-pane-below'
+  'ctrl-k j'  : 'window:focus-pane-on-left'
+  'ctrl-k l'  : 'window:focus-pane-on-right'
+
+  'ctrl-cmd-o': 'project-manager:list-projects'
+  'cmd-enter': 'hydrogen:run'
+  'shift-cmd-enter': 'vim-mode-plus:maximize-pane'
+
+  "ctrl-alt-k": "editor:add-selection-above",
+  "ctrl-alt-j": "editor:add-selection-below",
+
+'body':
+  'ctrl-cmd-\\': 'window:toggle-bottom-dock'
