@@ -1,3 +1,12 @@
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
+echo ${machine}
 
 mkalias () {
   echo alias $1="\"${@:2}\"" >> ~/.config/aliases.sh
@@ -5,24 +14,28 @@ mkalias () {
   source ~/.config/aliases.sh
 }
 
+_exists () {
+    command -v $1
+}
+
 ## Aliases
 alias s='git status 2>/dev/null || (pwd && ls -lF)'
 alias add='git add --patch'
-alias doc='cd ~/Documents'
-alias git='hub'
 alias tf='tail -f'
-alias no='ls'
-alias cat='ccat'
-alias ls='exa'
-alias co='pbcopy -pboard'
-alias cb='pbcopy -pboard'
-alias pa='pbpaste -pboard'
-alias gtree='git log --oneline --graph --all --decorate'
-alias diff='colordiff'
 alias erc='vim ~/.zshrc && source ~/.zshrc'
-alias pkill='pkill -lf'
-alias pgrep='pgrep -lf'
-alias vim='nvim'
+
+if [ "$machine" -eq "Mac" ]; then
+    alias pkill='pkill -lf'
+    alias pgrep='pgrep -lf'
+    alias co='pbcopy -pboard'
+    alias pa='pbpaste -pboard'
+fi
+
+_exists hub && alias git='hub'
+_exists colordiff && alias diff='colordiff'
+_exists nvim && alias vim='nvim'
+_exists ccat && alias cat='ccat'
+_exists exa && alias ls='exa'
 
 ###################################
 # FASD
@@ -36,5 +49,3 @@ alias sf='fasd -sif'
 alias z='fasd_cd -d'     # cd, same functionality as j in autojump
 alias zz='fasd_cd -d -i' # cd with interactive selection
 alias e='fasd -f -e'
-
-alias hist="history | tail -r | peco | sed 's/^\ *[0-9][0-9]*\ *//g'"

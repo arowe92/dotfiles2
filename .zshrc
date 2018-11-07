@@ -1,44 +1,46 @@
+###################################
+## PLUGINS
+###################################
+source ~/.oh-my-zsh/custom/antigen.zsh
 
-plugins=(git fasd brew extract zsh-autosuggestions vi-mode)
+antigen use oh-my-zsh
+antigen bundle git
+antigen bundle pip
+antigen bundle vi-mode
+antigen bundle clvv/fasd
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle git-prompt
 
-# Set name of the theme to load.
-ZSH_THEME="robbyrussell"
+antigen theme robbyrussell
+
+antigen apply
 
 ###################################
 ## PATH
 ###################################
-PATH="$PATH:/Users/alexrowe/Programs/Scripts/"
-PATH="/Users/alexrowe/Library/Python/3.6/bin:$PATH"
-PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
-PATH="/Library/Frameworks/Python.framework/Versions/3.4/bin:${PATH}"
-PATH="/usr/local/mysql/bin:${PATH}"
-PATH="/usr/local/opt/mongo/bin:${PATH}"
-PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-PATH="/usr/local/sbin:$PATH"
+PATH="/usr/local/bin:${PATH}"
 export PATH
 
 ###################################
 ## EXPORTS
 ###################################
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/alexrowe/.oh-my-zsh
+export ZSH="$HOME/.oh-my-zsh"
 export TERM='xterm-256color'
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=0'
 export KEYTIMEOUT=1
+export EDITOR=vim
 export _FASD_BACKENDS="native spotlight recently-used current"
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
 ###################################
 ## SOURCES
 ###################################
-source $ZSH/oh-my-zsh.sh
-
 ## Source Git autocompletion
 # source $HOME/Programs/Scripts/git_zsh
 
 ## Source git prompt
-source $HOME/.oh-my-zsh/custom/zshrc.sh
 source $HOME/.config/functions.sh
 source $HOME/.config/aliases.sh
 
@@ -56,7 +58,7 @@ RPROMPT="$_RPROMPT"
 ## EVALS
 ###################################
 eval "$(fasd --init auto)"
-eval $(thefuck --alias)
+# eval $(thefuck --alias)
 
 ###################################
 # Key Bindings
@@ -65,18 +67,15 @@ eval $(thefuck --alias)
 ## Vim keybindings in terminal
 bindkey -v
 
-bindkey -s '^r' '`hist`\t'
-bindkey -s '^f' '`fasd -al | tail -r | peco`\t'
-bindkey -s '^b' '`git branch | sed "s/\*//g" | peco`\t'
-bindkey -s '^o' 'pbpaste | grep . | tail -n 10 | peco | pbcopy\n'
-bindkey -s '^a' 'subl .\n'
+# bindkey -s '^r' '`hist`\t'
+# bindkey -s '^f' '`fasd -al | tail -r | peco`\t'
+# bindkey -s '^b' '`git branch | sed "s/\*//g" | peco`\t'
+# bindkey -s '^o' 'pbpaste | grep . | tail -n 10 | peco | pbcopy\n'
 
 bindkey '^P' up-history
 bindkey '^N' down-history
 bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
-# bindkey '^r' history-incremental-search-backward
 
 bindkey '^ ' autosuggest-execute
-
