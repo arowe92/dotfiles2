@@ -1,6 +1,7 @@
 ###################################
 ## PLUGINS
 ###################################
+if [ -z "$_ANTIGEN_LOADED" ]; then;
 source ~/.oh-my-zsh/custom/antigen.zsh
 
 antigen use oh-my-zsh
@@ -14,6 +15,9 @@ antigen bundle git-prompt
 antigen theme robbyrussell
 
 antigen apply
+
+export _ANTIGEN_LOADED=1
+fi
 
 ###################################
 ## PATH
