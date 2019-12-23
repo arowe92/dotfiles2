@@ -11,11 +11,20 @@ echo ${machine}
 
 # install Zsh
 if [ "$machine" -eq "Linux" ]; then
-    sudo apt-get install zsh
+    install='sudo apt-get install -y'
 fi
 if [ "$machine" -eq "Mac" ]; then
-    brew install zsh
+    install='brew install'
 fi
+
+$install zsh
+$install fasd
+$install tmux
+$install neovim
+
+
+# install pyenv
+curl https://pyenv.run | bash
 
 # Oh-My-Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"

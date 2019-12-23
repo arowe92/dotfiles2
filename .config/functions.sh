@@ -1,7 +1,3 @@
-pdf () {
-  pdftohtml -stdout -i $1 | lynx -stdin;
-}
-
 zle-keymap-select () {
     if [ "$TERM" = "xterm-256color" ]; then
         if [ $KEYMAP = vicmd ]; then

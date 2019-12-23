@@ -1,7 +1,7 @@
 ###################################
 ## PLUGINS
 ###################################
-if [ -z "$_ANTIGEN_LOADED" ]; then;
+if [ -z "$_ANTIGEN_LOADED" -o -n "$TMUX" ]; then;
 source ~/.oh-my-zsh/custom/antigen.zsh
 
 antigen use oh-my-zsh
@@ -49,14 +49,6 @@ source $HOME/.config/functions.sh
 source $HOME/.config/aliases.sh
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-###################################
-## PROMPT
-###################################
-autoload -Uz colors && colors
-PROMPT=' %{$fg[yellow]%}%1~ %{$reset_color%}%{$fg[blue]%}⇒ '
-_RPROMPT='%{$reset_color%}$(git_super_status) [%{$fg_no_bold[yellow]%}%~%{$reset_color%}]'
-RPROMPT="$_RPROMPT"
 
 ###################################
 ## EVALS
