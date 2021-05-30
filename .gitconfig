@@ -2,7 +2,8 @@
 [user]
 # Please adapt and uncomment the following lines:
   name = Alexander Rowe
-	email = alex.rowe@senseye.co
+  email = alexrowe707@gmail.com
+
 [alias]
   fl = log --oneline --decor --graph
   ci = commit
