@@ -19,6 +19,9 @@ $install neovim
 $install atom
 $install make
 $install guake
+$install fzf
+$install ranger caca-utils highlight atool w3m poppler-utils mediainfo
+
 
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo apt install -y ./google-chrome-stable_current_amd64.deb
