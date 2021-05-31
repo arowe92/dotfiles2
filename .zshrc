@@ -2,7 +2,7 @@
 ## PLUGINS
 ###################################
 if [ -z "$_ANTIGEN_LOADED" -o -n "$TMUX" ]; then;
-source ~/.oh-my-zsh/custom/antigen.zsh
+source ~/.oh-my-zsh/plugins/antigen.zsh
 
 antigen use oh-my-zsh
 antigen bundle git

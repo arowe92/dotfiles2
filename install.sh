@@ -18,6 +18,11 @@ $install tmux
 $install neovim
 $install atom
 $install make
+$install guake
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install -y ./google-chrome-stable_current_amd64.deb
+rm ./google-chrome-stable_current_amd64.deb
 
 
 # install pyenv
@@ -52,5 +57,16 @@ git clone --bare https://github.com/arowe92/dotfiles2.git $HOME/.dotfiles
 git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local status.showUntrackedFiles no
 echo "alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $HOME/.config/aliases.sh
 
-# Load it!
-zsh
+# Install jumpapp 
+mkdir jumpapp
+cd jumpapp
+    sudo apt-get -y install build-essential debhelper git pandoc shunit2
+    git clone https://github.com/mkropat/jumpapp.git
+    cd jumpapp
+        make deb
+        sudo dpkg -i jumpapp*all.deb
+        # if there were missing dependencies
+        sudo apt-get -y install -f
+    cd ..
+cd ..
+sudo rm -rf jumpapp
