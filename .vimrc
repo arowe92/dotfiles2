@@ -24,6 +24,7 @@ Plug 'easymotion/vim-easymotion'
 
 " Panes
 Plug 'caenrique/nvim-toggle-terminal'
+Plug 'romgrk/todoist.nvim'
 
 " Maximize Pane
 " AutoCompletion
@@ -65,7 +66,7 @@ call plug#end()
 "-------------------------
 "     Theme Settings
 "-------------------------
-colorscheme srcery
+colorscheme gruvbox
 
 " Invisible Characters
 :set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<",space:·
@@ -114,6 +115,18 @@ let g:rainbow_active = 1
 let g:airline_theme='simple'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#ctrlp#enabled = 0
+let todoist = {
+\  'icons': {
+\    'unchecked': ' ○ ',
+\    'checked':   ' ● ',
+\    'loading':   ' ◌ ',
+\    'error':     ' ⚠ ',
+\  },
+\  'defaultProject': 'Inbox',
+\  'useMarkdownSyntax': v:true,
+\}
+
+
 
 "----------------------------
 "         Key Mappings
@@ -179,10 +192,10 @@ noremap <C-_>k :m-2<CR>
 
 " ==== PANES ====
 " Pane Naviation
-" noremap <C-k>j <C-W><C-J>
-" noremap <C-k>k <C-W><C-K>
-" noremap <C-k>l <C-W><C-L>
-" noremap <C-k>h <C-W><C-H>
+noremap <C-n>j <C-W><C-J>
+noremap <C-n>k <C-W><C-K>
+noremap <C-n>l <C-W><C-L>
+noremap <C-n>h <C-W><C-H>
 
 noremap <C-j> <C-w><C-j>
 noremap <C-k> <C-w><C-k>
@@ -224,6 +237,8 @@ noremap <leader>{ :tab new \| tabm -1<CR>
 " VimRc
 :nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 :nnoremap <leader>ez :vsplit ~/.zshrc<cr>
+
+command TD Todoist
 
 " source vimrc on save
 augroup vimrc
