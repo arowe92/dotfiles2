@@ -7,36 +7,48 @@ endif
 
 " Plugins
 call plug#begin()
-Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-commentary'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'kien/ctrlp.vim'
+
+" ==== Tools ====
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
+Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+
+" Commenting out code: 'gc'
+Plug 'tpope/vim-commentary' 
+"Plug 'preservim/nerdcommenter'
+
+" EasyMotion Navigation
 Plug 'easymotion/vim-easymotion'
-Plug 'vim-scripts/AutoComplPop'
-Plug 'Raimondi/delimitMate'
+
+" Panes
 Plug 'caenrique/nvim-toggle-terminal'
 
-" Languages
-Plug 'maksimr/vim-jsbeautify'
-" Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }  
-Plug 'jelera/vim-javascript-syntax',  { 'for': 'javascript' }  
+" Maximize Pane
+" AutoCompletion
+"Plug 'vim-scripts/AutoComplPop' 
+"Plug 'ycm-core/YouCompleteMe'
 
+
+" ==== Languages ==== 
+Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }  
 Plug 'elixir-editors/vim-elixir'
+
+" ==== Appearance==== 
 Plug 'frazrepo/vim-rainbow'
 Plug 'Yggdroot/indentLine'
 
-Plug 'preservim/nerdcommenter'
-Plug 'grailbio/bazel-compilation-database'
+"Status bar
+"Plug 'itchyny/lightline.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
+"Plug 'vim-syntastic/syntastic'
 
-" Status bar
-Plug 'itchyny/lightline.vim'
-Plug 'vim-syntastic/syntastic'
-
-" Color schemes
+" ==== Color schemes ==== 
 Plug 'nanotech/jellybeans.vim'
 Plug 'sjl/badwolf'
-Plug 'altercation/vim-colors-solarized'
 Plug 'morhetz/gruvbox'
 Plug 'junegunn/seoul256.vim'
 Plug 'ajh17/Spacegray.vim'
@@ -46,7 +58,22 @@ Plug 'romainl/Apprentice'
 Plug 'dracula/vim'
 call plug#end()
 
-" Settings
+"-------------------------
+"     Theme Settings 
+"-------------------------
+colorscheme srcery
+
+" Invisible Characters
+:set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<",space:·
+:set list
+
+" Syntax and file type detection
+syntax on
+filetype plugin indent on
+
+"-------------------------
+"    General Settings
+"-------------------------
 set wrap
 set autoindent
 set number
@@ -71,118 +98,101 @@ set expandtab
 " Swap file location
 set directory^=/tmp/
 
-"":set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
-:set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<
-:set list
+" LEADER KEY MAPPING
+" use space as leader
+let mapleader=" "
 
 
-syntax on
-filetype plugin indent on
-
-set bg=dark
-colorscheme apprentice
-
-" Plugin Settings
+" ==== Plugin Settings ====
+" Ignore files in ctrlp search
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
-let &t_Co=256
+let g:rainbow_active = 1
+let g:airline_theme='simple'
+let g:airline#extensions#tabline#enabled = 2
+let g:airline#extensions#ctrlp#enabled = 0
 
-" Cursor
-"let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-"let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-"let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-"
+"----------------------------
+"         Key Mappings
+"----------------------------
 
-let &t_SI = "\<Esc>[6 q"
-let &t_SR = "\<Esc>[4 q"
-let &t_EI = "\<Esc>[2 q"
+" ========= Plugins ========
+nnoremap <C-\> :NERDTreeToggle<CR>  "File Tree Explorer
+nnoremap <C-p> :CtrlP<CR>         "Fuzzy search
 
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_javascript_checkers=['eslint']
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+" noremap <leader>p :Files<CR>
+nnoremap <leader>pf :Files<CR>
+nnoremap <leader>pb :Buffers<CR>
+nnoremap <leader>pc :Colors<CR>
+nnoremap <leader>ph :History<CR>
+nnoremap <leader>pw :Windows<CR>
+nnoremap <leader>po :Commands<CR>
 
 
-" Key Mappings
-nnoremap <C-\> :NERDTreeToggle<CR>
-nnoremap <S-C-p> :CtrlP<CR>
-nnoremap <C-c> :echo 'ctrl-c twice to quit'<CR>
-nnoremap <C-c><C-c> :qall!<CR>
-nnoremap <S-Tab> :tabn<CR> 
-nnoremap <leader>t :tabnew<CR> 
-nnoremap <C-W> :q<CR>
+" EasyMotion Commands
+" <Leader>f{char} to move to {char}
+map  <leader>f <Plug>(easymotion-bd-f)
+nmap <leader>f <Plug>(easymotion-overwin-f)
+
+" s{char}{char} to move to {char}{char}
+nmap s <Plug>(easymotion-overwin-f2)
+
+" Move to line
+map <leader>l <Plug>(easymotion-bd-jk)
+nmap <leader>l <Plug>(easymotion-overwin-line)
+
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+" Comment
+"nnoremap <leader>x :call NERDComment(1, 'toggle')<CR>
+map <leader>c gcc
 
 " Autocompletion of file paths
 inoremap <C-f> <C-x><C-f>
 
-" Save ctrl-A
+" Save  File
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <ESC>:w<CR>
 
-" Tab Naviation
-noremap <C-k>k <C-W><C-J>
-noremap <C-k>i <C-W><C-K>
-noremap <C-k>l <C-W><C-L>
-noremap <C-k>j <C-W><C-H>
-
-tnoremap <C-k>k <C-W><C-J>
-tnoremap <C-k>i <C-W><C-K>
-tnoremap <C-k>l <C-W><C-L>
-tnoremap <C-k>j <C-W><C-H>
-"tnoremap <C-k>j <C-W><C-H>
-
-" Tab Creation
-noremap <C-k><C-L> <C-W>v
-noremap <C-k><C-J> <C-W>v
-noremap <C-k><C-I> <C-W>s
-noremap <C-k><C-K> <C-W>s
-
-tnoremap <C-k><C-L> <C-W>v
-tnoremap <C-k><C-J> <C-W>v
-tnoremap <C-k><C-I> <C-W>s
-tnoremap <C-k><C-K> <C-W>s
-
-" Minimize Maximize
-noremap <C-K>M <C-W>\| <C-W>_
-noremap <C-K>m <C-W>=
-tnoremap <C-K>M <C-W>\| <C-W>_
-tnoremap <C-K>m <C-W>=
-
-nnoremap <C-k>w :q<CR>
-tnoremap <C-k>w :q<CR>
-nnoremap <leader>w :q<CR>
+" File Operations
+nnoremap <C-c> :echo 'ctrl-c twice to quit'<CR> 
+nnoremap <C-c><C-c><C-c> :qall!<CR>
+map <C-k>w :q<CR>
+map <leader>q :q<CR>
 
 " Terminal Escape
 tnoremap <C-K>e <C-\><C-n>
 
-nnoremap <leader>x :call NERDComment(1, 'toggle')<CR>
-
-" noremap <C-M-H> <<
-" noremap <C-M-L> >>
+" Easy Line Moving / Indenting
+noremap <C-M-H> <<
+noremap <C-M-L> >>
+noremap <C-M-K> :m +1<CR>
 noremap <C-_>k :m-2<CR>
-" noremap <C-M-K> :m +1<CR>
-" 
 
-" Easier Commands
-nnoremap ; :
+" Swap command and repeat movement
+"noremap ; :
+"noremap : ;
 
-vnoremap ; :
-" LEADER KEY MAPPINGS
-" use space as leader
-let mapleader=" "
+" ==== PANES ====
+" Pane Naviation
+noremap <C-k>j <C-W><C-J>
+noremap <C-k>k <C-W><C-K>
+noremap <C-k>l <C-W><C-L>
+noremap <C-k>h <C-W><C-H>
 
-" clear the highlighting of :set hlsearch
-nnoremap <silent> <leader>h :nohlsearch<cr>
+" Pane Creation
+noremap <C-k><C-J> <C-W>s<C-W><C-J>
+noremap <C-k><C-K> <C-W>s<C-W><C-K>
+noremap <C-k><C-L> <C-W>v<C-W><C-L>
+noremap <C-k><C-H> <C-W>v<C-W><C-H>
 
-" quickly open vimrc
-:nnoremap <leader>ev :vsplit ~/.vimrc<cr>
+" Minimize Maximize Pane
+noremap <leader>M <C-W>\| <C-W>_
+noremap <leader>m <C-W>=
 
-" Splitting
-:nnoremap <leader>h :split<CR>
+" Splitting / Sizing Panes
+:nnoremap <leader>h :split<CR> 
 :nnoremap <leader>v :vsplit<CR>
 
 :nnoremap <leader>= :vertical resize +10<CR>
@@ -191,26 +201,49 @@ nnoremap <silent> <leader>h :nohlsearch<cr>
 :nnoremap <leader>+ :resize +10<CR>
 :nnoremap <leader>_ :resize -10<CR>
 
-" Run Las Command
-:nnoremap <leader>r :@:<CR>
 
-" toggle quickfix window
-:nnoremap <silent> <leader>qo :lopen<cr>
-:nnoremap <silent> <leader>qc :lclose<cr>
+"" Tabs
+nnoremap <leader>t :tab split<CR> 
+nnoremap <leader>T :tab <C-W>T
+nnoremap <leader>o gt
+nnoremap <S-Tab> :tabn<CR> 
 
-nnoremap <silent> <C-T> :ToggleTerminal<Enter>
-inoremap <silent> <C-T> :ToggleTerminal<Enter>
+" VimRc
+:nnoremap <leader>ev :vsplit ~/.vimrc<cr>
+:nnoremap <leader>ez :vsplit ~/.zshrc<cr>
 
-" Aliases
-tnoremap <silent> <C-T> <C-\><C-n>:ToggleTerminal<Enter>
-command! TE tabedit
-command! OL browse oldfiles 
-
-
-command! SS split 
 " source vimrc on save
 augroup vimrc
 	autocmd!
 	autocmd BufWritePost .vimrc source $MYVIMRC
 augroup end
 
+"Graveyard
+"let &t_Co=256 " Terminal Colors?"
+
+" Cursor Shapes (Windows may need)
+"let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+"let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+"let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+"let &t_SI = "\<Esc>[6 q"
+"let &t_SR = "\<Esc>[4 q"
+"let &t_EI = "\<Esc>[2 q"
+
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
+"Plug 'Raimondi/delimitMate'
+"Plug 'tpope/vim-sensible'
+"
+" toggle quickfix window
+":nnoremap <silent> <leader>qo :lopen<cr>
+":nnoremap <silent> <leader>qc :lclose<cr>
+"
+"nnoremap <silent> <C-T> :ToggleTerminal<Enter>
+"inoremap <silent> <C-T> :ToggleTerminal<Enter>
+"tnoremap <silent> <C-T> <C-\><C-n>:ToggleTerminal<Enter>
+"
+" clear the highlighting of :set hlsearch
+" nnoremap <silent> <leader>h :nohlsearch<cr>

@@ -12,7 +12,8 @@ antigen bundle clvv/fasd
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle git-prompt
 
-antigen theme robbyrussell
+#antigen theme robbyrussell
+antigen theme tonotdo
 
 antigen apply
 
