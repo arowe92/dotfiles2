@@ -1,8 +1,8 @@
 " Install vim-plug if it doesnt exist
 if empty(glob('~/.vim/autoload/plug.vim'))
-	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-		\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " Plugins
@@ -16,7 +16,7 @@ Plug 'junegunn/fzf.vim'
 
 
 " Commenting out code: 'gc'
-Plug 'tpope/vim-commentary' 
+Plug 'tpope/vim-commentary'
 "Plug 'preservim/nerdcommenter'
 
 " EasyMotion Navigation
@@ -27,15 +27,19 @@ Plug 'caenrique/nvim-toggle-terminal'
 
 " Maximize Pane
 " AutoCompletion
-"Plug 'vim-scripts/AutoComplPop' 
+"Plug 'vim-scripts/AutoComplPop'
 "Plug 'ycm-core/YouCompleteMe'
 
+" TMux Integration
+Plug 'preservim/vimux'
+Plug 'christoomey/vim-tmux-navigator'
 
-" ==== Languages ==== 
-Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }  
+
+" ==== Languages ====
+Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
 
-" ==== Appearance==== 
+" ==== Appearance====
 Plug 'frazrepo/vim-rainbow'
 Plug 'Yggdroot/indentLine'
 
@@ -46,7 +50,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 "Plug 'vim-syntastic/syntastic'
 
-" ==== Color schemes ==== 
+" ==== Color schemes ====
 Plug 'nanotech/jellybeans.vim'
 Plug 'sjl/badwolf'
 Plug 'morhetz/gruvbox'
@@ -59,7 +63,7 @@ Plug 'dracula/vim'
 call plug#end()
 
 "-------------------------
-"     Theme Settings 
+"     Theme Settings
 "-------------------------
 colorscheme srcery
 
@@ -117,9 +121,10 @@ let g:airline#extensions#ctrlp#enabled = 0
 
 " ========= Plugins ========
 nnoremap <C-\> :NERDTreeToggle<CR>  "File Tree Explorer
-nnoremap <C-p> :CtrlP<CR>         "Fuzzy search
+"nnoremap <C-p> :CtrlP<CR>         "Fuzzy search
 
 " noremap <leader>p :Files<CR>
+nnoremap <C-p> :Files<CR>
 nnoremap <leader>pf :Files<CR>
 nnoremap <leader>pb :Buffers<CR>
 nnoremap <leader>pc :Colors<CR>
@@ -132,21 +137,18 @@ nnoremap <leader>po :Commands<CR>
 " <Leader>f{char} to move to {char}
 map  <leader>f <Plug>(easymotion-bd-f)
 nmap <leader>f <Plug>(easymotion-overwin-f)
-
 " s{char}{char} to move to {char}{char}
 nmap s <Plug>(easymotion-overwin-f2)
-
 " Move to line
 map <leader>l <Plug>(easymotion-bd-jk)
 nmap <leader>l <Plug>(easymotion-overwin-line)
-
 " Move to word
 map  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
 
 " Comment
 "nnoremap <leader>x :call NERDComment(1, 'toggle')<CR>
-map <leader>c gcc
+nmap <leader>c gcc
 
 " Autocompletion of file paths
 inoremap <C-f> <C-x><C-f>
@@ -156,13 +158,14 @@ nnoremap <C-s> :w<CR>
 inoremap <C-s> <ESC>:w<CR>
 
 " File Operations
-nnoremap <C-c> :echo 'ctrl-c twice to quit'<CR> 
+nnoremap <C-c> :echo 'ctrl-c twice to quit'<CR>
 nnoremap <C-c><C-c><C-c> :qall!<CR>
-map <C-k>w :q<CR>
+map <C-n>w :wq<CR>
 map <leader>q :q<CR>
+map <C-w> :q<CR>
 
 " Terminal Escape
-tnoremap <C-K>e <C-\><C-n>
+tnoremap <C-n>e <C-\><C-n>
 
 " Easy Line Moving / Indenting
 noremap <C-M-H> <<
@@ -176,23 +179,28 @@ noremap <C-_>k :m-2<CR>
 
 " ==== PANES ====
 " Pane Naviation
-noremap <C-k>j <C-W><C-J>
-noremap <C-k>k <C-W><C-K>
-noremap <C-k>l <C-W><C-L>
-noremap <C-k>h <C-W><C-H>
+" noremap <C-k>j <C-W><C-J>
+" noremap <C-k>k <C-W><C-K>
+" noremap <C-k>l <C-W><C-L>
+" noremap <C-k>h <C-W><C-H>
+
+noremap <C-j> <C-w><C-j>
+noremap <C-k> <C-w><C-k>
+noremap <C-l> <C-w><C-l>
+noremap <C-h> <C-w><C-h>
 
 " Pane Creation
-noremap <C-k><C-J> <C-W>s<C-W><C-J>
-noremap <C-k><C-K> <C-W>s<C-W><C-K>
-noremap <C-k><C-L> <C-W>v<C-W><C-L>
-noremap <C-k><C-H> <C-W>v<C-W><C-H>
+noremap <C-n><C-j> <C-W>s<C-w><C-k>
+noremap <C-n><C-k> <C-w>s<C-w><C-k>
+noremap <C-n><C-l> <C-w>v<C-w><C-l>
+noremap <C-n><C-h> <C-w>v<C-w><C-h>
 
 " Minimize Maximize Pane
-noremap <leader>M <C-W>\| <C-W>_
+noremap <leader>M <C-w>\| <C-w>_
 noremap <leader>m <C-W>=
 
 " Splitting / Sizing Panes
-:nnoremap <leader>h :split<CR> 
+:nnoremap <leader>h :split<CR>
 :nnoremap <leader>v :vsplit<CR>
 
 :nnoremap <leader>= :vertical resize +10<CR>
@@ -203,10 +211,15 @@ noremap <leader>m <C-W>=
 
 
 "" Tabs
-nnoremap <leader>t :tab split<CR> 
-nnoremap <leader>T :tab <C-W>T
+nnoremap <leader>t :tab split<CR>
+nnoremap <leader>T :tab <C-W>T<CR>
 nnoremap <leader>o gt
-nnoremap <S-Tab> :tabn<CR> 
+nnoremap <S-Tab> :tabn<CR>
+
+noremap <leader>] :tabn<CR>
+noremap <leader>[ :tabp<CR>
+noremap <leader>} :tab split<CR>
+noremap <leader>{ :tab new \| tabm -1<CR>
 
 " VimRc
 :nnoremap <leader>ev :vsplit ~/.vimrc<cr>
@@ -214,21 +227,21 @@ nnoremap <S-Tab> :tabn<CR>
 
 " source vimrc on save
 augroup vimrc
-	autocmd!
-	autocmd BufWritePost .vimrc source $MYVIMRC
+        autocmd!
+        autocmd BufWritePost .vimrc source $MYVIMRC
 augroup end
 
 "Graveyard
 "let &t_Co=256 " Terminal Colors?"
 
 " Cursor Shapes (Windows may need)
-"let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-"let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-"let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
-"let &t_SI = "\<Esc>[6 q"
-"let &t_SR = "\<Esc>[4 q"
-"let &t_EI = "\<Esc>[2 q"
+let &t_SI = "\<Esc>[6 q"
+let &t_SR = "\<Esc>[4 q"
+let &t_EI = "\<Esc>[2 q"
 
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
