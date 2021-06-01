@@ -25,3 +25,4 @@ alias dfi="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 
 alias fv='fasd -e nvim'
 alias fr='fasd -e ranger -d'
+alias todo="vim +:TD"
