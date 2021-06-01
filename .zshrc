@@ -24,6 +24,7 @@ fi
 ## PATH
 ###################################
 PATH="/usr/local/bin:${PATH}"
+PATH="$HOME/.local/bin:${PATH}"
 export PATH
 
 ###################################
@@ -76,3 +77,4 @@ bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
 
 bindkey '^ ' autosuggest-execute
+

@@ -6,7 +6,7 @@ mkalias () {
 }
 
 _exists () {
-    command -v $1
+    command -v $1 > /dev/null
 }
 
 ## Aliases
@@ -22,3 +22,4 @@ _exists ccat && alias cat='ccat'
 _exists exa && alias ls='exa'
 
 alias dfi="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
+alias pl="powershell.exe"

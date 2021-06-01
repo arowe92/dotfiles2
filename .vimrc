@@ -13,6 +13,8 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
 Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'romgrk/todoist.nvim', { 'do': ':TodoistInstall' }
+
 
 
 " Commenting out code: 'gc'
@@ -92,7 +94,7 @@ set showcmd
 set showmatch
 set autowrite
 set mouse=a
-set nopaste
+set paste
 set wildmenu
 set wildchar=<Tab>
 set shiftwidth=4
