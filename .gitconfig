@@ -18,3 +18,5 @@
   f = fetch
   con = rebase --continue
   
+[push]
+	default = simple

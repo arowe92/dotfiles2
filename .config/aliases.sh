@@ -6,7 +6,7 @@ mkalias () {
 }
 
 _exists () {
-    command -v $1
+    command -v $1 > /dev/null
 }
 
 ## Aliases
