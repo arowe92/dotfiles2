@@ -11,6 +11,7 @@ antigen bundle vi-mode
 antigen bundle clvv/fasd
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle git-prompt
+antigen bundle zsh-users/zsh-history-substring-search
 
 #antigen theme robbyrussell
 antigen theme tonotdo
@@ -35,27 +36,22 @@ export TERM='xterm-256color'
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=0'
 export KEYTIMEOUT=1
-export EDITOR=vim
+export EDITOR=nvim
 export _FASD_BACKENDS="native spotlight recently-used current"
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
-
-###################################
-## SOURCES
-###################################
-## Source Git autocompletion
-# source $HOME/Programs/Scripts/git_zsh
-
-## Source git prompt
-source $HOME/.config/functions.sh
-source $HOME/.config/aliases.sh
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 ###################################
 ## EVALS
 ###################################
 eval "$(fasd --init auto)"
 # eval $(thefuck --alias)
+
+###################################
+## SOURCES
+###################################
+## Source git prompt
+source $HOME/.config/functions.sh
+source $HOME/.config/aliases.sh
 
 ###################################
 # Key Bindings
@@ -76,3 +72,8 @@ bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
 
 bindkey '^ ' autosuggest-execute
+bindkey -M vicmd v edit-command-line
+
+# Searching
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
