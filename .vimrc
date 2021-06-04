@@ -14,6 +14,8 @@ Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf'
 Plug 'airblade/vim-gitgutter'
+Plug 'powerman/vim-plugin-autosess'
+Plug 'kshenoy/vim-signature'
 
 " Commenting out code: 'gc'
 Plug 'tpope/vim-commentary'
@@ -141,6 +143,7 @@ let todoist = {
 
 " ========= Plugins ========
 noremap <C-\> :NERDTreeToggle<CR>
+noremap <leader>\ :NERDTreeToggle<CR>
 nmap <C-p> :CtrlPCurWD<CR>
 nnoremap <C-b> :CtrlPBuffer<CR>
 nnoremap <M-o> :GotoHeaderSwitch<CR>
