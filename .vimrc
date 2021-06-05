@@ -14,8 +14,11 @@ Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf'
 Plug 'airblade/vim-gitgutter'
-Plug 'powerman/vim-plugin-autosess'
 Plug 'kshenoy/vim-signature'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'grailbio/bazel-compilation-database'
 
 " Commenting out code: 'gc'
 Plug 'tpope/vim-commentary'
@@ -28,8 +31,8 @@ Plug 'easymotion/vim-easymotion'
 Plug 'Yohannfra/Vim-Goto-Header'
 
 " Panes
-Plug 'caenrique/nvim-toggle-terminal'
-Plug 'romgrk/todoist.nvim'
+" Plug 'caenrique/nvim-toggle-terminal'
+" Plug 'romgrk/todoist.nvim'
 
 " Maximize Pane
 " AutoCompletion
@@ -54,7 +57,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-"Plug 'vim-syntastic/syntastic'
+Plug 'vim-syntastic/syntastic'
 
 " ==== Color schemes ====
 Plug 'nanotech/jellybeans.vim'
@@ -124,16 +127,20 @@ let g:airline#extensions#ctrlp#enabled = 0
 let g:goto_header_use_find = 1
 let g:goto_header_includes_dirs = ["."]
 let g:autoload_session = 1
-let todoist = {
-\  'icons': {
-\    'unchecked': ' ○ ',
-\    'checked':   ' ● ',
-\    'loading':   ' ◌ ',
-\    'error':     ' ⚠ ',
-\  },
-\  'defaultProject': 'Inbox',
-\  'useMarkdownSyntax': v:true,
-\}
+let g:deoplete#enable_at_startup = 1
+
+" <TAB>: completion for deoplete.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+" Syntastic
+" let g:syntastic_cpp_checkers = ['gcc']
+" let g:syntastic_always_populate_loc_list = 0
+" let g:syntastic_auto_loc_list = 0
+" let g:syntastic_check_on_open = 0
+" let g:syntastic_check_on_wq = 0
+
+" let g:syntastic_cpp_compiler_options = "-fsyntax-only"
+" let g:syntastic_cpp_compiler = "g++"
 
 
 
@@ -178,8 +185,11 @@ map  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
 
 " Comment
-"nnoremap <leader>x :call NERDComment(1, 'toggle')<CR>
-nmap <leader>c gcc
+" nnoremap <leader>x :call NERDComment(1, 'toggle')<CR>
+nnoremap <leader>c gcc
+
+" clear the highlighting of :set hlsearch
+nnoremap <silent> <leader>h :nohlsearch<cr>
 
 " Autocompletion of file paths
 inoremap <C-f> <C-x><C-f>
@@ -195,6 +205,8 @@ nnoremap <C-c><C-c><C-c> :qall!<CR>
 map <C-n>w :wq<CR>
 map <leader>q :q<CR>
 map <C-w> :q<CR>
+map <C-q> :q<CR>
+noremap <leader>r @:<CR>
 
 " Terminal Escape
 tnoremap <C-n>e <C-\><C-n>
@@ -273,6 +285,10 @@ augroup vimrc
         autocmd BufWritePost .vimrc source $MYVIMRC
 augroup end
 
+autocmd BufWritePre *.cc %s/\s\+$//e
+autocmd BufWritePre *.h %s/\s\+$//e
+
+
 source ~/.config/nvim/SessionHandler.vim
 
 "Graveyard
@@ -287,23 +303,4 @@ let &t_SI = "\<Esc>[6 q"
 let &t_SR = "\<Esc>[4 q"
 let &t_EI = "\<Esc>[2 q"
 
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
 
-"Plug 'Raimondi/delimitMate'
-"Plug 'tpope/vim-sensible'
-"
-" toggle quickfix window
-":nnoremap <silent> <leader>qo :lopen<cr>
-":nnoremap <silent> <leader>qc :lclose<cr>
-"
-"nnoremap <silent> <C-T> :ToggleTerminal<Enter>
-"inoremap <silent> <C-T> :ToggleTerminal<Enter>
-"tnoremap <silent> <C-T> <C-\><C-n>:ToggleTerminal<Enter>
-"
-" clear the highlighting of :set hlsearch
-" nnoremap <silent> <leader>h :nohlsearch<cr>
-"
-"
-" " Returns the directory of the first file in `argv` or `cwd` if it's empty
