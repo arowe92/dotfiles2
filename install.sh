@@ -56,9 +56,11 @@ curl -L https://git.io/n-install | bash
 # Remove repo
 rm -rf $dest
 
+# Tmux package mananger
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 git clone --bare https://github.com/arowe92/dotfiles2.git $HOME/.dotfiles
 git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local status.showUntrackedFiles no
-echo "alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $HOME/.config/aliases.sh
 
 # Install jumpapp 
 mkdir jumpapp

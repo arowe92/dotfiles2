@@ -23,6 +23,18 @@ _exists exa && alias ls='exa'
 
 alias dfi="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 
-alias fv='fasd -e nvim'
 alias fr='fasd -e ranger -d'
 alias todo="vim +:TD"
+alias cranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+
+alias a='fasd -a'
+
+alias d='fasd -d'
+alias di='fasd -d -l | fzf'
+
+alias f='fasd -f'
+alias fv='fasd -e nvim'
+alias fvi='fasd_fzf -l nvim'
+
+
+alias zz='fasd_fzf -ld cd'

@@ -9,32 +9,38 @@ endif
 call plug#begin()
 
 " ==== Tools ====
+
+"
+" Navigation
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
 Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf'
-Plug 'airblade/vim-gitgutter'
-Plug 'kshenoy/vim-signature'
+Plug 'easymotion/vim-easymotion'
+
+Plug 'jeaye/color_coded'
+
+" AutoComplete
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+" Snippets
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'grailbio/bazel-compilation-database'
+
+" Indicators
+Plug 'airblade/vim-gitgutter'
+Plug 'kshenoy/vim-signature'
 
 " Commenting out code: 'gc'
 Plug 'tpope/vim-commentary'
 "Plug 'preservim/nerdcommenter'
 
-" EasyMotion Navigation
-Plug 'easymotion/vim-easymotion'
-
-" C++ HEader
+" Code Header
 Plug 'Yohannfra/Vim-Goto-Header'
 
-" Panes
+" Window Management
 " Plug 'caenrique/nvim-toggle-terminal'
 " Plug 'romgrk/todoist.nvim'
 
-" Maximize Pane
 " AutoCompletion
 "Plug 'vim-scripts/AutoComplPop'
 "Plug 'ycm-core/YouCompleteMe'
@@ -44,7 +50,8 @@ Plug 'preservim/vimux'
 Plug 'christoomey/vim-tmux-navigator'
 
 
-" ==== Languages ====
+" ==== Language Support  ====
+Plug 'vim-syntastic/syntastic' " Linter Engine
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
 
@@ -56,8 +63,6 @@ Plug 'Yggdroot/indentLine'
 "Plug 'itchyny/lightline.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-
-Plug 'vim-syntastic/syntastic'
 
 " ==== Color schemes ====
 Plug 'nanotech/jellybeans.vim'
@@ -277,7 +282,7 @@ noremap <leader>{ :tab new \| tabm -1<CR>
 :nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 :nnoremap <leader>ez :vsplit ~/.zshrc<cr>
 
-command TD Todoist
+command! TD Todoist
 
 " source vimrc on save
 augroup vimrc
