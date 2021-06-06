@@ -9,12 +9,13 @@ endif
 call plug#begin()
 
 " ==== Tools ====
-
+Plug 'terryma/vim-multiple-cursors'
 "
 " Navigation
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
 Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'easymotion/vim-easymotion'
 
 Plug 'jeaye/color_coded'
@@ -51,11 +52,12 @@ Plug 'christoomey/vim-tmux-navigator'
 
 
 " ==== Language Support  ====
-Plug 'vim-syntastic/syntastic' " Linter Engine
+
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
 
 " ==== Appearance====
+Plug 'junegunn/goyo.vim'
 Plug 'frazrepo/vim-rainbow'
 Plug 'Yggdroot/indentLine'
 
@@ -249,8 +251,9 @@ noremap <C-n><C-l> <C-w>v<C-w><C-l>
 noremap <C-n><C-h> <C-w>v<C-w><C-h>
 
 " Minimize Maximize Pane
-noremap <leader>M <C-w>\| <C-w>_
-noremap <leader>m <C-W>=
+" noremap <leader>M <C-w>\| <C-w>_
+" noremap <leader>m <C-W>=
+nnoremap <leader>m :Goyo<CR>
 
 " Splitting / Sizing Panes
 :nnoremap <leader>h :split<CR>
@@ -304,8 +307,18 @@ source ~/.config/nvim/SessionHandler.vim
 " let &t_SR = "\<Esc>]50;CursorShape=2\x7"
 " let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
-let &t_SI = "\<Esc>[6 q"
-let &t_SR = "\<Esc>[4 q"
-let &t_EI = "\<Esc>[2 q"
+" let &t_SI = "\<Esc>[6 q"
+" let &t_SR = "\<Esc>[4 q"
+" let &t_EI = "\<Esc>[2 q"
 
-
+function! s:Fasd(cmd)
+  let cmd = a:cmd
+  function! Sink(line) closure
+    execute(cmd . ' ' . split(a:line)[-1])
+  endfunction
+  return funcref('Sink')
+endfunction
+command! -bang -nargs=* FF
+\ call fzf#run(fzf#wrap({'source': 'fasd -lf -R '. shellescape(<q-args>), 'sink': s:Fasd('e')}))
+command! -bang -nargs=* FD
+\ call fzf#run(fzf#wrap({'source': 'fasd -ld -R '. shellescape(<q-args>), 'sink': s:Fasd('NERDTree')}))
