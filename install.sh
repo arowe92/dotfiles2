@@ -47,6 +47,7 @@ cd $dest
 mv .config/nvim $HOME/.config
 mv .vimrc .zshrc .tmux.conf .gitconfig ~/
 mv .config/aliases.sh .config/functions.sh ~/.config
+mv .local/bin/* $HOME/.local/bin
 
 # Install N
 export N_PREFIX="$HOME/.n"
@@ -58,6 +59,9 @@ rm -rf $dest
 
 # Tmux package mananger
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# Ranger Plugins
+git clone git@github.com:cjbassi/ranger-fzf.git ~/.config/ranger/plugins/ranger-fzf
 
 git clone --bare https://github.com/arowe92/dotfiles2.git $HOME/.dotfiles
 git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local status.showUntrackedFiles no

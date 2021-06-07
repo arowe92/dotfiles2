@@ -15,6 +15,7 @@ alias add='git add --patch'
 alias tf='tail -f'
 alias erc='vim ~/.zshrc && source ~/.zshrc'
 alias dfi="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
+alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw;"
 
 _exists hub && alias git='hub'
 _exists colordiff && alias diff='colordiff'
@@ -26,7 +27,6 @@ alias todo="vim +:TD"
 alias cranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 
 ## Fasd Aliases
-
 alias a='fasd -a'
 alias ai='fasd_fzf_inline -la'
 alias d='fasd -d'

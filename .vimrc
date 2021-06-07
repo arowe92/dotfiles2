@@ -18,8 +18,6 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'easymotion/vim-easymotion'
 
-Plug 'jeaye/color_coded'
-
 " AutoComplete
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
@@ -44,7 +42,7 @@ Plug 'Yohannfra/Vim-Goto-Header'
 
 " AutoCompletion
 "Plug 'vim-scripts/AutoComplPop'
-"Plug 'ycm-core/YouCompleteMe'
+Plug 'ycm-core/YouCompleteMe'
 
 " TMux Integration
 Plug 'preservim/vimux'
@@ -52,14 +50,17 @@ Plug 'christoomey/vim-tmux-navigator'
 
 
 " ==== Language Support  ====
-
+" Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'bfrg/vim-cpp-modern'
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
 
 " ==== Appearance====
 Plug 'junegunn/goyo.vim'
-Plug 'frazrepo/vim-rainbow'
+" Plug 'frazrepo/vim-rainbow'
+Plug 'luochen1990/rainbow'
 Plug 'Yggdroot/indentLine'
+Plug 'ryanoasis/vim-devicons'
 
 "Status bar
 "Plug 'itchyny/lightline.vim'
@@ -114,6 +115,8 @@ set wildchar=<Tab>
 set shiftwidth=4
 set tabstop=4
 set expandtab
+set encoding=UTF-8
+
 
 " Swap file location
 set directory^=/tmp/
@@ -130,26 +133,25 @@ let g:ctrlp_cmd = 'CtrlPCurWD'
 let g:rainbow_active = 1
 let g:airline_theme='simple'
 let g:airline#extensions#tabline#enabled = 2
-let g:airline#extensions#ctrlp#enabled = 0
+let g:airline#extensions#ctrlp#enabled = 1
 let g:goto_header_use_find = 1
 let g:goto_header_includes_dirs = ["."]
 let g:autoload_session = 1
 let g:deoplete#enable_at_startup = 1
 
+" Windows fix
+let g:NERDTreeDirArrowExpandable="+"
+let g:NERDTreeDirArrowCollapsible="-"
+
+" Nerdtree rainbow fix
+let g:rainbow_conf = {
+  \    'separately': {
+  \       'nerdtree': 0
+  \    }
+  \}
+
 " <TAB>: completion for deoplete.
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-" Syntastic
-" let g:syntastic_cpp_checkers = ['gcc']
-" let g:syntastic_always_populate_loc_list = 0
-" let g:syntastic_auto_loc_list = 0
-" let g:syntastic_check_on_open = 0
-" let g:syntastic_check_on_wq = 0
-
-" let g:syntastic_cpp_compiler_options = "-fsyntax-only"
-" let g:syntastic_cpp_compiler = "g++"
-
-
 
 "----------------------------
 "         Key Mappings
