@@ -11,6 +11,7 @@ antigen bundle vi-mode
 antigen bundle clvv/fasd
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle git-prompt
+antigen bundle fzf
 antigen bundle zsh-users/zsh-history-substring-search
 
 #antigen theme robbyrussell
@@ -73,6 +74,8 @@ bindkey '^w' backward-kill-word
 
 bindkey '^ ' autosuggest-execute
 bindkey -M vicmd v edit-command-line
+
+bindkey -s '^o' 'svim $(fasd -l | fzf-tmux)^M'
 
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
