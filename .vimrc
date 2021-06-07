@@ -122,6 +122,9 @@ set encoding=UTF-8
 " Swap file location
 set directory^=/tmp/
 
+" Add Path for easy jumping
+set path+=/home/arowe/repos/sims
+
 " LEADER KEY MAPPING
 " use space as leader
 let mapleader=" "

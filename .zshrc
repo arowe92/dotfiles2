@@ -13,6 +13,7 @@ antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle git-prompt
 antigen bundle fzf
 antigen bundle zsh-users/zsh-history-substring-search
+#antigen bundle git-prompt
 
 #antigen theme robbyrussell
 antigen theme tonotdo
