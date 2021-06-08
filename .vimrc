@@ -10,6 +10,7 @@ call plug#begin()
 
 " ==== Tools ====
 Plug 'terryma/vim-multiple-cursors'
+Plug 'skywind3000/vim-quickui'
 "
 " Navigation
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
@@ -324,3 +325,33 @@ command! -bang -nargs=* FF
 \ call fzf#run(fzf#wrap({'source': 'fasd -lf -R '. shellescape(<q-args>), 'sink': s:Fasd('e')}))
 command! -bang -nargs=* FD
 \ call fzf#run(fzf#wrap({'source': 'fasd -ld -R '. shellescape(<q-args>), 'sink': s:Fasd('NERDTree')}))
+
+
+noremap <leader><CR> :call quickui#menu#open()<CR>
+let g:quickui_color_scheme = 'gruvbox'
+call quickui#menu#reset()
+call quickui#menu#install("&Fuzzy", [
+            \ ['&GFiles', ':GFiles'],
+            \ ['Git &Status', ':GFiles?'],
+            \ ['&Buffers', ':Buffers'],
+            \ ['&Colors', ':Colors'],
+            \ ['&Ag', ':Ag'],
+            \ ['&Rg', ':Rg'],
+            \ ['All Buffer &Lines', ':Lines'],
+            \ ['Current Buffer L&ines', ':BLines'],
+            \ ['&Tags', ':Tags'],
+            \ ['Buffer T&ags', ':BTags'],
+            \ ['&Marks', ':Marks'],
+            \ ['&Windows', ':Windows'],
+            \ ['L&ocate', ':Locate'],
+            \ ['&History', ':History'],
+            \ ['Co&mmand History', ':History:'],
+            \ ['&File History', ':History/'],
+            \ ['&Snippets', ':Snippets'],
+            \ ['Comm&its', ':Commits'],
+            \ ['Buffer Commits', ':BCommits'],
+            \ ['Commands', ':Commands'],
+            \ ['Maps', ':Maps'],
+            \ ['Helptags', ':Helptags'],
+            \ ['Filetypes', ':Filetypes']
+            \ ])
