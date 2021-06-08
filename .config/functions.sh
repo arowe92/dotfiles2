@@ -29,7 +29,7 @@ svim ()  {
 fasd_fzf () {
     local _cmd=$2
     local _args=${@:4}
-    local _fasd_ret="$(fasd $1 $3 | fzf-tmux --preview="$HOME/.local/bin/prev {}")"
+    local _fasd_ret="$(fasd $1 $3 | fzf-tmux -p --layout=reverse --preview="$HOME/.local/bin/prev {}")"
     [ -z "$_fasd_ret" ] && return
     $_cmd $(echo $_args | xargs) "$_fasd_ret" 
 }
@@ -37,7 +37,7 @@ fasd_fzf () {
 # Use fasd with fzf, return result inline
 # fasd_fzf_inline <fasd flags> [<fasd query>]
 fasd_fzf_inline () {
-    local _fasd_ret="$(fasd $1 ${@:2} | fzf-tmux --preview="$HOME/.local/bin/prev {}")"
+    local _fasd_ret="$(fasd $1 ${@:2} | fzf-tmux -p --layout=reverse --preview="$HOME/.local/bin/prev {}")"
     [ -z "$_fasd_ret" ] && return
     echo "$_fasd_ret" 
 }
@@ -50,6 +50,10 @@ fasd_fn () {
     local _fasd_ret="$(fasd $1 $3)"
     [ -z "$_fasd_ret" ] && return
     $_cmd $(echo $_args | xargs) "$_fasd_ret" 
+}
+
+fasd_svim () {
+    fasd_fzf -l svim
 }
 
 # Enable file completion for prev function

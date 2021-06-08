@@ -18,6 +18,7 @@ Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'easymotion/vim-easymotion'
+Plug 'dkprice/vim-easygrep'
 
 " AutoComplete
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -42,8 +43,8 @@ Plug 'Yohannfra/Vim-Goto-Header'
 " Plug 'romgrk/todoist.nvim'
 
 " AutoCompletion
-"Plug 'vim-scripts/AutoComplPop'
-Plug 'ycm-core/YouCompleteMe'
+" Plug 'vim-scripts/AutoComplPop'
+" Plug 'ycm-core/YouCompleteMe'
 
 " TMux Integration
 Plug 'preservim/vimux'
@@ -140,7 +141,7 @@ let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#ctrlp#enabled = 1
 let g:goto_header_use_find = 1
 let g:goto_header_includes_dirs = ["."]
-let g:autoload_session = 1
+let g:autoload_session = 0
 let g:deoplete#enable_at_startup = 1
 
 " Windows fix
@@ -217,7 +218,7 @@ nnoremap <C-c> :echo 'ctrl-c twice to quit'<CR>
 nnoremap <C-c><C-c><C-c> :qall!<CR>
 map <C-n>w :wq<CR>
 map <leader>q :q<CR>
-map <C-w> :q<CR>
+map <C-w> :bd<CR>
 map <C-q> :q<CR>
 noremap <leader>r @:<CR>
 
@@ -291,45 +292,34 @@ noremap <leader>{ :tab new \| tabm -1<CR>
 :nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 :nnoremap <leader>ez :vsplit ~/.zshrc<cr>
 
+noremap <leader>R :redraw!<CR>
+
+" ===================
+" Custom Commands
+" ===================
 command! TD Todoist
 
-" source vimrc on save
-augroup vimrc
-        autocmd!
-        autocmd BufWritePost .vimrc source $MYVIMRC
-augroup end
+" Copy The Path of the file
+command! CP :let @a = system("realpath " . shellescape(expand('%')))
 
+" Custom Session Handler
+source ~/.config/nvim/SessionHandler.vim
+
+" source vimrc on save
+" augroup vimrc
+"         autocmd!
+"         autocmd BufWritePost .vimrc source $MYVIMRC
+" augroup end
+
+" ========= Auto Commands ==============
+" Remove spaceds
 autocmd BufWritePre *.cc %s/\s\+$//e
 autocmd BufWritePre *.h %s/\s\+$//e
 
 
-source ~/.config/nvim/SessionHandler.vim
-
-"Graveyard
-"let &t_Co=256 " Terminal Colors?"
-
-" Cursor Shapes (Windows may need)
-" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-
-" let &t_SI = "\<Esc>[6 q"
-" let &t_SR = "\<Esc>[4 q"
-" let &t_EI = "\<Esc>[2 q"
-
-function! s:Fasd(cmd)
-  let cmd = a:cmd
-  function! Sink(line) closure
-    execute(cmd . ' ' . split(a:line)[-1])
-  endfunction
-  return funcref('Sink')
-endfunction
-command! -bang -nargs=* FF
-\ call fzf#run(fzf#wrap({'source': 'fasd -lf -R '. shellescape(<q-args>), 'sink': s:Fasd('e')}))
-command! -bang -nargs=* FD
-\ call fzf#run(fzf#wrap({'source': 'fasd -ld -R '. shellescape(<q-args>), 'sink': s:Fasd('NERDTree')}))
-
-
+" ========================================
+" =  Quick UI menu
+" ========================================
 noremap <leader><CR> :call quickui#menu#open()<CR>
 let g:quickui_color_scheme = 'gruvbox'
 call quickui#menu#reset()
@@ -358,3 +348,18 @@ call quickui#menu#install("&Fuzzy", [
             \ ['Helptags', ':Helptags'],
             \ ['Filetypes', ':Filetypes']
             \ ])
+
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>

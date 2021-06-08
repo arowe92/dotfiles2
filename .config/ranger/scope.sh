@@ -27,8 +27,6 @@ IFS=$'\n'
 ## 6    | image      | Display the image `$IMAGE_CACHE_PATH` points to as an image preview
 ## 7    | image      | Display the file directly as an image
 
-echo $@ >> out.out
-
 ## Script arguments
 FILE_PATH="${1}"         # Full path of the highlighted file
 PV_WIDTH="${2}"          # Width of the preview pane (number of fitting characters)

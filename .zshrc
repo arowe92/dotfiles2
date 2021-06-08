@@ -10,10 +10,9 @@ antigen bundle pip
 antigen bundle vi-mode
 antigen bundle clvv/fasd
 antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle git-prompt
 antigen bundle fzf
 antigen bundle zsh-users/zsh-history-substring-search
-#antigen bundle git-prompt
+# antigen bundle git-prompt
 
 #antigen theme robbyrussell
 antigen theme tonotdo
@@ -41,6 +40,10 @@ export EDITOR=nvim
 export _FASD_BACKENDS="native spotlight recently-used current"
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+export FZF_TMUX_OPTS="-p"
+export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
+
+
 
 ###################################
 ## EVALS
@@ -76,7 +79,9 @@ bindkey '^w' backward-kill-word
 bindkey '^ ' autosuggest-execute
 bindkey -M vicmd v edit-command-line
 
-bindkey -s '^o' 'svim $(fasd -l | fzf-tmux)^M'
+zle -N fasd_svim
+bindkey '^o' fasd_svim
+
 
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
