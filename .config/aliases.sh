@@ -41,3 +41,4 @@ alias fr='fasd_fn -d ranger'
 alias fp='fasd_fn -a prev'
 
 alias zz='fasd_fzf -ld cd'
+alias ff="find . -name"

@@ -44,7 +44,6 @@ export FZF_TMUX_OPTS="-p"
 export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 
 
-
 ###################################
 ## EVALS
 ###################################
@@ -65,11 +64,6 @@ source $HOME/.config/aliases.sh
 ## Vim keybindings in terminal
 bindkey -v
 
-# bindkey -s '^r' '`hist`\t'
-# bindkey -s '^f' '`fasd -al | tail -r | peco`\t'
-# bindkey -s '^b' '`git branch | sed "s/\*//g" | peco`\t'
-# bindkey -s '^o' 'pbpaste | grep . | tail -n 10 | peco | pbcopy\n'
-
 bindkey '^P' up-history
 bindkey '^N' down-history
 bindkey '^?' backward-delete-char
@@ -82,7 +76,7 @@ bindkey -M vicmd v edit-command-line
 zle -N fasd_svim
 bindkey '^o' fasd_svim
 
-
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
+

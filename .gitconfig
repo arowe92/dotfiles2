@@ -17,6 +17,9 @@
   pr = pull-request
   f = fetch
   con = rebase --continue
+  ignore = update-index --assume-unchanged
+  unignore = update-index --no-assume-unchanged
+  ignored = !git ls-files -v | grep "^[[:lower:]]"
   
 [push]
 	default = simple

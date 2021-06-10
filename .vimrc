@@ -1,11 +1,12 @@
 " Install vim-plug if it doesnt exist
+"
 if empty(glob('~/.vim/autoload/plug.vim'))
         silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
                 \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
         autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-
 " Plugins
+
 call plug#begin()
 
 " ==== Tools ====
@@ -14,17 +15,19 @@ Plug 'skywind3000/vim-quickui'
 "
 " Navigation
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
-Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
+" Plug 'kien/ctrlp.vim' " Fuzzy Search- <C-p>
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'dkprice/vim-easygrep'
+Plug 'lornix/vim-scrollbar'
 
 " AutoComplete
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'tpope/vim-fugitive'
 
 " Snippets
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 " Indicators
@@ -44,7 +47,9 @@ Plug 'Yohannfra/Vim-Goto-Header'
 
 " AutoCompletion
 " Plug 'vim-scripts/AutoComplPop'
-" Plug 'ycm-core/YouCompleteMe'
+Plug 'ycm-core/YouCompleteMe'
+" Plug 'grailbio/bazel-compilation-database'
+
 
 " TMux Integration
 Plug 'preservim/vimux'
@@ -56,6 +61,8 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'bfrg/vim-cpp-modern'
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
+Plug 'google/vim-maktaba'
+Plug 'bazelbuild/vim-bazel'
 
 " ==== Appearance====
 Plug 'junegunn/goyo.vim'
@@ -97,8 +104,8 @@ filetype plugin indent on
 "-------------------------
 "    General Settings
 "-------------------------
-set wrap
 set autoindent
+set wrap
 set number
 set backspace=indent,eol,start
 set hlsearch
@@ -155,8 +162,21 @@ let g:rainbow_conf = {
   \    }
   \}
 
-" <TAB>: completion for deoplete.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+call deoplete#custom#option('candidate_marks',
+      \ ['A', 'S', 'D', 'F', 'G'])
+inoremap <expr><M-a>       pumvisible() ?
+\ deoplete#insert_candidate(0) : '<M-a>'
+inoremap <expr><M-s>       pumvisible() ?
+\ deoplete#insert_candidate(1) : '<M-s>'
+inoremap <expr><M-d>       pumvisible() ?
+\ deoplete#insert_candidate(2) : '<M-d>'
+inoremap <expr><M-f>       pumvisible() ?
+\ deoplete#insert_candidate(3) : '<M-f>'
+inoremap <expr><M-g>      pumvisible() ?
+\ deoplete#insert_candidate(4) : '<M-g>'
+inoremap <expr><Tab>       pumvisible() ?
+\ deoplete#insert_candidate(0) : '<Tab>'
 
 "----------------------------
 "         Key Mappings
@@ -165,18 +185,10 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 " ========= Plugins ========
 noremap <C-\> :NERDTreeToggle<CR>
 noremap <leader>\ :NERDTreeToggle<CR>
-nmap <C-p> :CtrlPCurWD<CR>
-nnoremap <C-b> :CtrlPBuffer<CR>
+nnoremap <C-p> :Files<CR>
+nnoremap <C-b> :Buffers<CR>
 nnoremap <M-o> :GotoHeaderSwitch<CR>
-
-" noremap <leader>p :Files<CR>
-"nnoremap <C-p> :Files<CR>
-nnoremap <leader>pf :Files<CR>
-nnoremap <leader>pb :Buffers<CR>
-nnoremap <leader>pc :Colors<CR>
-nnoremap <leader>ph :History<CR>
-nnoremap <leader>pw :Windows<CR>
-nnoremap <leader>po :Commands<CR>
+nnoremap <leader>p :Commands<CR>
 
 " Git Gutter "
 nnoremap <leader>g] :GitGutterNextHunk<CR>
@@ -205,16 +217,13 @@ nnoremap <leader>c gcc
 " clear the highlighting of :set hlsearch
 nnoremap <silent> <leader>h :nohlsearch<cr>
 
-" Autocompletion of file paths
-inoremap <C-f> <C-x><C-f>
-
 " Save  File
 noremap <leader><C-s> :WriteSession<CR>
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <ESC>:w<CR>
 
 " File Operations
-nnoremap <C-c> :echo 'ctrl-c twice to quit'<CR>
+nnoremap <C-c> :echo 'ctrl-c thrice to quit'<CR>
 nnoremap <C-c><C-c><C-c> :qall!<CR>
 map <C-n>w :wq<CR>
 map <leader>q :q<CR>
@@ -226,10 +235,10 @@ noremap <leader>r @:<CR>
 tnoremap <C-n>e <C-\><C-n>
 
 " Easy Line Moving / Indenting
-noremap <C-M-H> <<
-noremap <C-M-L> >>
-noremap <C-M-K> :m +1<CR>
-noremap <C-_>k :m-2<CR>
+noremap <M-h> <<
+noremap <M-l> >>
+noremap <M-k> :m+1<CR>
+noremap <M-j> :m-2<CR>
 
 " Swap command and repeat movement
 "noremap ; :
@@ -258,14 +267,17 @@ noremap <C-n><C-l> <C-w>v<C-w><C-l>
 noremap <C-n><C-h> <C-w>v<C-w><C-h>
 
 " Minimize Maximize Pane
-" noremap <leader>M <C-w>\| <C-w>_
-" noremap <leader>m <C-W>=
-nnoremap <leader>m :Goyo<CR>
+noremap <leader>l1 <C-w>\| <C-w>_
+noremap <leader>l2 <C-W>=
+nnoremap <leader>l` :Goyo<CR>
+
+" remap winddow prefix
+nnoremap <C-n> <C-W>
 
 " Splitting / Sizing Panes
 :nnoremap <leader>h :split<CR>
-:nnoremap <leader>v :vsplit<CR>
 
+:nnoremap <leader>v :vsplit<CR>
 :nnoremap <leader>= :vertical resize +10<CR>
 :nnoremap <leader>- :vertical resize -10<CR>
 
@@ -300,7 +312,7 @@ noremap <leader>R :redraw!<CR>
 command! TD Todoist
 
 " Copy The Path of the file
-command! CP :let @a = system("realpath " . shellescape(expand('%')))
+command! CP :let @" = system("realpath " . shellescape(expand('%')))
 
 " Custom Session Handler
 source ~/.config/nvim/SessionHandler.vim
@@ -313,8 +325,11 @@ source ~/.config/nvim/SessionHandler.vim
 
 " ========= Auto Commands ==============
 " Remove spaceds
-autocmd BufWritePre *.cc %s/\s\+$//e
-autocmd BufWritePre *.h %s/\s\+$//e
+augroup twig_ft
+    au!
+    autocmd BufWritePre *.h,*.cc %s/\s\+$//e
+    autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen
+augroup END
 
 
 " ========================================
@@ -324,29 +339,31 @@ noremap <leader><CR> :call quickui#menu#open()<CR>
 let g:quickui_color_scheme = 'gruvbox'
 call quickui#menu#reset()
 call quickui#menu#install("&Fuzzy", [
-            \ ['&GFiles', ':GFiles'],
-            \ ['Git &Status', ':GFiles?'],
-            \ ['&Buffers', ':Buffers'],
-            \ ['&Colors', ':Colors'],
-            \ ['&Ag', ':Ag'],
-            \ ['&Rg', ':Rg'],
-            \ ['All Buffer &Lines', ':Lines'],
-            \ ['Current Buffer L&ines', ':BLines'],
-            \ ['&Tags', ':Tags'],
-            \ ['Buffer T&ags', ':BTags'],
-            \ ['&Marks', ':Marks'],
-            \ ['&Windows', ':Windows'],
-            \ ['L&ocate', ':Locate'],
-            \ ['&History', ':History'],
-            \ ['Co&mmand History', ':History:'],
-            \ ['&File History', ':History/'],
-            \ ['&Snippets', ':Snippets'],
-            \ ['Comm&its', ':Commits'],
-            \ ['Buffer Commits', ':BCommits'],
+            \ ['Files', ':Files'],
+            \ ['Buffers', ':Buffers'],
             \ ['Commands', ':Commands'],
+            \ ['GFile', ':Giles'],
+            \ ['Git Status', ':GFiles?'],
+            \ ['Colors',':Colors'],
+            \ ['All Buffer Lines', ':Lines'],
+            \ ['Current Buffer Lines', ':BLines'],
+            \ ['Tags', ':Tags'],
+            \ ['Buffer Tags', ':BTags'],
+            \ ['Marks', ':Marks'],
+            \ ['Windows', ':Windows'],
+            \ ['History', ':History'],
+            \ ['Command History', ':History:'],
+            \ ['File History', ':History/'],
+            \ ['Snippets', ':Snippets'],
+            \ ['Commits', ':Commits'],
+            \ ['Buffer Commits', ':BCommits'],
             \ ['Maps', ':Maps'],
             \ ['Helptags', ':Helptags'],
-            \ ['Filetypes', ':Filetypes']
+            \ ['Filetypes', ':Filetypes'],
+            \ ['============'],
+            \ ['Locate &3', ':Locate'],
+            \ ['Ag &3', ':Ag'],
+            "\ ['&Rg', ':Rg'],
             \ ])
 
 " The Silver Searcher
