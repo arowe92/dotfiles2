@@ -48,7 +48,7 @@ export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hi
 ## EVALS
 ###################################
 eval "$(fasd --init auto)"
-# eval $(thefuck --alias)
+eval $(thefuck --alias)
 
 ###################################
 ## SOURCES

@@ -11,7 +11,10 @@ call plug#begin()
 
 " ==== Tools ====
 Plug 'terryma/vim-multiple-cursors'
+Plug 'MattesGroeger/vim-bookmarks'
 Plug 'skywind3000/vim-quickui'
+Plug 'yegappan/taglist'
+Plug 'AndrewRadev/sideways.vim'
 "
 " Navigation
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
@@ -20,10 +23,9 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'dkprice/vim-easygrep'
-Plug 'lornix/vim-scrollbar'
 
 " AutoComplete
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'tpope/vim-fugitive'
 
 " Snippets
@@ -47,7 +49,7 @@ Plug 'Yohannfra/Vim-Goto-Header'
 
 " AutoCompletion
 " Plug 'vim-scripts/AutoComplPop'
-Plug 'ycm-core/YouCompleteMe'
+" Plug 'ycm-core/YouCompleteMe'
 " Plug 'grailbio/bazel-compilation-database'
 
 
@@ -125,6 +127,7 @@ set shiftwidth=4
 set tabstop=4
 set expandtab
 set encoding=UTF-8
+set colorcolumn=100
 
 
 " Swap file location
@@ -132,6 +135,8 @@ set directory^=/tmp/
 
 " Add Path for easy jumping
 set path+=/home/arowe/repos/sims
+
+set tags+=~/.vim/tags
 
 " LEADER KEY MAPPING
 " use space as leader
@@ -146,10 +151,13 @@ let g:rainbow_active = 1
 let g:airline_theme='simple'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#ctrlp#enabled = 1
+let g:airline_powerline_fonts = 1
 let g:goto_header_use_find = 1
 let g:goto_header_includes_dirs = ["."]
 let g:autoload_session = 0
 let g:deoplete#enable_at_startup = 1
+let g:indentLine_char = '▏'
+let g:ycm_max_diagnostics_to_display = 9999
 
 " Windows fix
 let g:NERDTreeDirArrowExpandable="+"
@@ -163,20 +171,20 @@ let g:rainbow_conf = {
   \}
 
 
-call deoplete#custom#option('candidate_marks',
-      \ ['A', 'S', 'D', 'F', 'G'])
-inoremap <expr><M-a>       pumvisible() ?
-\ deoplete#insert_candidate(0) : '<M-a>'
-inoremap <expr><M-s>       pumvisible() ?
-\ deoplete#insert_candidate(1) : '<M-s>'
-inoremap <expr><M-d>       pumvisible() ?
-\ deoplete#insert_candidate(2) : '<M-d>'
-inoremap <expr><M-f>       pumvisible() ?
-\ deoplete#insert_candidate(3) : '<M-f>'
-inoremap <expr><M-g>      pumvisible() ?
-\ deoplete#insert_candidate(4) : '<M-g>'
-inoremap <expr><Tab>       pumvisible() ?
-\ deoplete#insert_candidate(0) : '<Tab>'
+" call deoplete#custom#option('candidate_marks',
+"       \ ['A', 'S', 'D', 'F', 'G'])
+" inoremap <expr><M-a>       pumvisible() ?
+" \ deoplete#insert_candidate(0) : '<M-a>'
+" inoremap <expr><M-s>       pumvisible() ?
+" \ deoplete#insert_candidate(1) : '<M-s>'
+" inoremap <expr><M-d>       pumvisible() ?
+" \ deoplete#insert_candidate(2) : '<M-d>'
+" inoremap <expr><M-f>       pumvisible() ?
+" \ deoplete#insert_candidate(3) : '<M-f>'
+" inoremap <expr><M-g>      pumvisible() ?
+" \ deoplete#insert_candidate(4) : '<M-g>'
+" inoremap <expr><Tab>       pumvisible() ?
+" \ deoplete#insert_candidate(0) : '<Tab>'
 
 "----------------------------
 "         Key Mappings
@@ -194,12 +202,16 @@ nnoremap <leader>p :Commands<CR>
 nnoremap <leader>g] :GitGutterNextHunk<CR>
 nnoremap <leader>g[ :GitGutterPrevHunk<CR>
 nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
-nnoremap <leader>gt :GitGutterToggle<CR>
+nnoremap <leader>gh :GitGutterToggle<CR>
+
+" YCM "
+nnoremap gl :YcmCompleter GoToDefinition<CR>
+nnoremap gk :YcmCompleter GoToDeclaration<CR>
 
 
 " EasyMotion Commands
 " <Leader>f{char} to move to {char}
-map  <leader>f <Plug>(easymotion-bd-f)
+    map  <leader>f <Plug>(easymotion-bd-f)
 nmap <leader>f <Plug>(easymotion-overwin-f)
 " s{char}{char} to move to {char}{char}
 nmap s <Plug>(easymotion-overwin-f2)
@@ -237,11 +249,15 @@ tnoremap <C-n>e <C-\><C-n>
 " Easy Line Moving / Indenting
 noremap <M-h> <<
 noremap <M-l> >>
-noremap <M-k> :m+1<CR>
-noremap <M-j> :m-2<CR>
+noremap <M-j> :m+1<CR>
+noremap <M-k> :m-2<CR>
+noremap <M-.> :SidewaysRight<CR>
+noremap <M-,> :SidewaysLeft<CR>
 
-" Swap command and repeat movement
+" paste in insert
+inoremap <C-v> <C-r>"
 "noremap ; :
+" Swap command and repeat movement
 "noremap : ;
 
 " ==== PANES ====
@@ -286,16 +302,19 @@ nnoremap <C-n> <C-W>
 
 
 "" Buffers
-nnoremap <leader>n :bn<CR>
-nnoremap <leader>N :bp<CR>
 noremap <leader>] :bn<CR>
 noremap <leader>[ :bp<CR>
+noremap <M-]> :bn<CR>
+noremap <M-[> :bp<CR>
 
 "" Tabs
 nnoremap <leader>t :tab split<CR>
 nnoremap <leader>T :tab <C-W>T<CR>
 nnoremap <leader>o gt
 nnoremap <S-Tab> :tabn<CR>
+
+noremap <M-}> :tabn<CR>
+noremap <M-{> :tabp<CR>
 
 noremap <leader>} :tab split<CR>
 noremap <leader>{ :tab new \| tabm -1<CR>
@@ -366,6 +385,45 @@ call quickui#menu#install("&Fuzzy", [
             "\ ['&Rg', ':Rg'],
             \ ])
 
+noremap <leader><CR> :call quickui#menu#open()<CR>
+
+call system('upfind WORKSPACE')
+if v:shell_error == 0
+call quickui#menu#install("&Bazel", [
+            \ ['&Build', ':Bazel build //pythia/src:pythia'],
+            \ ['&Test', ':Bazel test //pythia/src:fast'],
+            \ ])
+endif
+
+call quickui#menu#install("&Tools", [
+            \ ['&Tag List', ':TlistToggle'],
+            \ ['&Git Gutter', ':GitGutterToggle'],
+            \ ['Git &Diff', ':Gdiffsplit'],
+            \ ])
+
+let g:context_menu_k = [
+            \ ["&Peek Definition\tAlt+;", 'call quickui#tools#preview_tag("")'],
+            \ ["S&earch in Project\t\\cx", 'exec "silent! GrepCode! " . expand("<cword>")'],
+            \ [ "--", ],
+            \ [ "Find &Definition\t\\cg", 'call MenuHelp_Fscope("g")', 'GNU Global search g'],
+            \ [ "Find &Symbol\t\\cs", 'call MenuHelp_Fscope("s")', 'GNU Gloal search s'],
+            \ [ "Find &Called by\t\\cd", 'call MenuHelp_Fscope("d")', 'GNU Global search d'],
+            \ [ "Find C&alling\t\\cc", 'call MenuHelp_Fscope("c")', 'GNU Global search c'],
+            \ [ "Find &From Ctags\t\\cz", 'call MenuHelp_Fscope("z")', 'GNU Global search c'],
+            \ [ "--", ],
+            \ [ "Goto D&efinition\t(YCM)", 'YcmCompleter GoToDefinitionElseDeclaration'],
+            \ [ "Goto &References\t(YCM)", 'YcmCompleter GoToReferences'],
+            \ [ "Get D&oc\t(YCM)", 'YcmCompleter GetDoc'],
+            \ [ "Get &Type\t(YCM)", 'YcmCompleter GetTypeImprecise'],
+            \ [ "--", ],
+            \ ['Dash &Help', 'call asclib#utils#dash_ft(&ft, expand("<cword>"))'],
+            \ ['Cpp&man', 'exec "Cppman " . expand("<cword>")', '', 'c,cpp'],
+            \ ['P&ython Doc', 'call quickui#tools#python_help("")', 'python'],
+            \ ]
+
+nnoremap <leader><leader> :call quickui#tools#clever_context('k', g:context_menu_k, {})<cr>
+
+
 " The Silver Searcher
 if executable('ag')
   " Use ag over grep
@@ -379,4 +437,7 @@ if executable('ag')
 endif
 
 " bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
+
+
+
