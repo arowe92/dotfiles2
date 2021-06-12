@@ -70,10 +70,11 @@ call plug#end()
 "-------------------------
 "     Theme Settings
 "-------------------------
-colorscheme gruvbox
+colorscheme jellybeans
 
 " Invisible Characters
 :set list
+:set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<",space:·
 " :set colorcolumn=100
 
 " Syntax and file type detection
@@ -123,14 +124,14 @@ let g:ctrlp_cmd = 'CtrlPCurWD'
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|bazel*'
 let g:rainbow_active = 1
 
-let g:airline_theme='simple'
+let g:airline_theme='jellybeans'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline_powerline_fonts = 1
 let g:scrollstatus_symbol_track = '┈'
 let g:scrollstatus_symbol_bar = '━'
-let g:airline_section_x = airline#section#create(['%l'])
+let g:airline_section_z = airline#section#create(['%l:%c'])
 let g:airline_section_y = '%{ScrollStatus()}'
-let g:airline_section_z = airline#section#create([''])
+let g:airline_section_x = '%{Cwd()}'
 let g:airline_extensions = ["tabline"]
 
 let g:goto_header_use_find = 1
@@ -161,7 +162,6 @@ noremap <leader>\ :NERDTreeToggle<CR>
 
 " Quick UI 
 noremap <leader><CR> :call quickui#menu#open()<CR>
-nnoremap <leader><leader> :call quickui#tools#clever_context('k', g:context_menu_k, {})<cr>
 
 " FZF Mappings
 nnoremap <C-p> :Files<CR>
@@ -309,7 +309,6 @@ if executable('ag')
   set grepprg=ag\ --nogroup\ --nocolor
 endif
 
-
 " ========================================
 " =  Quick UI menu
 " ========================================
@@ -358,30 +357,16 @@ call quickui#menu#install("&Tools", [
             \ ])
 
 let g:context_menu_k = [
-            \ ["&Peek Definition\tAlt+;", 'call quickui#tools#preview_tag("")'],
-            \ ["S&earch in Project\t\\cx", 'exec "silent! GrepCode! " . expand("<cword>")'],
-            \ [ "--", ],
-            \ [ "Find &Definition\t\\cg", 'call MenuHelp_Fscope("g")', 'GNU Global search g'],
-            \ [ "Find &Symbol\t\\cs", 'call MenuHelp_Fscope("s")', 'GNU Gloal search s'],
-            \ [ "Find &Called by\t\\cd", 'call MenuHelp_Fscope("d")', 'GNU Global search d'],
-            \ [ "Find C&alling\t\\cc", 'call MenuHelp_Fscope("c")', 'GNU Global search c'],
-            \ [ "Find &From Ctags\t\\cz", 'call MenuHelp_Fscope("z")', 'GNU Global search c'],
-            \ [ "--", ],
-            \ [ "Goto D&efinition\t(YCM)", 'YcmCompleter GoToDefinitionElseDeclaration'],
-            \ [ "Goto &References\t(YCM)", 'YcmCompleter GoToReferences'],
-            \ [ "Get D&oc\t(YCM)", 'YcmCompleter GetDoc'],
-            \ [ "Get &Type\t(YCM)", 'YcmCompleter GetTypeImprecise'],
-            \ [ "--", ],
-            \ ['Dash &Help', 'call asclib#utils#dash_ft(&ft, expand("<cword>"))'],
-            \ ['Cpp&man', 'exec "Cppman " . expand("<cword>")', '', 'c,cpp'],
-            \ ['P&ython Doc', 'call quickui#tools#python_help("")', 'python'],
+            \ ["&Find In Buffers", 'exec "BLines ".expand("<cword>")']
             \ ]
 
+" Open Context Menu
+nnoremap <leader>' ' :call quickui#tools#clever_context('k', g:context_menu_k, {})<cr>
 
+function! Cwd() abort
+    let l:path = getcwd()
+    let l:pattern = getenv("HOME")
+    let l:new_path = substitute(l:path, l:pattern, "~", "g")
+    return l:new_path
+endfunction
 
-" let g:scrollstatus_symbol_track_start = '╣'
-" let g:scrollstatus_symbol_track_end = '╠'
-"let g:scrollstatus_symbol_bar_end = '┥'
-"let g:scrollstatus_symbol_bar_start = '┣'
-"
-:set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<",space:·
