@@ -76,6 +76,8 @@ bindkey -M vicmd v edit-command-line
 zle -N fasd_svim
 bindkey '^o' fasd_svim
 
+bindkey -s '^f' '`fzf`'
+
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
