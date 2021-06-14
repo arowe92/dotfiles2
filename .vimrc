@@ -15,8 +15,15 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'kshenoy/vim-signature'
 Plug 'junegunn/goyo.vim'
+Plug 'caenrique/nvim-maximize-window-toggle'
+Plug 'vim-syntastic/syntastic'
 
-" Fzf if installed else, ctrlp
+" Applications
+" Plug 'francoiscabrol/ranger.vim'
+" Plug 'rbgrouleff/bclose.vim'
+Plug 'soywod/himalaya', {'rtp': 'vim'}
+
+" Fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
@@ -26,7 +33,7 @@ Plug 'dkprice/vim-easygrep'
 Plug 'Yohannfra/Vim-Goto-Header'
 
 " Text Editing
-" Plug 'ycm-core/YouCompleteMe'
+Plug 'ycm-core/YouCompleteMe'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'honza/vim-snippets'
@@ -45,7 +52,6 @@ Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
 
 " ==== Appearance====
-" Plug 'frazrepo/vim-rainbow'
 Plug 'luochen1990/rainbow'
 Plug 'Yggdroot/indentLine'
 Plug 'ryanoasis/vim-devicons'
@@ -57,7 +63,6 @@ Plug 'ojroques/vim-scrollstatus'
 
 " ==== Color schemes ====
 Plug 'nanotech/jellybeans.vim'
-Plug 'sjl/badwolf'
 Plug 'morhetz/gruvbox'
 Plug 'junegunn/seoul256.vim'
 Plug 'ajh17/Spacegray.vim'
@@ -65,16 +70,33 @@ Plug 'roosta/srcery'
 Plug 'tomasr/molokai'
 Plug 'romainl/Apprentice'
 Plug 'dracula/vim'
+Plug 'tyrannicaltoucan/vim-deep-space'
+Plug 'mkarmona/materialbox'
+Plug 'kyoz/purify'
+Plug 'cocopon/iceberg.vim'
+Plug 'arcticicestudio/nord-vim'
+Plug 'sainnhe/sonokai'
 call plug#end()
 
 "-------------------------
 "     Theme Settings
 "-------------------------
-colorscheme jellybeans
+" The configuration options should be placed before `colorscheme sonokai`.
+let g:sonokai_style = 'atlantis'
+let g:sonokai_enable_italic = 1
+let g:sonokai_disable_italic_comment = 0
+if has('termguicolors')
+  set termguicolors
+endif
+
+colorscheme sonokai
+
+" let g:airline_theme=theme
+let g:quickui_color_scheme = 'gruvbox'
 
 " Invisible Characters
-:set list
-:set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<",space:·
+set list
+set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
 " :set colorcolumn=100
 
 " Syntax and file type detection
@@ -105,6 +127,10 @@ set shiftwidth=4
 set tabstop=4
 set expandtab
 set encoding=UTF-8
+
+" Allow Italics
+set t_ZH=^[[3m
+set t_ZR=^[[23m
 
 
 " Swap file location
@@ -150,7 +176,7 @@ let g:NERDTreeDirArrowCollapsible="-"
 
 " Nerdtree rainbow fix
 let g:rainbow_conf = {'separately': {'nerdtree': 0}}
-
+let g:NERDTreeHijackNetrw = 1
 
 "----------------------------
 "         Key Mappings
@@ -160,7 +186,7 @@ let g:rainbow_conf = {'separately': {'nerdtree': 0}}
 noremap <C-\> :NERDTreeToggle<CR>
 noremap <leader>\ :NERDTreeToggle<CR>
 
-" Quick UI 
+" Quick UI
 noremap <leader><CR> :call quickui#menu#open()<CR>
 
 " FZF Mappings
@@ -172,7 +198,7 @@ nnoremap <leader>p :Commands<CR>
 " bind K to grep word under cursor
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
 
-" Git Gutter 
+" Git Gutter
 nnoremap <leader>g] :GitGutterNextHunk<CR>
 nnoremap <leader>g[ :GitGutterPrevHunk<CR>
 nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
@@ -218,10 +244,10 @@ noremap <leader>r @:<CR> "Run Last Command"
 tnoremap <C-n>e <C-\><C-n>
 
 " Easy Line Moving / Indenting
-noremap <M-h> <<
-noremap <M-l> >>
-noremap <M-j> :m+1<CR>
-noremap <M-k> :m-2<CR>
+noremap <M-H> <<
+noremap <M-L> >>
+noremap <M-J> :m+1<CR>
+noremap <M-K> :m-2<CR>
 noremap <M-,> :SidewaysLeft<CR>
 noremap <M-.> :SidewaysRight<CR>
 
@@ -248,7 +274,10 @@ noremap <C-n><C-h> <C-w>v<C-w><C-h>
 " Switch to Layout  Maximize Pane
 nnoremap <leader>l1 <C-w>\| <C-w>_
 nnoremap <leader>l2 <C-W>=
+nnoremap <leader>l3 :exe 'vert resize ' . ((&columns)*2/3)<CR>
 nnoremap <leader>l` :Goyo<CR>
+nnoremap <C-N><C-M> :ToggleOnly<CR>
+nnoremap <leader>m :ToggleOnly<CR>
 
 
 " Splitting / Sizing Panes
@@ -277,9 +306,9 @@ noremap <leader>} :tab split<CR>
 noremap <leader>{ :tab new \| tabm -1<CR>
 
 " VimRc
-:nnoremap <leader>ev :vsplit ~/.vimrc<cr>
-:nnoremap <leader>ez :vsplit ~/.zshrc<cr>
-:nnoremap <leader>et :vsplit ~/.tmux.conf<cr>
+:nnoremap <leader>ev :tab split ~/.vimrc<cr>
+:nnoremap <leader>ez :tab split ~/.zshrc<cr>
+:nnoremap <leader>et :tab split ~/.tmux.conf<cr>
 
 " Misc
 noremap <leader>R :redraw!<CR>
