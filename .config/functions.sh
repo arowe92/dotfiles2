@@ -10,19 +10,6 @@ prev () {
 	done
 }
 
-# Open vim in any currently existing tmux pane
-svim ()  {
-    pane="`tmux list-panes -s -F '#{pane_current_command} #{window_index}.#{pane_index}' | grep nvim | awk '{ print $2 }' | head -n 1`"
-
-    if [ -z "$pane" -o -z "$1" ]; then
-        nvim $@
-        return 
-    fi
-
-    tmux send-keys -t $pane :e `realpath $1` Enter
-    tmux select-window -t $pane
-    tmux select-pane -t $pane
-}
 
 # Use fzf as the interactive bit of  fasd
 # fasd_fzf <fasd flags> <command to run> [<fasd query>] [<command args>...]

@@ -1,11 +1,22 @@
 #!/bin/bash
+
 pane="`tmux list-panes -s -F '#{pane_current_command} #{window_index}.#{pane_index}' | grep nvim | awk '{ print $2 }' | head -n 1`"
 
-if [ -z "$pane" -o -z "$1" ]; then
-    nvim $@
-    return 
-fi
+args=(`echo "$1" | tr ":" " "`)
 
-tmux send-keys -t $pane Escape :e `realpath $1` Enter
-tmux select-window -t $pane
-tmux select-pane -t $pane
+path=${args[0]}
+line=${args[1]}
+
+echo $path
+
+if [ -z "$pane" -o -z "$1" ]; then
+    if [[ -z "$line" ]]; then
+        tmux new-window "nvim $path"
+    else
+        tmux new-window "nvim $path +$line"
+    fi
+else
+    tmux send-keys -t $pane Escape ":e `realpath $path` | :$line" Enter
+    tmux select-window -t $pane
+    tmux select-pane -t $pane
+fi

@@ -10,18 +10,10 @@ call plug#begin()
 " UI
 Plug 'skywind3000/vim-quickui'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
-Plug 'yegappan/taglist'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'kshenoy/vim-signature'
-Plug 'junegunn/goyo.vim'
-Plug 'caenrique/nvim-maximize-window-toggle'
 Plug 'vim-syntastic/syntastic'
-
-" Applications
-" Plug 'francoiscabrol/ranger.vim'
-" Plug 'rbgrouleff/bclose.vim'
-Plug 'soywod/himalaya', {'rtp': 'vim'}
 
 " Fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -31,6 +23,11 @@ Plug 'junegunn/fzf.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'dkprice/vim-easygrep'
 Plug 'Yohannfra/Vim-Goto-Header'
+Plug 'yegappan/taglist'
+
+" Windows
+Plug 'caenrique/nvim-maximize-window-toggle'
+Plug 'junegunn/goyo.vim'
 
 " Text Editing
 Plug 'ycm-core/YouCompleteMe'
@@ -83,11 +80,8 @@ call plug#end()
 "-------------------------
 " The configuration options should be placed before `colorscheme sonokai`.
 let g:sonokai_style = 'atlantis'
-let g:sonokai_enable_italic = 1
-let g:sonokai_disable_italic_comment = 0
-if has('termguicolors')
-  set termguicolors
-endif
+let g:sonokai_enable_italic = 0
+let g:sonokai_disable_italic_comment = 1
 
 colorscheme sonokai
 
@@ -132,13 +126,18 @@ set encoding=UTF-8
 set t_ZH=^[[3m
 set t_ZR=^[[23m
 
+set termguicolors
 
 " Swap file location
 set directory^=/tmp/
 
 " Add Path for easy jumping
 set path+=/home/arowe/repos/sims
+set path+=/home/arowe/repos/sims/pythia/src
+set path+=/home/arowe/.local/include
 set tags+=~/.vim/tags
+
+set completeopt-=preview
 
 " LEADER KEY MAPPING
 " use space as leader
@@ -150,7 +149,6 @@ let g:ctrlp_cmd = 'CtrlPCurWD'
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|bazel*'
 let g:rainbow_active = 1
 
-let g:airline_theme='jellybeans'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline_powerline_fonts = 1
 let g:scrollstatus_symbol_track = '┈'
@@ -166,9 +164,9 @@ let g:goto_header_includes_dirs = ["."]
 let g:autoload_session = 0
 let g:indentLine_char = '▏'
 
-let g:quickui_color_scheme = 'gruvbox'
-
 let g:ycm_max_diagnostics_to_display = 9999
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_autoclose_preview_window_after_completion = 0
 
 " Windows fix
 let g:NERDTreeDirArrowExpandable="+"
@@ -207,19 +205,20 @@ nnoremap <leader>gg :GitGutterToggle<CR>
 " YCM "
 nnoremap gl :YcmCompleter GoToDefinition<CR>
 nnoremap gk :YcmCompleter GoToDeclaration<CR>
+nnoremap gj <C-]>
 
 " EasyMotion Commands
 " <Leader>f{char} to move to {char}
-map  <leader>f <Plug>(easymotion-bd-f)
+vmap  <leader>f <Plug>(easymotion-bd-f)
 nmap <leader>f <Plug>(easymotion-overwin-f)
 " s{char}{char} to move to {char}{char}
-map s <Plug>(easymotion-bd-f2)
+vmap s <Plug>(easymotion-bd-f2)
 nmap s <Plug>(easymotion-overwin-f2)
 " Move to line
-map <leader>l <Plug>(easymotion-bd-jk)
+vmap <leader>l <Plug>(easymotion-bd-jk)
 nmap <leader>l <Plug>(easymotion-overwin-line)
 " Move to word
-map  <Leader>w <Plug>(easymotion-bd-w)
+vmap  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
 
 " Comment
@@ -260,10 +259,10 @@ inoremap <C-v> <C-r>"
 nnoremap <C-n> <C-W>
 
 " Move Pane
-noremap <C-j> <C-w><C-j>
-noremap <C-k> <C-w><C-k>
-noremap <C-l> <C-w><C-l>
-noremap <C-h> <C-w><C-h>
+" noremap <C-j> <C-w><C-j>
+" noremap <C-k> <C-w><C-k>
+" noremap <C-l> <C-w><C-l>
+" noremap <C-h> <C-w><C-h>
 
 " Pane Creation
 noremap <C-n><C-j> <C-W>s<C-w><C-k>
