@@ -36,6 +36,7 @@ Plug 'AndrewRadev/sideways.vim'
 Plug 'honza/vim-snippets'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
+Plug 'AndrewRadev/splitjoin.vim'
 
 " Tmux Integration
 Plug 'preservim/vimux'
@@ -196,6 +197,8 @@ nnoremap <leader>p :Commands<CR>
 
 " bind K to grep word under cursor
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
+nnoremap ga :execute 'Tags '.expand('<cword>')<CR>
+nnoremap <M-T> :BTags<CR>
 
 " Git Gutter
 nnoremap <leader>g] :GitGutterNextHunk<CR>
@@ -244,18 +247,31 @@ noremap <leader>r @:<CR> "Run Last Command"
 tnoremap <C-n>e <C-\><C-n>
 
 " Easy Line Moving / Indenting
-noremap <M-H> <<
-noremap <M-L> >>
-noremap <M-J> :m+1<CR>
-noremap <M-K> :m-2<CR>
+nnoremap <M-H> <<
+nnoremap <M-L> >>
+inoremap <M-H> <Esc><<<CR>gi
+inoremap <M-L> <Esc>>><CR>gi
+vnoremap <M-H> <gv
+vnoremap <M-L> >gv
+
+nnoremap <A-K> :m .-2<CR>
+nnoremap <A-J> :m .+1<CR>
+inoremap <A-J> <Esc>:m .+1<CR>gi
+inoremap <A-K> <Esc>:m .-2<CR>gi
+vnoremap <A-J> :m '>+1<CR>gv
+vnoremap <A-K> :m '<-2<CR>gv
+
+" Move Arguments left or right
 noremap <M-,> :SidewaysLeft<CR>
 noremap <M-.> :SidewaysRight<CR>
 
+" Wrap in function
 nnoremap <leader>0 :normal ysiw)<CR>i
 
-" Insert Mode Mappings
+" Insert / Command Mode Mappings
 " Paste
 inoremap <C-v> <C-r>"
+cnoremap <C-v> <C-r>"
 inoremap <C-e> <Esc>A
 
 " ==== Windows and Panes ====
@@ -312,6 +328,11 @@ noremap <leader>{ :tab new \| tabm -1<CR>
 :nnoremap <leader>ev :tab split ~/.vimrc<cr>
 :nnoremap <leader>ez :tab split ~/.zshrc<cr>
 :nnoremap <leader>et :tab split ~/.tmux.conf<cr>
+
+" Folding
+:nnoremap zF :setlocal foldcolumn=1<CR>
+:nnoremap zS :setlocal foldmethod=syntax<CR>
+:nnoremap zu :setlocal foldmethod=manual<CR>
 
 " Misc
 noremap <leader>R :redraw!<CR>
