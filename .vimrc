@@ -35,6 +35,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'honza/vim-snippets'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
 
 " Tmux Integration
 Plug 'preservim/vimux'
@@ -250,9 +251,12 @@ noremap <M-K> :m-2<CR>
 noremap <M-,> :SidewaysLeft<CR>
 noremap <M-.> :SidewaysRight<CR>
 
+nnoremap <leader>0 :normal ysiw)<CR>i
+
 " Insert Mode Mappings
 " Paste
 inoremap <C-v> <C-r>"
+inoremap <C-e> <Esc>A
 
 " ==== Windows and Panes ====
 " Remap window prefix
