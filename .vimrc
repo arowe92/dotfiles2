@@ -11,9 +11,8 @@ call plug#begin()
 Plug 'skywind3000/vim-quickui'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
 Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-Plug 'kshenoy/vim-signature'
-Plug 'vim-syntastic/syntastic'
+Plug 'airblade/vim-gitgutter' 
+Plug 'kshenoy/vim-signature' "Show Marks in Sidebar
 
 " Fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -28,6 +27,7 @@ Plug 'yegappan/taglist'
 " Windows
 Plug 'caenrique/nvim-maximize-window-toggle'
 Plug 'junegunn/goyo.vim'
+Plug 'Asheq/close-buffers.vim'
 
 " Text Editing
 Plug 'ycm-core/YouCompleteMe'
@@ -37,14 +37,16 @@ Plug 'honza/vim-snippets'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'brooth/far.vim'
 
 " Tmux Integration
 Plug 'preservim/vimux'
 Plug 'christoomey/vim-tmux-navigator'
 
 " ==== Language Support  ====
-" Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'bfrg/vim-cpp-modern'
+Plug 'vim-syntastic/syntastic'
+Plug 'octol/vim-cpp-enhanced-highlight'
+" Plug 'bfrg/vim-cpp-modern'
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
 Plug 'google/vim-maktaba'
@@ -123,6 +125,8 @@ set shiftwidth=4
 set tabstop=4
 set expandtab
 set encoding=UTF-8
+set ttimeoutlen=500
+set ttimeoutlen=5
 
 " Allow Italics
 set t_ZH=^[[3m
@@ -187,13 +191,17 @@ noremap <C-\> :NERDTreeToggle<CR>
 noremap <leader>\ :NERDTreeToggle<CR>
 
 " Quick UI
-noremap <leader><CR> :call quickui#menu#open()<CR>
+noremap <leader><CR> :call quickui#menu#open()<CR><CR>
 
 " FZF Mappings
 nnoremap <C-p> :Files<CR>
 nnoremap <C-b> :Buffers<CR>
 nnoremap <M-o> :GotoHeaderSwitch<CR>
-nnoremap <leader>p :Commands<CR>
+
+nnoremap <leader>pc :Commands<CR>
+nnoremap <leader>ph :History<CR>
+nnoremap <leader>pb :BTags<CR>
+nnoremap <leader>pt :Tags<CR>
 
 " bind K to grep word under cursor
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
@@ -236,12 +244,12 @@ nnoremap <C-s> :w<CR>
 inoremap <C-s> <ESC>:w<CR>
 noremap <leader><C-s> :WriteSession<CR>
 
-" File Operations
+" File /Buffer Operations
 nnoremap <C-c> :echo 'ctrl-c thrice to quit'<CR>
 nnoremap <C-c><C-c><C-c> :qall!<CR>
 map <C-w> :bd<CR>
 map <C-q> :q<CR>
-noremap <leader>r @:<CR> "Run Last Command"
+nnoremap Q :Bdelete menu<CR>
 
 " Terminal Escape
 tnoremap <C-n>e <C-\><C-n>
@@ -336,6 +344,7 @@ noremap <leader>{ :tab new \| tabm -1<CR>
 
 " Misc
 noremap <leader>R :redraw!<CR>
+noremap <leader>r @:<CR> "Run Last Command"
 
 " ===================
 " Custom Commands
@@ -367,43 +376,44 @@ endif
 " ========================================
 call quickui#menu#reset()
 call quickui#menu#install("&Fuzzy", [
+            \ ['&Ag', ':Ag'],
+            \ ['&History', ':History'],
+            \ ['&Commands', ':Commands'],
+            \ ['&GFile', ':Giles'],
+            \ ['G&it Status', ':GFiles?'],
+            \ ['C&olors',':Colors'],
+            \ ['All Buffer &Lines', ':Lines'],
+            \ ['C&urrent Buffer Lines', ':BLines'],
+            \ ['&Tags', ':Tags'],
+            \ ['&Buffer Tags', ':BTags'],
+            \ ['&Marks', ':Marks'],
+            \ ['&Windows', ':Windows'],
+            \ ['Co&mmand History', ':History:'],
+            \ ['&Edit History', ':History/'],
+            \ ['&Snippets', ':Snippets'],
+            \ ['Commi&ts', ':Commits'],
+            \ ['B&uffer Commits', ':BCommits'],
+            \ ['Ma&ps', ':Maps'],
+            \ ['Helpta&gs', ':Helptags'],
+            \ ['Filet&ypes', ':Filetypes'],
             \ ['Files', ':Files'],
-            \ ['Buffers', ':Buffers'],
-            \ ['Commands', ':Commands'],
-            \ ['GFile', ':Giles'],
-            \ ['Git Status', ':GFiles?'],
-            \ ['Colors',':Colors'],
-            \ ['All Buffer Lines', ':Lines'],
-            \ ['Current Buffer Lines', ':BLines'],
-            \ ['Tags', ':Tags'],
-            \ ['Buffer Tags', ':BTags'],
-            \ ['Marks', ':Marks'],
-            \ ['Windows', ':Windows'],
-            \ ['History', ':History'],
-            \ ['Command History', ':History:'],
-            \ ['File History', ':History/'],
-            \ ['Snippets', ':Snippets'],
-            \ ['Commits', ':Commits'],
-            \ ['Buffer Commits', ':BCommits'],
-            \ ['Maps', ':Maps'],
-            \ ['Helptags', ':Helptags'],
-            \ ['Filetypes', ':Filetypes'],
-            \ ['============'],
-            \ ['Locate &3', ':Locate'],
-            \ ['Ag &3', ':Ag'],
-            "\ ['&Rg', ':Rg'],
+            \ ['Buffers', ':Buffers']
             \ ])
 
+           " \ ['Locate', ':Locate'],
+           "  \ ['&Rg', ':Rg'],
 
 call system('upfind WORKSPACE')
 if v:shell_error == 0
-call quickui#menu#install("&Bazel", [
+call quickui#menu#install("Bazel", [
             \ ['&Build', ':Bazel build //pythia/src:pythia'],
             \ ['&Test', ':Bazel test //pythia/src:fast'],
             \ ])
 endif
 
-call quickui#menu#install("&Tools", [
+call quickui#menu#install("Tools", [
+            \ ['&Find', ':Farr'],
+            \ ['Find \& &Replace', ':Farf'],
             \ ['&Tag List', ':TlistToggle'],
             \ ['&Git Gutter', ':GitGutterToggle'],
             \ ['Git &Diff', ':Gdiffsplit'],
@@ -422,4 +432,3 @@ function! Cwd() abort
     let l:new_path = substitute(l:path, l:pattern, "~", "g")
     return l:new_path
 endfunction
-
