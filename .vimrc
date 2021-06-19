@@ -57,7 +57,7 @@ Plug 'luochen1990/rainbow'
 Plug 'Yggdroot/indentLine'
 Plug 'ryanoasis/vim-devicons'
 
-"Status bar
+" Status bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ojroques/vim-scrollstatus'
@@ -82,10 +82,10 @@ call plug#end()
 "-------------------------
 "     Theme Settings
 "-------------------------
-" The configuration options should be placed before `colorscheme sonokai`.
+" Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
 let g:sonokai_style = 'atlantis'
-let g:sonokai_enable_italic = 0
-let g:sonokai_disable_italic_comment = 1
+let g:sonokai_enable_italic = 1
+let g:sonokai_disable_italic_comment = 0
 
 colorscheme sonokai
 
@@ -96,6 +96,7 @@ let g:quickui_color_scheme = 'gruvbox'
 set list
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
 " :set colorcolumn=100
+set cursorline
 
 " Syntax and file type detection
 syntax on
@@ -132,6 +133,7 @@ set ttimeoutlen=5
 set t_ZH=^[[3m
 set t_ZR=^[[23m
 
+" ??
 set termguicolors
 
 " Swap file location
@@ -156,13 +158,15 @@ let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|bazel*'
 let g:rainbow_active = 1
 
 let g:airline#extensions#tabline#enabled = 2
+let g:airline#extensions#fzf#enabled = 1
 let g:airline_powerline_fonts = 1
 let g:scrollstatus_symbol_track = '┈'
 let g:scrollstatus_symbol_bar = '━'
 let g:airline_section_z = airline#section#create(['%l:%c'])
 let g:airline_section_y = '%{ScrollStatus()}'
 let g:airline_section_x = '%{Cwd()}'
-let g:airline_extensions = ["tabline"]
+let g:airline_extensions = ["tabline", "branch", "hunks"]
+
 
 let g:goto_header_use_find = 1
 let g:goto_header_includes_dirs = ["."]
@@ -181,6 +185,14 @@ let g:NERDTreeDirArrowCollapsible="-"
 " Nerdtree rainbow fix
 let g:rainbow_conf = {'separately': {'nerdtree': 0}}
 let g:NERDTreeHijackNetrw = 1
+
+" Use Global FZF if tmux exists
+if exists('$TMUX')
+    let g:fzf_layout = { 'tmux': '-p80%,60%' }
+else
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+endif
+
 
 "----------------------------
 "         Key Mappings
@@ -234,7 +246,8 @@ vmap  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
 
 " Comment
-nnoremap <leader>c :Commentary<CR>
+noremap <M-/> :Commentary<CR>
+
 
 " clear the highlighting of :set hlsearch
 nnoremap <silent> <leader>H :nohlsearch<cr>

@@ -2,7 +2,7 @@
 ## PLUGINS
 ###################################
 if [ -z "$_ANTIGEN_LOADED" -o -n "$TMUX" ]; then;
-source ~/.oh-my-zsh/plugins/antigen.zsh
+source ~/.oh-my-zsh/custom/antigen.zsh
 
 antigen use oh-my-zsh
 antigen bundle git
@@ -43,13 +43,13 @@ export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_P
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 export FZF_TMUX_OPTS="-p"
 export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
-
+export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 
 ###################################
 ## EVALS
 ###################################
-eval "$(fasd --init auto)"
-eval $(thefuck --alias)
+eval "$(fasd --init auto)";
+eval $(thefuck --alias 2>/dev/null)
 
 ###################################
 ## SOURCES
@@ -78,6 +78,7 @@ zle -N fasd_svim
 bindkey '^o' fasd_svim
 
 bindkey -s '^f' '`fzf`'
+bindkey -s '^n' 'nvim .\n'
 
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
