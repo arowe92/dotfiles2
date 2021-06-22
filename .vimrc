@@ -56,6 +56,9 @@ Plug 'bazelbuild/vim-bazel'
 Plug 'luochen1990/rainbow'
 Plug 'Yggdroot/indentLine'
 Plug 'ryanoasis/vim-devicons'
+" Plug 'psliwka/vim-smoothie'
+Plug 'joeytwiddle/sexy_scroller.vim'
+
 
 " Status bar
 Plug 'vim-airline/vim-airline'
@@ -128,6 +131,7 @@ set expandtab
 set encoding=UTF-8
 set ttimeoutlen=500
 set ttimeoutlen=5
+set foldlevel=99
 
 " Allow Italics
 set t_ZH=^[[3m
@@ -159,13 +163,14 @@ let g:rainbow_active = 1
 
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#fzf#enabled = 1
+let g:airline#extensions#searchcount#enabled = 1
 let g:airline_powerline_fonts = 1
 let g:scrollstatus_symbol_track = '┈'
 let g:scrollstatus_symbol_bar = '━'
 let g:airline_section_z = airline#section#create(['%l:%c'])
 let g:airline_section_y = '%{ScrollStatus()}'
 let g:airline_section_x = '%{Cwd()}'
-let g:airline_extensions = ["tabline", "branch", "hunks"]
+let g:airline_extensions = ["tabline", "hunks", "searchcount"]
 
 
 let g:goto_header_use_find = 1
@@ -217,6 +222,7 @@ nnoremap <leader>pt :Tags<CR>
 
 " bind K to grep word under cursor
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
+nnoremap gW :execute 'Agf '.expand('<cword>')<CR>
 nnoremap ga :execute 'Tags '.expand('<cword>')<CR>
 nnoremap <M-T> :BTags<CR>
 
@@ -248,6 +254,11 @@ nmap <Leader>w <Plug>(easymotion-overwin-w)
 " Comment
 noremap <M-/> :Commentary<CR>
 
+" Vimux
+let g:VimuxOrientation = "h"
+noremap <M-`> :VimuxTogglePane<CR>
+noremap <M-R> :VimuxPromptCommand<CR>
+noremap <M-r> :VimuxRunLastCommand<CR>
 
 " clear the highlighting of :set hlsearch
 nnoremap <silent> <leader>H :nohlsearch<cr>
@@ -445,3 +456,8 @@ function! Cwd() abort
     let l:new_path = substitute(l:path, l:pattern, "~", "g")
     return l:new_path
 endfunction
+
+" Find one instance of query in file
+command! -bang -nargs=* Agf call fzf#vim#ag(<q-args>, '-m1', fzf#vim#with_preview(), <bang>0)
+
+command! Clang silent execute '!clang-format -i %' | e
