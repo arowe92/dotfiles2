@@ -27,6 +27,7 @@ fi
 ###################################
 PATH="/usr/local/bin:${PATH}"
 PATH="$HOME/.local/bin:${PATH}"
+PATH="$HOME/.cargo/bin:${PATH}"
 export PATH
 
 ###################################
@@ -83,4 +84,3 @@ bindkey -s '^n' 'nvim .\n'
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
-

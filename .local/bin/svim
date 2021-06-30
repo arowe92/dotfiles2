@@ -2,21 +2,16 @@
 
 pane="`tmux list-panes -s -F '#{pane_current_command} #{window_index}.#{pane_index}' | grep nvim | awk '{ print $2 }' | head -n 1`"
 
-args=(`echo "$1" | tr ":" " "`)
+path=$1
 
-path=${args[0]}
-line=${args[1]}
-
-echo $path
+# Path corrections
+path=$(echo $path | sed s{pythia/src{/sims/pythia/src{g)
+path=$(echo $path | sed s{sims/pythia/src{/home/arowe/repos/sims/pythia/src{g)
 
 if [ -z "$pane" -o -z "$1" ]; then
-    if [[ -z "$line" ]]; then
-        tmux new-window "nvim $path"
-    else
-        tmux new-window "nvim $path +$line"
-    fi
+    tmux new-window "nvim $path"
 else
-    tmux send-keys -t $pane Escape ":e `realpath $path` | :$line" Enter
+    tmux send-keys -t $pane Escape ":e $path" Enter
     tmux select-window -t $pane
     tmux select-pane -t $pane
 fi

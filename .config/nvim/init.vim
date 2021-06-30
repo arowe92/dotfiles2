@@ -12,7 +12,7 @@ require'nvim-treesitter.configs'.setup {
         disable = { },  -- list of language that will be disabled
     },
     indent = {
-        enable = true
+        enable = false
     },
     incremental_selection = {
         enable = true

@@ -23,6 +23,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'dkprice/vim-easygrep'
 Plug 'Yohannfra/Vim-Goto-Header'
 Plug 'yegappan/taglist'
+Plug 'bogado/file-line'
 
 " Windows
 Plug 'caenrique/nvim-maximize-window-toggle'
@@ -38,15 +39,19 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'brooth/far.vim'
+Plug 'tpope/vim-eunuch'
 
 " Tmux Integration
 Plug 'preservim/vimux'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'roxma/vim-tmux-clipboard'
+
+" Misc
+Plug 'mbbill/undotree'
 
 " ==== Language Support  ====
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'vim-syntastic/syntastic'
-Plug 'octol/vim-cpp-enhanced-highlight'
-" Plug 'bfrg/vim-cpp-modern'
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
 Plug 'google/vim-maktaba'
@@ -58,6 +63,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'ryanoasis/vim-devicons'
 " Plug 'psliwka/vim-smoothie'
 Plug 'joeytwiddle/sexy_scroller.vim'
+Plug 'lfv89/vim-interestingwords'
 
 
 " Status bar
@@ -214,11 +220,13 @@ noremap <leader><CR> :call quickui#menu#open()<CR><CR>
 nnoremap <C-p> :Files<CR>
 nnoremap <C-b> :Buffers<CR>
 nnoremap <M-o> :GotoHeaderSwitch<CR>
+nnoremap <M-P> :Commands<CR>
 
 nnoremap <leader>pc :Commands<CR>
 nnoremap <leader>ph :History<CR>
-nnoremap <leader>pb :BTags<CR>
+nnoremap <leader>pa :BTags<CR>
 nnoremap <leader>pt :Tags<CR>
+nnoremap <leader>pg :Ag<CR>
 
 " bind K to grep word under cursor
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
@@ -237,6 +245,9 @@ nnoremap gl :YcmCompleter GoToDefinition<CR>
 nnoremap gk :YcmCompleter GoToDeclaration<CR>
 nnoremap gj <C-]>
 
+" Git Command
+nnoremap <M-g> :Git 
+
 " EasyMotion Commands
 " <Leader>f{char} to move to {char}
 vmap  <leader>f <Plug>(easymotion-bd-f)
@@ -253,6 +264,9 @@ nmap <Leader>w <Plug>(easymotion-overwin-w)
 
 " Comment
 noremap <M-/> :Commentary<CR>
+
+" Undo Tree
+nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 
 " Vimux
 let g:VimuxOrientation = "h"
@@ -297,6 +311,9 @@ vnoremap <A-K> :m '<-2<CR>gv
 noremap <M-,> :SidewaysLeft<CR>
 noremap <M-.> :SidewaysRight<CR>
 
+noremap <M-j> 10j
+noremap <M-k> 10k
+
 " Wrap in function
 nnoremap <leader>0 :normal ysiw)<CR>i
 
@@ -310,11 +327,11 @@ inoremap <C-e> <Esc>A
 " Remap window prefix
 nnoremap <C-n> <C-W>
 
-" Move Pane
-" noremap <C-j> <C-w><C-j>
-" noremap <C-k> <C-w><C-k>
-" noremap <C-l> <C-w><C-l>
-" noremap <C-h> <C-w><C-h>
+" Rotate Panes
+nnoremap <C-n>J <C-w>J
+nnoremap <C-n>H <C-w>H
+nnoremap <C-n>r <C-w>r
+nnoremap <C-n><C-r> <C-w><C-r>
 
 " Pane Creation
 noremap <C-n><C-j> <C-W>s<C-w><C-k>
@@ -323,18 +340,15 @@ noremap <C-n><C-l> <C-w>v<C-w><C-l>
 noremap <C-n><C-h> <C-w>v<C-w><C-h>
 
 " Switch to Layout  Maximize Pane
-nnoremap <leader>l1 <C-w>\| <C-w>_
-nnoremap <leader>l2 <C-W>=
-nnoremap <leader>l3 :exe 'vert resize ' . ((&columns)*2/3)<CR>
-nnoremap <leader>l` :Goyo<CR>
+nnoremap <leader>L1 <C-w>\| <C-w>_
+nnoremap <leader>L2 <C-W>=
+nnoremap <leader>L3 :exe 'vert resize ' . ((&columns)*2/3)<CR>
+nnoremap <leader>L` :Goyo<CR>
 nnoremap <C-N><C-M> :ToggleOnly<CR>
 nnoremap <leader>m :ToggleOnly<CR>
 
 
 " Splitting / Sizing Panes
-:nnoremap <leader>h :split<CR>
-
-:nnoremap <leader>v :vsplit<CR>
 :nnoremap <leader>= :vertical resize +10<CR>
 :nnoremap <leader>- :vertical resize -10<CR>
 
@@ -347,6 +361,7 @@ noremap <leader>] :bn<CR>
 noremap <leader>[ :bp<CR>
 noremap <M-]> :bn<CR>
 noremap <M-[> :bp<CR>
+nnoremap <S-Tab> <C-^>
 
 "" Tabs
 nnoremap <leader>t :tab split<CR>
@@ -376,7 +391,7 @@ noremap <leader>r @:<CR> "Run Last Command"
 command! TD Todoist
 
 " Copy The Path of the file
-command! CP :let @" = system("realpath " . shellescape(expand('%')))
+command! CP :let @" = expand('%')
 
 " Custom Session Handler
 source ~/.config/nvim/SessionHandler.vim
@@ -431,9 +446,16 @@ call system('upfind WORKSPACE')
 if v:shell_error == 0
 call quickui#menu#install("Bazel", [
             \ ['&Build', ':Bazel build //pythia/src:pythia'],
+            \ ['Test &Current File', 'execute "Bazel test //pythia/src:unit_tests/".expand("%:t:r")'],
             \ ['&Test', ':Bazel test //pythia/src:fast'],
             \ ])
 endif
+
+call quickui#menu#install("&Vimux", [
+            \ ['&Open Runner', ':VimuxOpenRunner'],
+            \ ['Run &Prompt <M-R>', ':VimuxPromptCommand'],
+            \ ['Run &Last <M-r>', ':VimuxRunLastCommand'],
+            \ ])
 
 call quickui#menu#install("Tools", [
             \ ['&Find', ':Farr'],
@@ -461,3 +483,37 @@ endfunction
 command! -bang -nargs=* Agf call fzf#vim#ag(<q-args>, '-m1', fzf#vim#with_preview(), <bang>0)
 
 command! Clang silent execute '!clang-format -i %' | e
+
+" Easy way to Include c++ files
+function! Include() abort
+    let l:file = trim(system("fd '\.h$' | fzf-tmux -p"))
+
+    if l:file == ""
+        return
+    endif
+
+    let l:root = trim(system("git rev-parse --show-toplevel"))
+    let l:fullpath = trim(system("realpath --relative-to=".l:root." ".l:file))
+    let l:include = '#include "'.l:fullpath.'"'
+    exe "normal! o" . l:include . "\<Esc>"
+endfunction
+
+command! Include silent call Include()
+
+nnoremap <leader>i :Include<CR>
+nnoremap <leader>pi :Include<CR>
+
+" Nerd Tree into Folder
+function! NERDFolder() abort
+    let l:file = trim(system("fd -t d | fzf-tmux -p --reverse"))
+    if l:file == ""
+        return
+    endif
+
+    let l:root = trim(system("git rev-parse --show-toplevel"))
+    let l:fullpath = trim(system("realpath ".l:file))
+    exe "NERDTree " . l:fullpath
+endfunction
+
+command! NERDFolder call NERDFolder()
+nnoremap <leader>pd :NERDFolder<CR>
