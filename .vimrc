@@ -41,6 +41,9 @@ Plug 'tpope/vim-sensible'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'brooth/far.vim'
 Plug 'tpope/vim-eunuch'
+Plug 'meain/vim-printer'
+Plug 'SirVer/ultisnips'
+
 
 " Tmux Integration
 Plug 'preservim/vimux'
@@ -144,10 +147,12 @@ set tags+=~/.vim/tags
 "-------------------------
 " Airline
 let g:airline_powerline_fonts = 1
+let g:airline_section_c_only_filename = 1
 let g:airline_section_x = '%{Cwd()}'
 let g:airline_section_y = '%{ScrollStatus()}'
 let g:airline_section_z = airline#section#create(['%l:%c'])
 let g:airline_extensions = ["tabline", "hunks", "searchcount"]
+let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#searchcount#enabled = 1
 
@@ -174,6 +179,7 @@ let g:rainbow_conf = {'separately': {'nerdtree': 0}} " Fix
 let g:autoload_session = 0
 let g:indentLine_char = '▏'
 let g:VimuxOrientation = "h"
+let g:UltiSnipsExpandTrigger="<M-Space>"
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -189,6 +195,15 @@ if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
 endif
+
+" Vim Printer
+let g:vim_printer_print_below_keybinding = '<leader>gp'
+let g:vim_printer_print_above_keybinding = '<leader>gP'
+let g:vim_printer_items = {
+            \ 'javascript': 'console.log("{$}:", {$})',
+            \ 'python': 'print("{$}:", {$})',
+            \ 'cpp': 'info(0) << "{$}:" << {$} << std::endl;',
+            \ }
 
 "----------------------------
 "         Key Mappings
@@ -213,11 +228,13 @@ nnoremap <M-t> :BTags<CR>
 " <leader>p* Commands
 nnoremap <leader>pc :Commands<CR>
 nnoremap <leader>ph :History<CR>
+nnoremap <leader>pf :Lines<CR>
 nnoremap <leader>pa :BTags<CR>
 nnoremap <leader>pt :Tags<CR>
 nnoremap <leader>pg :Ag<CR>
 nnoremap <leader>pi :Include<CR>
 nnoremap <leader>pd :NERDFolder<CR>
+nnoremap <leader>po :execute "e ".system("echo `fasd -l \| fzf-tmux -p`")<CR>
 
 " Go To everywhere Commands
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
@@ -256,7 +273,6 @@ nnoremap yss :normal ysiw"<CR>
 nnoremap ysS :normal ysiw'<CR>
 nnoremap ysa :normal ysiW"<CR>
 nnoremap ysA :normal ysiW'<CR>
-
 
 " Misc Plugins
 nnoremap <M-g> :Git
@@ -310,7 +326,12 @@ noremap <A-k> 10k
 noremap <A-l> 10l
 noremap <A-h> 10h
 
-" Insert / Command Mode Mappings
+" Split Lines
+nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
+nnoremap S/ :execute 's/\/\ */\/\r/g' \| :nohl<CR>
+nnoremap SS :execute 's/\('.input("String to Split on").'\)\ */\1\r/g' \| :nohl<CR>
+
+" task Insert / Command Mode Mappings
 " Paste
 inoremap <C-v> <C-r>"
 cnoremap <C-v> <C-r>"
