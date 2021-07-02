@@ -52,10 +52,12 @@ Plug 'mbbill/undotree'
 " ==== Language Support  ====
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'vim-syntastic/syntastic'
+Plug 'MaxMEllon/vim-jsx-pretty'
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
 Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
+Plug 'rust-lang/rust.vim'
 
 " ==== Appearance====
 Plug 'luochen1990/rainbow'
@@ -290,7 +292,7 @@ map <C-q> :q<CR>
 nnoremap Q :Bdelete menu<CR>
 
 " Terminal Escape
-tnoremap <C-n>e <C-\><C-n>
+tnoremap <C-e> <C-\><C-n>
 
 " Easy Line Moving / Indenting
 nnoremap <M-H> <<
@@ -307,6 +309,10 @@ inoremap <A-K> <Esc>:m .-2<CR>gi
 vnoremap <A-J> :m '>+1<CR>gv
 vnoremap <A-K> :m '<-2<CR>gv
 
+noremap <A-j> 10j
+noremap <A-k> 10k
+
+
 " Move Arguments left or right
 noremap <M-,> :SidewaysLeft<CR>
 noremap <M-.> :SidewaysRight<CR>
@@ -316,6 +322,10 @@ noremap <M-k> 10k
 
 " Wrap in function
 nnoremap <leader>0 :normal ysiw)<CR>i
+nnoremap yss :normal ysiw"<CR>
+nnoremap ysS :normal ysiw'<CR>
+nnoremap ysa :normal ysiW"<CR>
+nnoremap ysA :normal ysiW'<CR>
 
 " Insert / Command Mode Mappings
 " Paste

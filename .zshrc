@@ -22,6 +22,7 @@ antigen apply
 export _ANTIGEN_LOADED=1
 fi
 
+
 ###################################
 ## PATH
 ###################################
@@ -80,6 +81,7 @@ bindkey '^o' fasd_svim
 
 bindkey -s '^f' '`fzf`'
 bindkey -s '^n' 'nvim .\n'
+bindkey -M vicmd -s '^n' '^[invim .\n'
 
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
