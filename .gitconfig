@@ -5,7 +5,7 @@
   email = alexrowe707@gmail.com
 
 [alias]
-  fl = log --oneline --decor --graph
+  fl = log --oneline --decorate --graph
   ci = commit
   l = log
   d = diff
