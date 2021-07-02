@@ -234,7 +234,10 @@ nnoremap <leader>pt :Tags<CR>
 nnoremap <leader>pg :Ag<CR>
 nnoremap <leader>pi :Include<CR>
 nnoremap <leader>pd :NERDFolder<CR>
-nnoremap <leader>po :execute "e ".system("echo `fasd -l \| fzf-tmux -p`")<CR>
+
+nnoremap <leader>po :FasdFile<CR>
+nnoremap <leader>pO :FasdDir<CR>
+nnoremap <leader>pD :FasdCWD<CR>
 
 " Go To everywhere Commands
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
@@ -403,6 +406,11 @@ command! -bang -nargs=* Agf call fzf#vim#ag(<q-args>, '-m1', fzf#vim#with_previe
 
 " Clang-format file
 command! Clang silent execute '!clang-format -i %' | e
+
+" Fasd Commands
+command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'e', 'tmux': '-p'})
+command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'e', 'tmux': '-p'})
+command! FasdCWD execute("call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p'}) | NERDTreeToggle")
 
 " ========= Auto Commands ==============
 " Remove spaceds
