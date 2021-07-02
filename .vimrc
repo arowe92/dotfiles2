@@ -40,6 +40,9 @@ Plug 'tpope/vim-surround'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'brooth/far.vim'
 Plug 'tpope/vim-eunuch'
+Plug 'meain/vim-printer'
+Plug 'SirVer/ultisnips'
+
 
 " Tmux Integration
 Plug 'preservim/vimux'
@@ -167,6 +170,8 @@ let g:ctrlp_cmd = 'CtrlPCurWD'
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|bazel*'
 let g:rainbow_active = 1
 
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline_section_c_only_filename = 1
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#fzf#enabled = 1
 let g:airline#extensions#searchcount#enabled = 1
@@ -184,6 +189,8 @@ let g:goto_header_includes_dirs = ["."]
 
 let g:autoload_session = 0
 let g:indentLine_char = '▏'
+
+let g:UltiSnipsExpandTrigger="<M-Space>"
 
 let g:ycm_max_diagnostics_to_display = 9999
 let g:ycm_confirm_extra_conf = 0
@@ -204,6 +211,14 @@ else
     let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 endif
 
+" Vim Printer
+let g:vim_printer_print_below_keybinding = '<leader>gp'
+let g:vim_printer_print_above_keybinding = '<leader>gP'
+let g:vim_printer_items = {
+            \ 'javascript': 'console.log("{$}:", {$})',
+            \ 'python': 'print("{$}:", {$})',
+            \ 'cpp': 'info(0) << "{$}:" << {$} << std::endl;',
+            \ }
 
 "----------------------------
 "         Key Mappings
@@ -224,9 +239,11 @@ nnoremap <M-P> :Commands<CR>
 
 nnoremap <leader>pc :Commands<CR>
 nnoremap <leader>ph :History<CR>
+nnoremap <leader>pf :Lines<CR>
 nnoremap <leader>pa :BTags<CR>
 nnoremap <leader>pt :Tags<CR>
 nnoremap <leader>pg :Ag<CR>
+nnoremap <leader>po :execute "e ".system("echo `fasd -l \| fzf-tmux -p`")<CR>
 
 " bind K to grep word under cursor
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
@@ -311,13 +328,22 @@ vnoremap <A-K> :m '<-2<CR>gv
 noremap <M-,> :SidewaysLeft<CR>
 noremap <M-.> :SidewaysRight<CR>
 
+" Quick Moving
 noremap <M-j> 10j
 noremap <M-k> 10k
+
+" Split line by char
+nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
+nnoremap S/ :execute 's/\/\ */\/\r/g' \| :nohl<CR>
+" Split line by Comma
+" nnoremap SS :execute 's/\(, *\)/\1\r/g' \| :nohl<CR>
+" Split line by Text input
+nnoremap SS :execute 's/\('.input("String to Split on").'\)\ */\1\r/g' \| :nohl<CR>
 
 " Wrap in function
 nnoremap <leader>0 :normal ysiw)<CR>i
 
-" Insert / Command Mode Mappings
+" task Insert / Command Mode Mappings
 " Paste
 inoremap <C-v> <C-r>"
 cnoremap <C-v> <C-r>"

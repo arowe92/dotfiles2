@@ -5,13 +5,22 @@ pane="`tmux list-panes -s -F '#{pane_current_command} #{window_index}.#{pane_ind
 path=$1
 
 # Path corrections
-path=$(echo $path | sed s{pythia/src{/sims/pythia/src{g)
-path=$(echo $path | sed s{sims/pythia/src{/home/arowe/repos/sims/pythia/src{g)
+path=$(echo $path | sed s{^pythia/src{sims/pythia/src{g)
+path=$(echo $path | sed s{^sims/pythia/src{/home/arowe/repos/sims/pythia/src{g)
+
+args=(`echo "$path" | tr ":" " "`)
+line=${args[1]}
+
+file=${args[0]}
+file="$(realpath $file)"
 
 if [ -z "$pane" -o -z "$1" ]; then
     tmux new-window "nvim $path"
 else
-    tmux send-keys -t $pane Escape ":e $path" Enter
+    tmux send-keys -t $pane Escape ":e $file" Enter
+    if [ ! -z "$line" ]; then
+        tmux send-keys -t $pane Escape ":$line" Enter
+    fi
     tmux select-window -t $pane
     tmux select-pane -t $pane
 fi
