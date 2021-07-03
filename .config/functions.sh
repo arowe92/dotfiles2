@@ -45,3 +45,10 @@ fasd_svim () {
 
 # Enable file completion for prev function
 complete -G '*' prev
+
+plugin_vim () {
+    url=$1
+    url=$(echo $url | sed 's{\([^/]+/[^/]+\)${\1{g')
+    sed -i ~/.vimrc -e "s{\(.*NEW_PLUGINS.*\){\1\nPlug '$url'{g" > ~/new_vim
+    nvim '+:PlugInstall | :qall'
+}

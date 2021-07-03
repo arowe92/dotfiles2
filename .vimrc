@@ -93,6 +93,11 @@ Plug 'kyoz/purify'
 Plug 'cocopon/iceberg.vim'
 Plug 'arcticicestudio/nord-vim'
 Plug 'sainnhe/sonokai'
+
+" == NEW_PLUGINS == "
+Plug 'MTDL9/vim-log-highlighting'
+Plug 'plasticboy/vim-markdown'
+
 call plug#end()
 
 "-------------------------
@@ -114,6 +119,7 @@ set wrap
 set number
 set hlsearch
 set smartcase
+set ignorecase
 set textwidth=0
 set undolevels=1000
 set showcmd
@@ -216,11 +222,11 @@ noremap <C-\> :NERDTreeToggle<CR>
 noremap <leader>\ :NERDTreeToggle<CR>
 
 " Quick UI
-noremap <leader><CR> :call quickui#menu#open()<CR><CR>
+noremap <leader><CR> :call quickui#menu#open()<CR>
 
 " FZF Mappings
 nnoremap <C-p> :Files<CR>
-nnoremap <M-P> :Commands<CR>
+nnoremap <M-P> :History:<CR>
 nnoremap <M-p> :History<CR>
 nnoremap <C-b> :Buffers<CR>
 nnoremap <M-t> :BTags<CR>
@@ -228,12 +234,14 @@ nnoremap <M-t> :BTags<CR>
 " <leader>p* Commands
 nnoremap <leader>pc :Commands<CR>
 nnoremap <leader>ph :History<CR>
+nnoremap <leader>pr :History:<CR>
 nnoremap <leader>pf :Lines<CR>
 nnoremap <leader>pa :BTags<CR>
 nnoremap <leader>pt :Tags<CR>
 nnoremap <leader>pg :Ag<CR>
 nnoremap <leader>pi :Include<CR>
 nnoremap <leader>pd :NERDFolder<CR>
+nnoremap <leader>py :Filetypes<CR>
 
 nnoremap <leader>po :FasdFile<CR>
 nnoremap <leader>pO :FasdDir<CR>
@@ -405,10 +413,11 @@ command! CP :let @" = expand('%')
 command! -bang -nargs=* Agf call fzf#vim#ag(<q-args>, '-m1', fzf#vim#with_preview(), <bang>0)
 
 " Clang-format file
-command! Clang silent execute '!clang-format -i %' | e
+command! Clang silent execute '%!clang-format %'
+command! JsonFormat silent execute '%!python -m json.tool'
 
 " Fasd Commands
-command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'e', 'tmux': '-p'})
+command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'NERDTree', 'tmux': '-p'})
 command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'e', 'tmux': '-p'})
 command! FasdCWD execute("call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p'}) | NERDTreeToggle")
 
@@ -424,6 +433,9 @@ augroup END
 " ========================================
 " =  Quick UI menu
 " ========================================
+let g:quickui_border_style = 2
+let g:quickui_color_scheme = 'papercol_dark'
+
 call quickui#menu#reset()
 call quickui#menu#install("&Fuzzy", [
             \ ['&Ag', ':Ag'],
