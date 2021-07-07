@@ -1,81 +1,170 @@
 
-# install Zsh
-install='sudo apt-get install -y'
+cmds=()
+pre_cmds=()
+pre_cmds+=("mkdir -p $HOME/.config")
 
 
-# Install Atom
-wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
-sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+# List of apt-get installs
+apt=""
 
-# Fasd
-sudo add-apt-repository ppa:aacebedo/fasd
+# List of Standard packages
+apt_packages=(make cmake gcc fzf)
+function apt_options () {
+    for pkg in "${apt_packages[@]}"; do
+        echo -n "$pkg apt-get 1 "
+    done
+}
 
-sudo apt-get update
+# Get Location of dotfiles
+dotpath="$(whiptail --inputbox 'Dotfiles Location' 0 0 $HOME/dot 3>&1 1>&2 2>&3)"
+if [[ -z "$dotpath" ]]; then
+    exit
+fi
 
-$install zsh
-$install fasd
-$install tmux
-$install neovim
-$install atom
-$install make
-$install guake
-$install fzf
-$install ranger caca-utils highlight atool w3m poppler-utils mediainfo
+cmds+=("git clone https://github.com/arowe92/dotfiles2.git $dotpath")
 
+###########################
+choices=$(whiptail --checklist 'CLI Utilities' 30 60 20 \
+.zshrc 'RC File' 1 \
+.tmux.conf 'RC File' 1 \
+.vimrc 'RC File' 1 \
+\
+zsh 'cli tool' 1 \
+fasd 'cli tool' 1 \
+tmux 'cli tool' 1 \
+neovim 'cli tool' 1 \
+ranger 'cli tool' 1 \
+\
+$(apt_options) \
+n 'Language' 0 \
+atom 'App' 0 \
+guake 'App' 0 \
+jumpapp 'GUI Tool' 0 \
+links 'Make links' 1 \
+\
+3>&1 1>&2 2>&3 | sed s/\"//g)
 
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo apt install -y ./google-chrome-stable_current_amd64.deb
-rm ./google-chrome-stable_current_amd64.deb
+# Exit Early
+if [[ -z "$choices" ]]; then
+    exit
+fi
 
+if [[ "$choices" == *".zshrc"* ]]; then
+    cmds+=("echo 'source $dotpath/.zshrc' >> $HOME/.zshrc")
+    cmds+=("echo 'source $dotpath/.config/aliases.sh' >> $HOME/.zshrc")
+    cmds+=("echo 'source $dotpath/.config/functions.sh' >> $HOME/.zshrc")
+    cmds+=("echo 'export PATH=\"\$PATH:$dotpath/bin\"' >> $HOME/.zshrc")
+    cmds+=("echo 'export DOTFILE_PATH=\"$dotpath\"' >> $HOME/.zshrc")
+fi
 
-# install pyenv
-curl https://pyenv.run | bash
+if [[ "$choices" == *".vimrc"* ]]; then
+    cmds+=("echo 'source $dotpath/.vimrc' >> $HOME/.vimrc")
+fi
 
-# Oh-My-Zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+if [[ "$choices" == *" .tmux.conf "* ]]; then
+    cmds+=("echo 'source $dotpath/.tmux.conf' >> $HOME/.tmux.conf")
+fi
 
-# Antigen
-curl -L git.io/antigen > ~/.oh-my-zsh/plugins/antigen.zsh
+if [[ "$choices" == *" zsh "* ]]; then
+    # Oh-My-Zsh
+    cmds+=("mv $HOME/.zshrc $HOME/.zshrc_pre")
+    cmds+=("sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)\"")
+    cmds+=("mv $HOME/.zshrc_pre $HOME/.zshrc")
+    apt+=(zsh)
+fi
 
-dest=/tmp/dotfiles
-git clone https://github.com/arowe92/dotfiles2.git $dest
+if [[ "$choices" == *" fasd "* ]]; then
+    pre_cmds+=("sudo add-apt-repository ppa:aacebedo/fasd")
+    apt+=(fasd)
+fi
 
-# Config
-mkdir -p $HOME/.config
+if [[ "$choices" == *" tmux "* ]]; then
+    cmds+=("git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm")
+    apt+=(tmux)
+fi
 
-cd $dest
-mv .config/nvim $HOME/.config
-mv .vimrc .zshrc .tmux.conf .gitconfig ~/
-mv .config/aliases.sh .config/functions.sh ~/.config
-mv .local/bin/* $HOME/.local/bin
+if [[ "$choices" == *"neovim"* ]]; then
+    cmds+=("mkdir -p $HOME/.config/nvim;")
+    cmds+=("cp $dotpath/.config/nvim/init.vim $HOME/.config/nvim")
+    apt+=(neovim)
+fi
 
-# Install N
-export N_PREFIX="$HOME/.n"
-export PREFIX="$HOME/.n"
-curl -L https://git.io/n-install | bash
+if [[ "$choices" == *"ranger"* ]]; then
+    apt+=(caca-utils highlight atool w3m poppler-utils mediainfo)
+    apt+=(ranger)
+fi
 
-# Remove repo
-rm -rf $dest
+if [[ "$choices" == *"atom"* ]]; then
+    pre_cmds+=("sudo echo \"deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main > /etc/apt/sources.list.d/atom.list")
+    pre_cmds+=("wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -")
+fi
 
-# Tmux package mananger
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+if [[ "$choices" == *"jumpapp"* ]]; then
+    cmds+=("install_jumpapp")
+fi
 
-# Ranger Plugins
-git clone git@github.com:cjbassi/ranger-fzf.git ~/.config/ranger/plugins/ranger-fzf
+if [[ "$choices" == *" n "* ]]; then
+    # Install N
+    prefix="N_PREFIX=$HOME/.n PREFIX=$HOME/.n"
+    cmds+=("$prefix curl -L https://git.io/n-install | bash")
+fi
 
-git clone --bare https://github.com/arowe92/dotfiles2.git $HOME/.dotfiles
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME config --local status.showUntrackedFiles no
+###############################
+# Link Dot Files
+LN () {
+    DIR="mkdir -p \$(dirname $HOME/$1);"
+    echo "$DIR ln -s$LN_OPTS $dotpath/$1 $HOME/$1"
+}
 
-# Install jumpapp 
-mkdir jumpapp
-cd jumpapp
-    sudo apt-get -y install build-essential debhelper git pandoc shunit2
-    git clone https://github.com/mkropat/jumpapp.git
+if [[ "$choices" == *"links"* ]]; then
+    cmds+=("$(LN .config/nvim/init.vim)")
+    cmds+=("$(LN .config/aliases.sh)")
+    cmds+=("$(LN .config/functions.sh)")
+    cmds+=("$(LN .config/ranger/scope.sh)")
+    cmds+=("$(LN .config/tmux/pane-left.conf)")
+    cmds+=("$(LN .config/tmux/pane-up.conf)")
+    cmds+=("$(LN .gitconfig)")
+fi
+
+# Install jumpapp
+install_jumpapp() {
+    mkdir jumpapp
     cd jumpapp
-        make deb
-        sudo dpkg -i jumpapp*all.deb
-        # if there were missing dependencies
-        sudo apt-get -y install -f
+        sudo apt-get -y install build-essential debhelper git pandoc shunit2
+        git clone https://github.com/mkropat/jumpapp.git
+        cd jumpapp
+            make deb
+            sudo dpkg -i jumpapp*all.deb
+            # if there were missing dependencies
+            sudo apt-get -y install -f
+        cd ..
     cd ..
-cd ..
-sudo rm -rf jumpapp
+    rm -rf jumpapp
+}
+
+# Add Apt packages
+arr=($choices)
+for choice in "${arr[@]}"; do
+    if [[ " ${apt_packages[@]} " =~ " ${choice} " ]]; then
+        apt+=("$choice")
+    fi
+done
+
+all_cmds+=("${pre_cmds[@]}")
+
+# Add Apt-Get Installs
+if [[ ! -z "${apt[@]}" ]]; then
+    install="sudo apt-get install -y ${apt[@]}"
+    all_cmds+=("sudo apt-get update")
+    all_cmds+=("$install")
+fi
+
+all_cmds+=("${cmds[@]}")
+
+for cmd in "${all_cmds[@]}"; do
+    echo $cmd
+    if [[ ! "$1" == "--dry-run" ]]; then
+        sh -c "$cmd" >> log.txt
+    fi
+done
+
