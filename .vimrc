@@ -410,11 +410,22 @@ nnoremap zu :setlocal foldmethod=manual<CR>
 noremap <leader>R :redraw!<CR>
 noremap <leader>r @:<CR> "Run Last Command"
 
-" Easy Macros
+" Easy Macros / Replacing
 vmap gs "my/<C-R>m<CR>
 vmap <M-Q> gsNqq
 nmap <M-Q> vaw<M-Q>
 nnoremap <M-q> n@q
+
+" Command Mods
+vmap y ygv<Esc>
+map <silent> n n
+map <silent> N N
+
+inoremap [ []<Left>
+inoremap ( []<Left>
+inoremap { []<Left>
+inoremap " ""<Left>
+inoremap ' ''<Left>
 
 " ===================
 " Custom Commands
@@ -441,7 +452,10 @@ augroup Cmds
     autocmd BufWritePre * :%s/\s\+$//e
     autocmd BufWritePre *.h,*.cc %s/\s\+$//e
     autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen
+    autocmd FileType vim inoremap " "
 augroup END
+
+
 
 " ========================================
 " =  Quick UI menu
@@ -530,6 +544,7 @@ function! NERDFolder() abort
     let l:fullpath = trim(system("realpath ".l:file))
     exe "NERDTree " . l:fullpath
 endfunction
+command! NERDFolder call NERDFolder()
 
 " TreeSitter
 if has('nvim-0.5')
@@ -553,4 +568,3 @@ EOF
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 endif
-command! NERDFolder call NERDFolder()
