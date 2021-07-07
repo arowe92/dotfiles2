@@ -54,7 +54,6 @@ Plug 'roxma/vim-tmux-clipboard'
 Plug 'mbbill/undotree'
 
 " ==== Language Support  ====
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'vim-syntastic/syntastic'
 Plug 'MaxMEllon/vim-jsx-pretty'
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
@@ -62,10 +61,11 @@ Plug 'elixir-editors/vim-elixir'
 Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
 Plug 'rust-lang/rust.vim'
+Plug 'MTDL9/vim-log-highlighting'
+Plug 'plasticboy/vim-markdown'
 
 " ==== Appearance====
 Plug 'luochen1990/rainbow' | let g:rainbow_active = 1
-
 Plug 'Yggdroot/indentLine'
 Plug 'ryanoasis/vim-devicons'
 " Plug 'psliwka/vim-smoothie'
@@ -95,8 +95,12 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'sainnhe/sonokai'
 
 " == NEW_PLUGINS == "
-Plug 'MTDL9/vim-log-highlighting'
-Plug 'plasticboy/vim-markdown'
+Plug 'puremourning/vimspector'
+
+" == Bleeding Edge Plugins == "
+if has('nvim-0.5')
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+endif
 
 call plug#end()
 
@@ -186,6 +190,9 @@ let g:autoload_session = 0
 let g:indentLine_char = '▏'
 let g:VimuxOrientation = "h"
 let g:UltiSnipsExpandTrigger="<M-Space>"
+let g:smoothie_speed_exponentiation_factor=1.3
+let g:vimspector_enable_mappings = 'HUMAN'
+
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -369,8 +376,8 @@ nnoremap <leader>L1 <C-w>\| <C-w>_
 nnoremap <leader>L2 <C-W>=
 nnoremap <leader>L3 :exe 'vert resize ' . ((&columns)*2/3)<CR>
 nnoremap <leader>L` :Goyo<CR>
-nnoremap <C-N><C-M> :ToggleOnly<CR>
 nnoremap <leader>m :ToggleOnly<CR>
+nnoremap <M-Enter> :ToggleOnly<CR>
 
 " Resizing Panes
 nnoremap <leader>= :vertical resize +10<CR>
@@ -402,6 +409,12 @@ nnoremap zu :setlocal foldmethod=manual<CR>
 " Misc
 noremap <leader>R :redraw!<CR>
 noremap <leader>r @:<CR> "Run Last Command"
+
+" Easy Macros
+vmap gs "my/<C-R>m<CR>
+vmap <M-Q> gsNqq
+nmap <M-Q> vaw<M-Q>
+nnoremap <M-q> n@q
 
 " ===================
 " Custom Commands
@@ -517,4 +530,27 @@ function! NERDFolder() abort
     let l:fullpath = trim(system("realpath ".l:file))
     exe "NERDTree " . l:fullpath
 endfunction
+
+" TreeSitter
+if has('nvim-0.5')
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+    ensure_installed = { "cpp" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+    ignore_install = { }, -- List of parsers to ignore installing
+    highlight = {
+        enable = true,              -- false will disable the whole extension
+        disable = { },  -- list of language that will be disabled
+    },
+    indent = {
+        enable = false
+    },
+    incremental_selection = {
+        enable = true
+    }
+}
+EOF
+
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+endif
 command! NERDFolder call NERDFolder()

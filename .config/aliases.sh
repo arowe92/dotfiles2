@@ -42,4 +42,7 @@ alias fp='fasd_fn -a prev'
 
 alias zz='fasd_fzf -ld cd'
 alias ff="find . -name"
-alias gb='git checkout `git branch | sed -e "s/\\*//g" | fzf-tmux -p`'
+
+# FZF Aliases
+alias fb='git checkout `git branch | sed -e "s/\\*//g" | fzf-tmux -p`'
+alias fz='cat $HOME/.vim/plugin/pythia_targets | fzf-tmux -p'

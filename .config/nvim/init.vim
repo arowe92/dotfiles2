@@ -3,6 +3,7 @@ set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
 source ~/.vimrc
 
+if has('nvim-0.5')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
     ensure_installed = { "cpp" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -22,3 +23,4 @@ EOF
 
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
+endif
