@@ -1,26 +1,20 @@
 ###################################
 ## PLUGINS
 ###################################
-if [ -z "$_ANTIGEN_LOADED" -o -n "$TMUX" ]; then;
-source ~/.oh-my-zsh/custom/antigen.zsh
+source ~/.zplug/init.zsh
 
-antigen use oh-my-zsh
-antigen bundle git
-antigen bundle pip
-antigen bundle vi-mode
-antigen bundle clvv/fasd
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle fzf
-antigen bundle zsh-users/zsh-history-substring-search
-# antigen bundle git-prompt
+zplug "plugins/git", from:oh-my-zsh
+zplug "plugins/pip", from:oh-my-zsh
+zplug "plugins/vi-mode", from:oh-my-zsh
+zplug "plugins/fzf", from:oh-my-zsh
 
-#antigen theme robbyrussell
-antigen theme tonotdo
+zplug "clvv/fasd"
+zplug "zsh-users/zsh-autosuggestions"
+zplug "zsh-users/zsh-history-substring-search"
 
-antigen apply
+zplug "themes/robbyrussell", from:oh-my-zsh, as:theme
 
-export _ANTIGEN_LOADED=1
-fi
+zplug load
 
 
 ###################################
