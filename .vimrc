@@ -69,7 +69,7 @@ Plug 'luochen1990/rainbow' | let g:rainbow_active = 1
 Plug 'Yggdroot/indentLine'
 Plug 'ryanoasis/vim-devicons'
 " Plug 'psliwka/vim-smoothie'
-Plug 'joeytwiddle/sexy_scroller.vim'
+" Plug 'joeytwiddle/sexy_scroller.vim'
 Plug 'lfv89/vim-interestingwords'
 
 
@@ -189,9 +189,9 @@ let g:rainbow_conf = {'separately': {'nerdtree': 0}} " Fix
 let g:autoload_session = 0
 let g:indentLine_char = '▏'
 let g:VimuxOrientation = "h"
-let g:UltiSnipsExpandTrigger="<M-Space>"
+let g:UltiSnipsExpandTrigger="<M-u>"
 let g:smoothie_speed_exponentiation_factor=1.3
-let g:vimspector_enable_mappings = 'HUMAN'
+
 
 
 " == FZF ==
@@ -292,8 +292,23 @@ nnoremap ysS :normal ysiw'<CR>
 nnoremap ysa :normal ysiW"<CR>
 nnoremap ysA :normal ysiW'<CR>
 
+"VimSpector
+nmap <leader>dc <Plug>VimspectorContinue
+nmap <leader>ds <Plug>VimspectorLaunch
+nmap <leader>dS <Plug>VimspectorStop
+nmap <leader>dr <Plug>VimspectorRestart
+nmap <leader>dR :VimspectorReset<CR>
+nmap <leader>dp <Plug>VimspectorPause
+nmap <leader>dd <Plug>VimspectorToggleBreakpoint
+nmap <leader>dD <Plug>VimspectorToggleConditionalBreakpoint
+nmap <leader>df <Plug>VimspectorAddFunctionBreakpoint
+nmap <leader>dC <Plug>VimspectorRunToCursor
+nmap <leader>dj <Plug>VimspectorStepOver
+nmap <leader>dl <Plug>VimspectorStepInto
+nmap <leader>dh <Plug>VimspectorStepOut
+
 " Misc Plugins
-nnoremap <M-g> :Git
+execute 'nnoremap <M-g> :Git '
 noremap <M-/> :Commentary<CR>
 nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 nnoremap <M-o> :GotoHeaderSwitch<CR>
@@ -413,19 +428,14 @@ noremap <leader>r @:<CR> "Run Last Command"
 " Easy Macros / Replacing
 vmap gs "my/<C-R>m<CR>
 vmap <M-Q> gsNqq
-nmap <M-Q> vaw<M-Q>
-nnoremap <M-q> n@q
+nmap <M-Q> viw<M-Q>
+nnoremap <M-q> nzz@q
 
 " Command Mods
 vmap y ygv<Esc>
 map <silent> n n
 map <silent> N N
-
-inoremap [ []<Left>
-inoremap ( []<Left>
-inoremap { []<Left>
-inoremap " ""<Left>
-inoremap ' ''<Left>
+noremap <M-A> 1GVG
 
 " ===================
 " Custom Commands
@@ -444,6 +454,8 @@ command! JsonFormat silent execute '%!python -m json.tool'
 command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'NERDTree', 'tmux': '-p'})
 command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'e', 'tmux': '-p'})
 command! FasdCWD execute("call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p'}) | NERDTreeToggle")
+
+command! Branches call fzf#run({'source': 'git branch', 'sink': 'Git checkout', 'tmux': '-p'})
 
 " ========= Auto Commands ==============
 " Remove spaceds
@@ -490,8 +502,8 @@ call quickui#menu#install("&Fuzzy", [
             \ ])
 
 call quickui#menu#install("Tools", [
-            \ ['&Find', ':Farf'],
-            \ ['Find \& &Replace', ':Farr'],
+            \ ['&Find...', ':Farf'],
+            \ ['Find \& &Replace...', ':Farr'],
             \ ['&Tag List', ':TlistToggle'],
             \ ])
 
