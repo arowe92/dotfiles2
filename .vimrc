@@ -108,7 +108,7 @@ call plug#end()
 "-------------------------
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
 let g:sonokai_style = 'atlantis'
-let g:sonokai_enable_italic = 1
+let g:sonokai_enable_italic = 0
 let g:sonokai_disable_italic_comment = 0
 
 colorscheme sonokai
@@ -132,6 +132,8 @@ set wildmenu
 set wildchar=<Tab>
 set foldlevel=99
 set cursorline
+set hidden
+set iskeyword=@,48-57,_,192-255,=,~,[,],*,!,<,> " Removed: :
 
 " Tabs
 set shiftwidth=4
@@ -302,9 +304,9 @@ nnoremap ysA :normal ysiW'<CR>
 "VimSpector
 nmap <leader>dc <Plug>VimspectorContinue
 nmap <leader>ds <Plug>VimspectorLaunch
-nmap <leader>dS <Plug>VimspectorStop
+nmap <leader>dS :VimspectorReset<CR>
 nmap <leader>dr <Plug>VimspectorRestart
-nmap <leader>dR :VimspectorReset<CR>
+nmap <leader>dt <Plug>VimspectorStop
 nmap <leader>dp <Plug>VimspectorPause
 nmap <leader>dd <Plug>VimspectorToggleBreakpoint
 nmap <leader>dD <Plug>VimspectorToggleConditionalBreakpoint
@@ -361,10 +363,10 @@ noremap <M->> :SidewaysLeft<CR>
 noremap <M-<> :SidewaysRight<CR>
 
 " Jumps!
-noremap <A-j> 10j
-noremap <A-k> 10k
-noremap <A-l> 10l
-noremap <A-h> 10h
+" noremap <A-j> 10j
+" noremap <A-k> 10k
+" noremap <A-l> 10l
+" noremap <A-h> 10h
 
 " Split Lines
 nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
@@ -508,13 +510,13 @@ call quickui#menu#install("&Fuzzy", [
             \ ['Buffers', ':Buffers']
             \ ])
 
-call quickui#menu#install("Tools", [
+call quickui#menu#install("&Tools", [
             \ ['&Find...', ':Farf'],
             \ ['Find \& &Replace...', ':Farr'],
             \ ['&Tag List', ':TlistToggle'],
             \ ])
 
-call quickui#menu#install("Git", [
+call quickui#menu#install("&Git", [
             \ ['&Status', ':Git'],
             \ ['&Add', ':Git add --patch'],
             \ ['&Blame', ':Git blame'],
@@ -524,10 +526,6 @@ call quickui#menu#install("Git", [
             \ ['&Graph', ':Git log --oneline --decorate --graph'],
             \ ])
 
-
-let g:context_menu_k = [
-            \ ["&Find In Buffers", 'exec "BLines ".expand("<cword>")']
-            \ ]
 
 " ======= Functions ========
 function! Cwd() abort
