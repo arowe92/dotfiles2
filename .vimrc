@@ -13,6 +13,7 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'kshenoy/vim-signature' "Show Marks in Sidebar
+Plug 'neoclide/coc.nvim'
 
 " Fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -31,7 +32,6 @@ Plug 'junegunn/goyo.vim'
 Plug 'Asheq/close-buffers.vim'
 
 " Text Editing
-Plug 'ycm-core/YouCompleteMe'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'honza/vim-snippets'
@@ -54,7 +54,6 @@ Plug 'roxma/vim-tmux-clipboard'
 Plug 'mbbill/undotree'
 
 " ==== Language Support  ====
-Plug 'vim-syntastic/syntastic'
 Plug 'MaxMEllon/vim-jsx-pretty'
 Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
 Plug 'elixir-editors/vim-elixir'
@@ -165,6 +164,14 @@ let g:airline_extensions = ["tabline", "hunks", "searchcount"]
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#searchcount#enabled = 1
+
+" Coc
+let g:coc_global_extensions = [
+    \ 'coc-json',
+    \ 'coc-tsserver',
+    \ 'coc-python',
+    \ 'coc-clangd'
+    \ ]
 
 " Scroll Status
 let g:scrollstatus_symbol_track = '┈'
@@ -562,7 +569,7 @@ command! NERDFolder call NERDFolder()
 if has('nvim-0.5')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "cpp" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+    ensure_installed = { "cpp", "jsonc", "javascript", "python" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
     ignore_install = { }, -- List of parsers to ignore installing
     highlight = {
         enable = true,              -- false will disable the whole extension
