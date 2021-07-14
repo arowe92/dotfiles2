@@ -59,16 +59,26 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 nmap <silent> <leader>c[ <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>c] <Plug>(coc-diagnostic-next)
 
+" Actions
 " Symbol renaming.
 nmap <leader>cr <Plug>(coc-rename)
 " Formatting selected code.
 xmap <leader>cf  <Plug>(coc-format-selected)
 nmap <leader>cf  <Plug>(coc-format-selected)
 " Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>ct  <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>cx  <Plug>(coc-fix-current)
 
+" Lists
+nnoremap <silent><nowait> <leader>cd  :<C-u>CocList diagnostics<cr>
+nnoremap <silent><nowait> <leader>ce  :<C-u>CocList extensions<cr>
+nnoremap <silent><nowait> <leader>cc  :<C-u>CocList commands<cr>
+nnoremap <silent><nowait> <leader>cu  :<C-u>CocList outline<cr>
+nnoremap <silent><nowait> <leader>cs  :<C-u>CocList -I symbols<cr>
+nnoremap <silent><nowait> <leader>cn  :<C-u>CocNext<CR>
+nnoremap <silent><nowait> <leader>cp  :<C-u>CocPrev<CR>
+nnoremap <silent><nowait> <leader>cR  :<C-u>CocListResume<CR>
 
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
@@ -87,6 +97,8 @@ nmap <silent> gk <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+
+nmap <silent> gK :call CocAction('jumpDefinition', 'vsplit')<CR>
 
 " Use K to show documentation in preview window.
 nnoremap <silent> gh :call <SID>show_documentation()<CR>
@@ -153,21 +165,3 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
 " set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Mappings for CoCList
-" Show all diagnostics.
-nnoremap <silent><nowait> <leader>cd  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent><nowait> <leader>pe  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent><nowait> <leader>pc  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent><nowait> <leader>pu  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent><nowait> <leader>ps  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent><nowait> <leader>cn  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <leader>cp  :<C-u>CocPrev<CR>
-" Resume latest coc list.
-nnoremap <silent><nowait> <leader>cR  :<C-u>CocListResume<CR>

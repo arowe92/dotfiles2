@@ -1,6 +1,7 @@
 ###################################
 ## PLUGINS
 ###################################
+source ~/.oh-my-zsh/oh-my-zsh.sh
 source ~/.zplug/init.zsh
 
 zplug "plugins/git", from:oh-my-zsh
@@ -23,6 +24,7 @@ zplug load
 PATH="/usr/local/bin:${PATH}"
 PATH="$HOME/.local/bin:${PATH}"
 PATH="$HOME/.cargo/bin:${PATH}"
+PATH="$HOME/.n/bin:${PATH}"
 export PATH
 
 ###################################
@@ -77,7 +79,7 @@ bindkey '^o' fasd_svim
 bindkey -s '^f' '`fzf`'
 bindkey -s '^n' 'nvim .\n'
 bindkey -M vicmd -s '^n' '^[invim .\n'
-bindkey -s '^b' 'git br | fzf'
+bindkey -s '^b' '`git br | fzf`\t'
 
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up

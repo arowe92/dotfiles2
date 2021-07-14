@@ -16,6 +16,7 @@ alias tf='tail -f'
 alias erc='vim ~/.zshrc && source ~/.zshrc'
 alias dfi="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw;"
+alias ls='/bin/ls --color=tty'
 
 _exists hub && alias git='hub'
 _exists colordiff && alias diff='colordiff'

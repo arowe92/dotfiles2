@@ -167,14 +167,6 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#searchcount#enabled = 1
 
-" Coc
-let g:coc_global_extensions = [
-    \ 'coc-json',
-    \ 'coc-tsserver',
-    \ 'coc-python',
-    \ 'coc-clangd'
-    \ ]
-
 " Scroll Status
 let g:scrollstatus_symbol_track = '┈'
 let g:scrollstatus_symbol_bar = '━'
@@ -258,6 +250,7 @@ nnoremap <leader>pg :Ag<CR>
 nnoremap <leader>pi :Include<CR>
 nnoremap <leader>pd :NERDFolder<CR>
 nnoremap <leader>py :Filetypes<CR>
+nnoremap <leader>pC :FzfCd<CR>
 
 nnoremap <leader>po :FasdFile<CR>
 nnoremap <leader>pO :FasdDir<CR>
@@ -273,11 +266,6 @@ nnoremap <leader>g] :GitGutterNextHunk<CR>
 nnoremap <leader>g[ :GitGutterPrevHunk<CR>
 nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
 nnoremap <leader>gg :GitGutterToggle<CR>
-
-" YCM "
-nnoremap gl :YcmCompleter GoToDefinition<CR>
-nnoremap gk :YcmCompleter GoToDeclaration<CR>
-nnoremap gj <C-]>
 
 " EasyMotion Commands
 vmap <leader>f <Plug>(easymotion-bd-f)
@@ -410,8 +398,8 @@ nnoremap <leader>+ :resize +10<CR>
 nnoremap <leader>_ :resize -10<CR>
 
 "" Buffers
-noremap <leader>] :bn<CR>
-noremap <leader>[ :bp<CR>
+noremap <C-n>l :bn<CR>
+noremap <C-n>h :bp<CR>
 noremap <M-]> :bn<CR>
 noremap <M-[> :bp<CR>
 nnoremap <S-Tab> <C-^>
@@ -420,6 +408,8 @@ nnoremap <S-Tab> <C-^>
 nnoremap <leader>t :tab split<CR>
 noremap <M-}> :tabn<CR>
 noremap <M-{> :tabp<CR>
+noremap <C-n>k :tabn<CR>
+noremap <C-n>j :tabp<CR>
 
 " Vimrc
 nnoremap <leader>ev :tab split ~/.vimrc<cr>
@@ -474,6 +464,7 @@ augroup Cmds
     autocmd BufWritePre *.h,*.cc %s/\s\+$//e
     autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen
     autocmd FileType vim inoremap " "
+    autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
 augroup END
 
 
@@ -562,6 +553,29 @@ function! NERDFolder() abort
     exe "NERDTree " . l:fullpath
 endfunction
 command! NERDFolder call NERDFolder()
+
+function! Fzf_cd() abort
+    let l:path = './'
+    while 1
+        let l:cmd = "fd --prune --base-directory=".l:path." -t d ."
+        let l:choices = trim(system(cmd))
+        if l:choices == ''
+            break
+        endif
+        let l:result = trim(system(l:cmd." | fzf-tmux -p --reverse"))
+        if l:result == ''
+            break
+        endif
+        let l:path = l:path.l:result.'/'
+    endwhile
+
+    if l:path == './'
+        return
+    endif
+    execute 'NERDTree '.l:path
+endfunction!
+
+command! FzfCd call Fzf_cd()
 
 " TreeSitter
 if has('nvim-0.5')
