@@ -13,6 +13,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'kshenoy/vim-signature' "Show Marks in Sidebar
 Plug 'neoclide/coc.nvim'
+Plug 'puremourning/vimspector'
 
 " Fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -48,6 +49,7 @@ Plug 'roxma/vim-tmux-clipboard'
 
 " Misc
 Plug 'mbbill/undotree'
+Plug 'tpope/vim-repeat'
 
 " ==== Language Support  ====
 Plug 'MaxMEllon/vim-jsx-pretty'
@@ -89,8 +91,9 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'sainnhe/sonokai'
 
 " == NEW_PLUGINS == "
-Plug 'puremourning/vimspector'
 Plug 'liuchengxu/vim-which-key'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-session'
 
 " == Bleeding Edge Plugins == "
 if has('nvim-0.5')
@@ -129,8 +132,15 @@ set wildchar=<Tab>
 set foldlevel=99
 set cursorline
 set hidden
-set iskeyword=@,48-57,_,192-255,=,~,[,],*,!,<,> " Removed: :
 set noshowmode
+set iskeyword=@,48-57,_,192-255,=,~,*,! " Removed: :[]<>
+
+" From coc.vim
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
 
 " Tabs
 set shiftwidth=4
@@ -192,6 +202,9 @@ let g:VimuxOrientation = "h"
 let g:UltiSnipsExpandTrigger="<M-u>"
 let g:smoothie_speed_exponentiation_factor=1.3
 let g:gitgutter_map_keys = 0
+let g:session_autosave_periodic=3
+let g:session_autosave='yes'
+let g:session_autoload='no'
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -244,25 +257,27 @@ noremap <leader><CR> :call quickui#menu#open()<CR>
 nnoremap <C-p> :Files<CR>
 nnoremap <M-P> :History:<CR>
 nnoremap <M-p> :History<CR>
-nnoremap <C-b> :Buffers<CR>
+nnoremap <M-b> :Buffers<CR>
 nnoremap <M-t> :BTags<CR>
+nnoremap <M-f> :execute 'Ag '.input("Search For: ")<CR>
 
-" <leader>p* Commands
+" FZF <leader>p* Commands
 nnoremap <leader>pc :Commands<CR>
 nnoremap <leader>ph :History<CR>
 nnoremap <leader>pr :History:<CR>
+nnoremap <leader>pb :Buffers<CR>
 nnoremap <leader>pf :Lines<CR>
 nnoremap <leader>pa :BTags<CR>
 nnoremap <leader>pt :Tags<CR>
 nnoremap <leader>pg :Ag<CR>
-nnoremap <leader>pi :Include<CR>
-nnoremap <leader>pd :NERDFolder<CR>
 nnoremap <leader>py :Filetypes<CR>
-nnoremap <leader>pC :FzfCd<CR>
 
+nnoremap <leader>pi :Include<CR>
+nnoremap <leader>pd :FzfCd<CR>
+nnoremap <leader>pD :FzfCdIter<CR>
 nnoremap <leader>po :FasdFile<CR>
 nnoremap <leader>pO :FasdDir<CR>
-nnoremap <leader>pD :FasdCWD<CR>
+nnoremap <leader>pC :FasdCWD<CR>
 
 " Go To everywhere Commands
 nnoremap gw :execute 'Ag '.expand('<cword>')<CR>
@@ -319,6 +334,7 @@ nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 nnoremap <M-o> :GotoHeaderSwitch<CR>
 nnoremap Q :Bdelete menu<CR>
 nnoremap <leader>' ' :call quickui#tools#clever_context('k', g:context_menu_k, {})<cr>
+nnoremap <C-t> :TlistToggle<CR>
 
 " ==== Vim Mappings ====
 " Clear the highlighting of :set hlsearch
@@ -548,7 +564,7 @@ endfunction
 command! Include silent call Include()
 
 " Nerd Tree into Folder
-function! NERDFolder() abort
+function! FzfCd() abort
     let l:file = trim(system("fd -t d | fzf-tmux -p --reverse"))
     if l:file == ""
         return
@@ -558,9 +574,9 @@ function! NERDFolder() abort
     let l:fullpath = trim(system("realpath ".l:file))
     exe "NERDTree " . l:fullpath
 endfunction
-command! NERDFolder call NERDFolder()
+command! FzfCd call FzfCd()
 
-function! Fzf_cd() abort
+function! FzfCdIter() abort
     let l:path = './'
     while 1
         let l:cmd = "fd --prune --base-directory=".l:path." -t d ."
@@ -581,7 +597,7 @@ function! Fzf_cd() abort
     execute 'NERDTree '.l:path
 endfunction!
 
-command! FzfCd call Fzf_cd()
+command! FzfCdIter call FzfCdIter()
 
 " TreeSitter
 if has('nvim-0.5')

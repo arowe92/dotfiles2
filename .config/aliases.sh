@@ -35,9 +35,9 @@ alias di='fasd_fzf_inline -ld'
 alias f='fasd -f'
 alias fi='fasd_fzf_inline -lf'
 
-alias fvi='fasd_fzf -l svim'
+alias fvi='fasd_fzf -l nvim'
 
-alias fv='fasd_fn -a svim'
+alias fv='fasd_fn -a nvim'
 alias fr='fasd_fn -d ranger'
 alias fp='fasd_fn -a prev'
 

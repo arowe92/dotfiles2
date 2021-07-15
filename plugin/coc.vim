@@ -1,0 +1,1 @@
+/home/arowe/dot/.vim/plugin/coc.vim
