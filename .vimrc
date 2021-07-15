@@ -1,4 +1,3 @@
-
 " Install vim-plug if it doesnt exist
 if empty(glob('~/.vim/autoload/plug.vim'))
         silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -21,7 +20,6 @@ Plug 'junegunn/fzf.vim'
 
 " Navigation
 Plug 'easymotion/vim-easymotion'
-Plug 'dkprice/vim-easygrep'
 Plug 'Yohannfra/Vim-Goto-Header'
 Plug 'yegappan/taglist'
 Plug 'bogado/file-line'
@@ -38,12 +36,10 @@ Plug 'honza/vim-snippets'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sensible'
-Plug 'AndrewRadev/splitjoin.vim'
 Plug 'brooth/far.vim'
 Plug 'tpope/vim-eunuch'
 Plug 'meain/vim-printer'
 Plug 'SirVer/ultisnips'
-
 
 " Tmux Integration
 Plug 'preservim/vimux'
@@ -71,7 +67,6 @@ Plug 'ryanoasis/vim-devicons'
 " Plug 'joeytwiddle/sexy_scroller.vim'
 Plug 'lfv89/vim-interestingwords'
 
-
 " Status bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -95,6 +90,7 @@ Plug 'sainnhe/sonokai'
 
 " == NEW_PLUGINS == "
 Plug 'puremourning/vimspector'
+Plug 'liuchengxu/vim-which-key'
 
 " == Bleeding Edge Plugins == "
 if has('nvim-0.5')
@@ -134,6 +130,7 @@ set foldlevel=99
 set cursorline
 set hidden
 set iskeyword=@,48-57,_,192-255,=,~,[,],*,!,<,> " Removed: :
+set noshowmode
 
 " Tabs
 set shiftwidth=4
@@ -158,6 +155,8 @@ set tags+=~/.vim/tags
 "-------------------------
 " Airline
 let g:airline_powerline_fonts = 1
+let g:airline_left_sep = "\uE0B4"
+let g:airline_right_sep = "\uE0B6"
 let g:airline_section_c_only_filename = 1
 let g:airline_section_x = '%{Cwd()}'
 let g:airline_section_y = '%{ScrollStatus()}'
@@ -168,7 +167,7 @@ let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#searchcount#enabled = 1
 
 " Scroll Status
-let g:scrollstatus_symbol_track = '┈'
+let g:scrollstatus_symbol_track = '─'
 let g:scrollstatus_symbol_bar = '━'
 
 " Goto Header
@@ -192,8 +191,7 @@ let g:indentLine_char = '▏'
 let g:VimuxOrientation = "h"
 let g:UltiSnipsExpandTrigger="<M-u>"
 let g:smoothie_speed_exponentiation_factor=1.3
-
-
+let g:gitgutter_map_keys = 0
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -218,6 +216,16 @@ let g:vim_printer_items = {
             \ 'python': 'print("{$}:", {$})',
             \ 'cpp': 'info(0) << "{$}:" << {$} << std::endl;',
             \ }
+
+" Which Key
+let g:which_key_map =  {}
+let g:which_key_map.p = { 'name' : '+fuzzy' }
+let g:which_key_map.c = { 'name' : '+coc' }
+let g:which_key_map.d = { 'name' : '+vimspector' }
+let g:which_key_map.e = { 'name' : '+edit' }
+let g:which_key_map.g = { 'name' : '+git' }
+let g:which_key_map.x = { 'name' : '+extension' }
+call which_key#register('<Space>', "g:which_key_map")
 
 "----------------------------
 "         Key Mappings
@@ -268,14 +276,14 @@ nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
 nnoremap <leader>gg :GitGutterToggle<CR>
 
 " EasyMotion Commands
-vmap <leader>f <Plug>(easymotion-bd-f)
-nmap <leader>f <Plug>(easymotion-overwin-f)
-vmap s <Plug>(easymotion-bd-f2)
-nmap s <Plug>(easymotion-overwin-f2)
-vmap <leader>l <Plug>(easymotion-bd-jk)
-nmap <leader>l <Plug>(easymotion-overwin-line)
-vmap <Leader>w <Plug>(easymotion-bd-w)
-nmap <Leader>w <Plug>(easymotion-overwin-w)
+map <leader>f <Plug>(easymotion-bd-f2)
+map s <Plug>(easymotion-bd-f)
+map <Leader>w <Plug>(easymotion-bd-w)
+
+map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>h <Plug>(easymotion-linebackward)
 
 " Vimux
 noremap <M-`> :VimuxTogglePane<CR>
@@ -466,8 +474,6 @@ augroup Cmds
     autocmd FileType vim inoremap " "
     autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
 augroup END
-
-
 
 " ========================================
 " =  Quick UI menu
