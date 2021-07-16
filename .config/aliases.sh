@@ -1,4 +1,3 @@
-
 mkalias () {
   echo alias $1="\"${@:2}\"" >> ~/.config/aliases.sh
   echo alias $1="\"${@:2}\""
@@ -12,38 +11,40 @@ _exists () {
 ## Aliases
 alias s='git status 2>/dev/null || (pwd && ls -lF)'
 alias add='git add --patch'
-alias tf='tail -f'
-alias erc='vim ~/.zshrc && source ~/.zshrc'
-alias dfi="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw;"
 alias ls='/bin/ls --color=tty'
 
-_exists hub && alias git='hub'
-_exists colordiff && alias diff='colordiff'
-_exists svim && alias vim='svim'
-_exists ccat && alias cat='ccat'
-_exists exa && alias ls='exa'
-
-alias todo="vim +:TD"
 alias cranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 
 ## Fasd Aliases
 alias a='fasd -a'
-alias ai='fasd_fzf_inline -la'
+alias ax='fasd_fzf_inline -la'
 alias d='fasd -d'
-alias di='fasd_fzf_inline -ld'
+alias dx='fasd_fzf_inline -ld'
 alias f='fasd -f'
-alias fi='fasd_fzf_inline -lf'
-
-alias fvi='fasd_fzf -l nvim'
-
-alias fv='fasd_fn -a nvim'
-alias fr='fasd_fn -d ranger'
-alias fp='fasd_fn -a prev'
+alias fx='fasd_fzf_inline -lf'
 
 alias zz='fasd_fzf -ld cd'
-alias ff="find . -name"
 
 # FZF Aliases
 alias fb='git checkout `git branch | sed -e "s/\\*//g" | fzf-tmux -p`'
 alias fz='cat $HOME/.vim/plugin/pythia_targets | fzf-tmux -p'
+
+programs=( \
+    "a:nvim" \
+    "a:svim" \
+    "f:cat" \
+    "f:bat" \
+    "a:fd" \
+    "d:cd" \
+    "a:ranger" \
+    "a:ls" \
+    "d:tree" \
+    "a:prev" \
+)
+
+for program in ${programs[@]}; do
+    flag=$program[1]
+    bin=$program[3,-1]
+    alias "${bin}x"="fasd_fzf -l$flag $bin"
+done;
