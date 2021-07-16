@@ -205,6 +205,8 @@ let g:gitgutter_map_keys = 0
 let g:session_autosave_periodic=3
 let g:session_autosave='yes'
 let g:session_autoload='no'
+let g:interestingWordsDefaultMappings = 0
+let g:EasyMotion_keys='asdfgqwertzxcbvnmASDFGHJKLQWERTBVNMhj'
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -246,6 +248,8 @@ call which_key#register('<Space>', "g:which_key_map")
 let mapleader=" "
 
 " ==== Plugin Mappings =====
+noremap <leader> :WhichKey ' '<CR>
+
 " NerdTree
 noremap <C-\> :NERDTreeToggle<CR>
 noremap <leader>\ :NERDTreeToggle<CR>
