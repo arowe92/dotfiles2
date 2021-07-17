@@ -171,7 +171,7 @@ let g:airline_section_c_only_filename = 1
 let g:airline_section_x = '%{Cwd()}'
 let g:airline_section_y = '%{ScrollStatus()}'
 let g:airline_section_z = airline#section#create(['%l:%c'])
-let g:airline_extensions = ["tabline", "hunks", "searchcount"]
+let g:airline_extensions = ["tabline", "hunks", "searchcount", "coc"]
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#searchcount#enabled = 1
@@ -206,7 +206,7 @@ let g:session_autosave_periodic=3
 let g:session_autosave='yes'
 let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
-let g:EasyMotion_keys='asdfgqwertzxcbvnmASDFGHJKLQWERTBVNMhj'
+let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -375,8 +375,8 @@ vnoremap <A-J> :m '>+1<CR>gv
 vnoremap <A-K> :m '<-2<CR>gv
 
 " Move Arguments left or right
-noremap <M->> :SidewaysLeft<CR>
-noremap <M-<> :SidewaysRight<CR>
+noremap <M-<> :SidewaysLeft<CR>
+noremap <M->> :SidewaysRight<CR>
 
 " Jumps!
 " noremap <A-j> 10j
@@ -397,7 +397,9 @@ inoremap <C-e> <Esc>A
 
 " ==== Windows and Panes ====
 " Remap window prefix
-nnoremap <C-n> <C-W>
+map <C-n> <C-W>
+map <C-x> <C-n>
+
 
 " Rotate Panes
 nnoremap <C-n>J <C-w>J
@@ -433,9 +435,9 @@ noremap <M-[> :bp<CR>
 nnoremap <S-Tab> <C-^>
 
 "" Tabs
-nnoremap <leader>t :tab split<CR>
 noremap <M-}> :tabn<CR>
 noremap <M-{> :tabp<CR>
+nnoremap <C-n>t :tab split<CR>
 noremap <C-n>k :tabn<CR>
 noremap <C-n>j :tabp<CR>
 
@@ -461,8 +463,11 @@ nnoremap <M-q> nzz@q
 " Command Mods
 vmap y ygv<Esc>
 map <silent> n n
-map <silent> N N
-noremap <M-A> 1GVG
+noremap <M-a> 1GVG
+vnoremap x "_d
+vnoremap X "_D
+vnoremap X "_D
+nnoremap <leader>sp "_r<Enter>PkJJ
 
 " ===================
 " Custom Commands
