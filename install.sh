@@ -59,6 +59,7 @@ fi
 
 if [[ "$choices" == *".vimrc"* ]]; then
     cmds+=("echo 'source $dotpath/.vimrc' >> $HOME/.vimrc")
+    cmds+=("echo 'set runtimepath+=$dotpath' >> $HOME/.vimrc")
 fi
 
 if [[ "$choices" == *" .tmux.conf "* ]]; then

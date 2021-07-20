@@ -96,7 +96,7 @@ Plug 'liuchengxu/vim-which-key'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 Plug 'rhysd/conflict-marker.vim'
-
+Plug 'wfxr/minimap.vim', {'do': ':!cargo install --locked code-minimap'}
 
 " == Bleeding Edge Plugins == "
 if has('nvim-0.5')

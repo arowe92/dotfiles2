@@ -51,13 +51,6 @@ eval "$(fasd --init auto)";
 eval $(thefuck --alias 2>/dev/null)
 
 ###################################
-## SOURCES
-###################################
-## Source git prompt
-source $HOME/.config/functions.sh
-source $HOME/.config/aliases.sh
-
-###################################
 # Key Bindings
 ###################################
 
@@ -84,3 +77,8 @@ bindkey -s '^b' '`git br | fzf`\t'
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
+
+###################################
+## SOURCES
+###################################
+
