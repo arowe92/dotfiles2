@@ -197,6 +197,7 @@ let g:nvim_tree_hijack_netrw = 1
 let g:nvim_tree_disable_window_picker = 1
 let g:nvim_tree_highlight_opened_files = 1
 let g:nvim_tree_git_hl = 1
+let g:nvim_tree_update_cwd = 1
 
 " Misc PLugins
 let g:autoload_session = 0
@@ -311,10 +312,11 @@ nnoremap gW :execute 'Agf '.expand('<cword>')<CR>
 nnoremap ga :execute 'Tags '.expand('<cword>')<CR>
 
 " Git Gutter
-nnoremap <leader>g] :GitGutterNextHunk<CR>
-nnoremap <leader>g[ :GitGutterPrevHunk<CR>
+nnoremap ]g :GitGutterNextHunk<CR>
+nnoremap [g :GitGutterPrevHunk<CR>
 nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
 nnoremap <leader>gg :GitGutterToggle<CR>
+nnoremap <leader>ga :GitGutterStageHunk<CR>
 
 " EasyMotion Commands
 map <leader>f <Plug>(easymotion-bd-f2)
@@ -506,23 +508,22 @@ command! Clang silent execute '%!clang-format %'
 command! JsonFormat silent execute '%!python -m json.tool'
 
 " Fasd Commands
-command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'NERDTree', 'tmux': '-p'})
+command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'NvimTree', 'tmux': '-p'})
 command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'e', 'tmux': '-p'})
 command! FasdCWD execute("call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p'}) | NvimTreeToggle")
 
 command! Branches call fzf#run({'source': 'git branch', 'sink': 'Git checkout', 'tmux': '-p'})
 
 " ========= Auto Commands ==============
-" Remove spaceds
+    autocmd FileType vim inoremap " "
 augroup Cmds
     au!
+
+    " Remove spaces at end of line
     autocmd BufWritePre * :%s/\s\+$//e
-    autocmd BufWritePre *.h,*.cc %s/\s\+$//e
     autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen
-    autocmd FileType vim inoremap " "
     autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
 augroup END
-
 " ========================================
 " =  Quick UI menu
 " ========================================
@@ -597,14 +598,17 @@ command! Include silent call Include()
 
 " Nerd Tree into Folder
 function! FzfCd() abort
-    let l:file = trim(system("fd -t d | fzf-tmux -p --reverse"))
+    let l:options = "../\n".trim(system("fd -t d"))
+    let l:file = trim(system("echo '".l:options."' | fzf-tmux -p --reverse"))
     if l:file == ""
         return
     endif
 
     let l:root = trim(system("git rev-parse --show-toplevel"))
     let l:fullpath = trim(system("realpath ".l:file))
-    exe "NERDTree " . l:fullpath
+
+    execute "cd ".l:fullpath
+    execute "NvimTreeRefresh"
 endfunction
 command! FzfCd call FzfCd()
 
@@ -612,24 +616,40 @@ function! FzfCdIter() abort
     let l:path = './'
     while 1
         let l:cmd = "fd --prune --base-directory=".l:path." -t d ."
-        let l:choices = trim(system(cmd))
+
+        let l:choices = ''
+        let l:choices .= '../\n'
+        let l:choices .= '<open>\n'
+        let l:choices .= trim(system(cmd))
+
         if l:choices == ''
             break
         endif
-        let l:result = trim(system(l:cmd." | fzf-tmux -p --reverse"))
-        if l:result == ''
+        let l:result = trim(system("echo '".l:choices."' | fzf-tmux -p --reverse"))
+
+        if l:result == '<open>'
             break
         endif
+
+        if l:result == ''
+            return
+        endif
+
         let l:path = l:path.l:result.'/'
     endwhile
 
     if l:path == './'
         return
     endif
-    execute 'NERDTree '.l:path
-endfunction!
 
+    execute "cd ".l:path
+    execute "NvimTreeRefresh"
+endfunction!
 command! FzfCdIter call FzfCdIter()
+
+" function! GitPatch abort
+    " :GitGutter
+" endfunction
 
 " TreeSitter
 if has('nvim-0.5')
