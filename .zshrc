@@ -77,8 +77,8 @@ zle -N fasd_svim
 bindkey '^o' fasd_svim
 
 bindkey -s '^f' '`fzf`'
-bindkey -s '^n' 'nvim .\n'
-bindkey -M vicmd -s '^n' '^[invim .\n'
+bindkey -s '^n' 'nvim\n'
+bindkey -M vicmd -s '^n' '^[invim\n'
 bindkey -s '^b' '`git br | fzf`\t'
 
 # Searching

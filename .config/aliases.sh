@@ -12,9 +12,11 @@ _exists () {
 alias s='git status 2>/dev/null || (pwd && ls -lF)'
 alias add='git add --patch'
 alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw;"
-alias ls='/bin/ls --color=tty'
 
 alias cranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+
+alias ls='/bin/ls --color=tty'
+_exists exa && alias ls='exa'
 
 ## Fasd Aliases
 alias a='fasd -a'
@@ -28,7 +30,6 @@ alias zz='fasd_fzf -ld cd'
 
 # FZF Aliases
 alias fb='git checkout `git branch | sed -e "s/\\*//g" | fzf-tmux -p`'
-alias fz='cat $HOME/.vim/plugin/pythia_targets | fzf-tmux -p'
 
 programs=( \
     "a:nvim" \

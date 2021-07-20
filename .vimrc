@@ -8,12 +8,12 @@ call plug#begin()
 
 " UI
 Plug 'skywind3000/vim-quickui'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " File Tree
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'kshenoy/vim-signature' "Show Marks in Sidebar
 Plug 'neoclide/coc.nvim'
 Plug 'puremourning/vimspector'
+Plug 'kyazdani42/nvim-tree.lua'
 
 " Fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -65,6 +65,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'luochen1990/rainbow' | let g:rainbow_active = 1
 Plug 'Yggdroot/indentLine'
 Plug 'ryanoasis/vim-devicons'
+Plug 'kyazdani42/nvim-web-devicons' " for file icons
 " Plug 'psliwka/vim-smoothie'
 " Plug 'joeytwiddle/sexy_scroller.vim'
 Plug 'lfv89/vim-interestingwords'
@@ -94,6 +95,8 @@ Plug 'sainnhe/sonokai'
 Plug 'liuchengxu/vim-which-key'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
+Plug 'rhysd/conflict-marker.vim'
+
 
 " == Bleeding Edge Plugins == "
 if has('nvim-0.5')
@@ -190,10 +193,10 @@ let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_completion = 0
 
 " NERDTree
-let g:NERDTreeHijackNetrw = 1
-let g:NERDTreeDirArrowExpandable="+" " Windows Fix
-let g:NERDTreeDirArrowCollapsible="-" " Windows Fix
-let g:rainbow_conf = {'separately': {'nerdtree': 0}} " Fix
+let g:nvim_tree_hijack_netrw = 1
+let g:nvim_tree_disable_window_picker = 1
+let g:nvim_tree_highlight_opened_files = 1
+let g:nvim_tree_git_hl = 1
 
 " Misc PLugins
 let g:autoload_session = 0
@@ -242,6 +245,25 @@ let g:which_key_map.g = { 'name' : '+git' }
 let g:which_key_map.x = { 'name' : '+extension' }
 call which_key#register('<Space>', "g:which_key_map")
 
+" =================
+"  Conflict Marker
+" =================
+let g:conflict_marker_enable_mappings = 0
+nmap <buffer>]c <Plug>(conflict-marker-next-hunk)
+nmap <buffer>[c <Plug>(conflict-marker-prev-hunk)
+nmap <buffer>ct <Plug>(conflict-marker-themselves)
+nmap <buffer>co <Plug>(conflict-marker-ourselves)
+nmap <buffer>cn <Plug>(conflict-marker-none)
+nmap <buffer>cb <Plug>(conflict-marker-both)
+nmap <buffer>cB <Plug>(conflict-marker-both-rev)
+
+command! FindConflicts silent execute(":grep '<<<<<<' | :copen")
+highlight ConflictMarkerBegin guibg=#2f7366
+highlight ConflictMarkerOurs guibg=#2e5049
+highlight ConflictMarkerTheirs guibg=#344f69
+highlight ConflictMarkerEnd guibg=#2f628e
+highlight ConflictMarkerCommonAncestorsHunk guibg=#754a81
+
 "----------------------------
 "         Key Mappings
 "----------------------------
@@ -251,8 +273,8 @@ let mapleader=" "
 noremap <leader> :WhichKey ' '<CR>
 
 " NerdTree
-noremap <C-\> :NERDTreeToggle<CR>
-noremap <leader>\ :NERDTreeToggle<CR>
+noremap <leader>\ :NvimTreeToggle<CR>
+noremap <leader>\| :NvimTreeFindFile<CR>
 
 " Quick UI
 noremap <leader><CR> :call quickui#menu#open()<CR>
@@ -453,6 +475,7 @@ nnoremap zu :setlocal foldmethod=manual<CR>
 " Misc
 noremap <leader>R :redraw!<CR>
 noremap <leader>r @:<CR> "Run Last Command"
+nnoremap <leader>F :Clang<CR>
 
 " Easy Macros / Replacing
 vmap gs "my/<C-R>m<CR>
@@ -485,7 +508,7 @@ command! JsonFormat silent execute '%!python -m json.tool'
 " Fasd Commands
 command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'NERDTree', 'tmux': '-p'})
 command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'e', 'tmux': '-p'})
-command! FasdCWD execute("call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p'}) | NERDTreeToggle")
+command! FasdCWD execute("call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p'}) | NvimTreeToggle")
 
 command! Branches call fzf#run({'source': 'git branch', 'sink': 'Git checkout', 'tmux': '-p'})
 
