@@ -314,9 +314,12 @@ nnoremap ga :execute 'Tags '.expand('<cword>')<CR>
 " Git Gutter
 nnoremap ]g :GitGutterNextHunk<CR>
 nnoremap [g :GitGutterPrevHunk<CR>
+nnoremap <leader>gg :GitGutterNextHunk<CR>
+nnoremap <leader>gG :GitGutterPrevHunk<CR>
 nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
-nnoremap <leader>gg :GitGutterToggle<CR>
+nnoremap <leader>gt :GitGutterToggle<CR>
 nnoremap <leader>ga :GitGutterStageHunk<CR>
+nnoremap <leader>gu :GitGutterUndoHunk<CR>
 
 " EasyMotion Commands
 map <leader>f <Plug>(easymotion-bd-f2)
@@ -401,12 +404,6 @@ vnoremap <A-K> :m '<-2<CR>gv
 " Move Arguments left or right
 noremap <M-<> :SidewaysLeft<CR>
 noremap <M->> :SidewaysRight<CR>
-
-" Jumps!
-" noremap <A-j> 10j
-" noremap <A-k> 10k
-" noremap <A-l> 10l
-" noremap <A-h> 10h
 
 " Split Lines
 nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
@@ -646,10 +643,6 @@ function! FzfCdIter() abort
     execute "NvimTreeRefresh"
 endfunction!
 command! FzfCdIter call FzfCdIter()
-
-" function! GitPatch abort
-    " :GitGutter
-" endfunction
 
 " TreeSitter
 if has('nvim-0.5')
