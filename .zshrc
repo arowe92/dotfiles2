@@ -13,7 +13,7 @@ zplug "clvv/fasd"
 zplug "zsh-users/zsh-autosuggestions", defer:2
 zplug "zsh-users/zsh-history-substring-search", defer:3
 
-zplug "themes/tonotdo", from:oh-my-zsh, as:theme
+zplug "themes/alanpeabody", from:oh-my-zsh, as:theme
 
 zplug load
 

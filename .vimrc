@@ -152,7 +152,7 @@ PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
 
 " ==== Color schemes ====
 PlugDef 'sainnhe/sonokai'
-
+PlugDef 'rhysd/clever-f.vim'
 call plug#end()
 
 "=========================
@@ -296,7 +296,11 @@ call which_key#register('<Space>', "g:which_key_map")
 endif
 
 "==== Conflict Marker ====
-if PlugLoaded('config_marker')
+if PlugLoaded('conflict_marker')
+
+" =================
+"  Conflict Marker
+" =================
 let g:conflict_marker_enable_mappings = 0
 nmap <buffer>]c <Plug>(conflict-marker-next-hunk)
 nmap <buffer>[c <Plug>(conflict-marker-prev-hunk)
@@ -435,8 +439,16 @@ nnoremap <silent> <leader>c] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 endif
-" -------------------
-
+" =================
+"     Smoothie
+" =================
+" let g:smoothie_speed_exponentiation_factor = 1.3
+let g:smoothie_speed_constant_factor = 20
+let g:smoothie_no_default_mappings = 1
+nmap <unique> <c-d>      <Plug>(SmoothieDownwards)
+nmap <unique> <c-u>      <Plug>(SmoothieUpwards)
+nmap <unique> <C-f>      <Plug>(SmoothieForwards)
+nmap <unique> <C-b>      <Plug>(SmoothieBackwards)
 "=========================
 "  Key Mappings
 "=========================
@@ -651,7 +663,7 @@ augroup Cmds
     " Remove spaces at end of line
     autocmd BufWritePre * :%s/\s\+$//e
     " Make C++ file doxygen
-    autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen
+    autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen | set colorcolumn=120
     " Make Quick fix Preview By default
     autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
 augroup END
@@ -740,4 +752,47 @@ set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 endif
 
+" Clever -F
+let g:clever_f_not_overwrites_standard_mappings = 1
+function! Multiple_cursors_before()
+    nunmap f
+    xunmap f
+    ounmap f
+    nunmap F
+    xunmap F
+    ounmap F
+    nunmap t
+    xunmap t
+    ounmap t
+    nunmap T
+    xunmap T
+    ounmap T
+endfunction
 
+function! Multiple_cursors_after()
+    nmap f <Plug>(clever-f-f)
+    xmap f <Plug>(clever-f-f)
+    omap f <Plug>(clever-f-f)
+    nmap F <Plug>(clever-f-F)
+    xmap F <Plug>(clever-f-F)
+    omap F <Plug>(clever-f-F)
+    nmap t <Plug>(clever-f-t)
+    xmap t <Plug>(clever-f-t)
+    omap t <Plug>(clever-f-t)
+    nmap T <Plug>(clever-f-T)
+    xmap T <Plug>(clever-f-T)
+    omap T <Plug>(clever-f-T)
+endfunction
+
+call Multiple_cursors_after()
+
+" Multiple Cursors
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_start_word_key      = '<C-m>'
+let g:multi_cursor_select_all_word_key = '<A-m>'
+let g:multi_cursor_start_key           = 'g<C-m>'
+let g:multi_cursor_select_all_key      = 'g<A-m>'
+let g:multi_cursor_next_key            = '<C-m>'
+let g:multi_cursor_prev_key            = '<C-n>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
