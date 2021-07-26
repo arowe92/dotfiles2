@@ -49,3 +49,4 @@ for program in ${programs[@]}; do
     bin=$program[3,-1]
     alias "${bin}x"="fasd_fzf -l$flag $bin"
 done;
+
