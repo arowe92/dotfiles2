@@ -62,7 +62,6 @@ PlugDef 'bogado/file-line'
 PlugDef 'tpope/vim-surround'
 
 " GUI Essentials
-PlugDef 'kyazdani42/nvim-tree.lua'
 PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
 
 if g:GUI_TOOLS
@@ -71,13 +70,13 @@ PlugDef 'yegappan/taglist'
 PlugDef 'brooth/far.vim' " Find & Replace
 PlugDef 'skywind3000/vim-quickui'
 PlugDef 'liuchengxu/vim-which-key'
+PlugDef 'kyazdani42/nvim-tree.lua'
 endif
 
 if g:NVIM_TOOLS
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 PlugDef 'hrsh7th/nvim-compe'
-
 PlugDef 'nvim-lua/popup.nvim'
 PlugDef 'nvim-lua/plenary.nvim'
 PlugDef 'nvim-telescope/telescope.nvim'
