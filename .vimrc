@@ -361,12 +361,11 @@ endif
 
 " ==== Telescope =========
 if PlugLoaded('telescope_nvim')
-nnoremap <C-p> <cmd>Telescope find_files<cr>
 nnoremap <C-p> <cmd>Files<cr>
 nnoremap <M-p> <cmd>Telescope frecency<cr>
 nnoremap <M-P> <cmd>Telescope command_history<cr>
 
-nnoremap <leader>pp <cmd>lua require('telescope').extensions.frecency.frecency()<CR>
+nnoremap <leader>pp <cmd>Telescope find_files<cr>
 nnoremap <leader>pc :Telescope commands<CR>
 nnoremap <leader>ph :Telescope oldfiles<CR>
 nnoremap <leader>pB :Telescope file_browser<CR>
@@ -532,12 +531,30 @@ require'nvim-treesitter.configs'.setup {
         enable = false
     },
     incremental_selection = {
-        enable = true
+        enable = true,
+        init_selection = "gnn",
+        node_incremental = "grn",
+        scope_incremental = "grc",
+        node_decremental = "gnm",
     }
 }
 EOF
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
+
+nmap <leader>s0 gnngrngrn
+nmap <leader>s9 gnngrn
+nmap <leader>s1 gnngrn
+nmap <leader>s2 gnngrngrn
+nmap <leader>s3 gnngrngrngrn
+nmap <leader>s4 gnngrngrngrngrn
+vmap <leader>ss grn
+nmap <leader>ss gnn
+vmap <leader>sd grm
+nmap <A-s> gnn
+vmap <A-s> grn
+vmap <A-S> grm
+nmap cM gnngrngrnc
 endif
 "=========================
 "  Key Mappings
@@ -739,6 +756,8 @@ nnoremap <leader>F :Clang<CR>
 " ===================
 " Copy The Path of the file
 command! CP :let @" = expand('%')
+" Grep
+command! -nargs=1 Grep silent grep <q-args> | copen
 
 " Format Commands file
 command! FormatClang silent execute '%!clang-format %'
@@ -746,8 +765,8 @@ command! FormatJson silent execute '%!python -m json.tool'
 
 " FZF / Fasd Commands
 if PlugLoaded('fzf')
-command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'e', 'tmux': '-p'})
-command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p'})
+command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'cd', 'tmux': '-p80%,60%', 'options': '--preview="prev {}"'})
+command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p80%,60%', 'options': '--preview="prev {}"'})
 command! Include silent call Include()
 command! FzfCd call FzfCd()
 command! FzfCdIter call FzfCdIter()
@@ -775,7 +794,7 @@ augroup END
 " ==== Fzf Functions ====
 " Easy way to Include c++ files
 function! Include() abort
-    let l:file = trim(system("fd '\.h$' | fzf-tmux -p"))
+    let l:file = trim(system("fd '\.h$' | fzf-tmux -p --preview='prev {}'"))
 
     if l:file == ""
         return
@@ -790,7 +809,7 @@ endfunction
 " Nerd Tree into Folder
 function! FzfCd() abort
     let l:options = "../\n".trim(system("fd -t d"))
-    let l:file = trim(system("echo '".l:options."' | fzf-tmux -p --reverse"))
+    let l:file = trim(system("echo '".l:options."' | fzf-tmux -p --reverse --preview='prev {}'"))
     if l:file == ""
         return
     endif
@@ -815,7 +834,7 @@ function! FzfCdIter() abort
         if l:choices == ''
             break
         endif
-        let l:result = trim(system("echo '".l:choices."' | fzf-tmux -p --reverse"))
+        let l:result = trim(system("echo '".l:choices."' | fzf-tmux -p --reverse --preview='prev ".l:path."/{}'"))
 
         if l:result == '<open>'
             break
@@ -834,4 +853,10 @@ function! FzfCdIter() abort
 
     execute "cd ".l:path
     execute "NvimTreeRefresh"
-endfunction!
+endfunction
+
+function! Replace() abort
+    let l:text = input("Text to Insert: ")
+    l:text = substitute(l:text, '/','\\/'. 'g')
+    execute ('%s/'.@".'/'.l:text.'/g')
+endfunction

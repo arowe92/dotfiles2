@@ -73,7 +73,7 @@ bindkey -s '^f' '`fzf`'
 bindkey -s '^n' 'nvim\n'
 bindkey -M vicmd -s '^n' '^[invim\n'
 bindkey -s '^b' '`git branch | fzf`\t'
-bindkey -s '^g' 'git checkout `git branch | fzf`\t'
+# bindkey -s '^g' 'git checkout `git branch | fzf`\t'
 
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
@@ -82,4 +82,4 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
 ###################################
 ## SOURCES
 ###################################
-
+source ~/.fzf.zsh
