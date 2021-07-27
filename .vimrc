@@ -35,18 +35,23 @@ endif
 call plug#begin()
 
 " Plugin Helpers
-function! PlugLoaded(name) abort
-    let l:name = substitute(a:name, "[-.]", '_', 'g')
+function! FormatPlugName(name) abort
+    let l:name = a:name
+    let l:name = substitute(l:name, "[-.]", '_', 'g')
     let l:name = substitute(l:name, "[',]", '', 'g')
-    let l:name = substitute(l:name, "\.n?vim$", '', 'g')
-    return exists('g:plugin_'.l:name) || exists('g:plugin_vim_'.l:name) || exists('g:plugin_nvim_'.l:name)
+    let l:name = substitute(l:name, "_nvim$", '', 'g')
+    let l:name = substitute(l:name, "^nvim_", '', 'g')
+    let l:name = substitute(l:name, "_vim$", '', 'g')
+    let l:name = substitute(l:name, "^vim_", '', 'g')
+    return l:name
+endfunction
+function! PlugLoaded(name) abort
+    let l:name = FormatPlugName(a:name)
+    return exists('g:plugin_'.l:name)
 endfunction
 function! PlugDef(...) abort
     let l:name = split(a:000[0], '/')[1]
-    let l:name = substitute(l:name, "[-.]", '_', 'g')
-    let l:name = substitute(l:name, "[',]", '', 'g')
-    let l:name = substitute(l:name, "\.n?vim$", '', 'g')
-
+    let l:name = FormatPlugName(l:name)
     if l:name =~ 'nvim' && !has('nvim')
         return
     endif
@@ -58,12 +63,12 @@ command! -nargs=+ PlugDef call PlugDef(<f-args>)
 
 " Essentials
 PlugDef 'easymotion/vim-easymotion'
+PlugDef 'rhysd/clever-f.vim'
 PlugDef 'bogado/file-line'
 PlugDef 'tpope/vim-surround'
 
 " GUI Essentials
 PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
-
 if g:GUI_TOOLS
 PlugDef 'mbbill/undotree'
 PlugDef 'yegappan/taglist'
@@ -92,8 +97,7 @@ endif
 
 " Hardcore C++ tools
 if g:CPP_TOOLS
-PlugDef 'puremoLheurning/vimspector', {'for': 'cpp'}
-PlugDef 'Yohannfra/Vim-Goto-Header', {'for': 'cpp'}
+PlugDef 'puremoLheurning/vimspector'
 endif
 
 " Tmux Integration
@@ -101,6 +105,8 @@ if g:TMUX
 PlugDef 'preservim/vimux'
 PlugDef 'christoomey/vim-tmux-navigator'
 PlugDef 'roxma/vim-tmux-clipboard'
+PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
+PlugDef 'junegunn/fzf.vim'
 endif
 
 " Snippets
@@ -152,7 +158,7 @@ PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
 
 " ==== Color schemes ====
 PlugDef 'sainnhe/sonokai'
-PlugDef 'rhysd/clever-f.vim'
+
 call plug#end()
 
 "=========================
@@ -175,6 +181,7 @@ set cursorline
 set hidden
 set noshowmode
 set iskeyword=@,48-57,_,192-255,=,~,*,! " Removed: :[]<>
+set termguicolors
 
 " Tabs
 set shiftwidth=4
@@ -188,16 +195,16 @@ set t_Co=16
 
 set directory^=/tmp/swp
 set tags+=~/.vim/tags
-set clipboard+=unnamedplus
-
 
 " Map key
 let mapleader=" "
 
 " Use ag if it exists
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
+if executable('rg')
+    " Use ag over grep
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+elseif executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor
 endif
 
 if exists(':GuiFont')
@@ -211,7 +218,7 @@ endif
 "-------------------------
 if PlugLoaded('sonokai')
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
-let g:sonokai_style = 'atlantis'
+let g:sonokai_style = 'andromeda'
 let g:sonokai_enable_italic = 0
 let g:sonokai_disable_italic_comment = 0
 colorscheme sonokai
@@ -247,7 +254,6 @@ let g:goto_header_includes_dirs = ["."]
 let g:autoload_session = 0
 let g:indentLine_char = '▏'
 let g:UltiSnipsExpandTrigger="<M-u>"
-let g:smoothie_speed_exponentiation_factor=1.3
 let g:session_autosave_periodic=3
 let g:session_autosave='yes'
 let g:session_autoload='no'
@@ -301,14 +307,14 @@ if PlugLoaded('conflict_marker')
 " =================
 "  Conflict Marker
 " =================
-let g:conflict_marker_enable_mappings = 0
-nmap <buffer>]c <Plug>(conflict-marker-next-hunk)
-nmap <buffer>[c <Plug>(conflict-marker-prev-hunk)
-nmap <buffer>ct <Plug>(conflict-marker-themselves)
-nmap <buffer>co <Plug>(conflict-marker-ourselves)
-nmap <buffer>cn <Plug>(conflict-marker-none)
-nmap <buffer>cb <Plug>(conflict-marker-both)
-nmap <buffer>cB <Plug>(conflict-marker-both-rev)
+let g:conflict_marker_enable_mappings = 1
+" nmap <buffer>]c <Plug>(conflict-marker-next-hunk)
+" nmap <buffer>[c <Plug>(conflict-marker-prev-hunk)
+" nmap <buffer>ct <Plug>(conflict-marker-themselves)
+" nmap <buffer>co <Plug>(conflict-marker-ourselves)
+" nmap <buffer>cn <Plug>(conflict-marker-none)
+" nmap <buffer>cb <Plug>(conflict-marker-both)
+" nmap <buffer>cB <Plug>(conflict-marker-both-rev)
 
 highlight ConflictMarkerBegin guibg=#2f7366
 highlight ConflictMarkerOurs guibg=#2e5049
@@ -332,7 +338,7 @@ nnoremap <leader>gu :GitGutterUndoHunk<CR>
 endif
 
 "===== EasyMotion ========
-if exists('g:plug_easymotion')
+if PlugLoaded('easymotion')
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
 map <leader>f <Plug>(easymotion-bd-f2)
 map s <Plug>(easymotion-bd-f)
@@ -356,12 +362,14 @@ endif
 " ==== Telescope =========
 if PlugLoaded('telescope_nvim')
 nnoremap <C-p> <cmd>Telescope find_files<cr>
+nnoremap <C-p> <cmd>Files<cr>
 nnoremap <M-p> <cmd>Telescope frecency<cr>
 nnoremap <M-P> <cmd>Telescope command_history<cr>
 
 nnoremap <leader>pp <cmd>lua require('telescope').extensions.frecency.frecency()<CR>
 nnoremap <leader>pc :Telescope commands<CR>
-nnoremap <leader>ph :Telescope frecency<CR>
+nnoremap <leader>ph :Telescope oldfiles<CR>
+nnoremap <leader>pB :Telescope file_browser<CR>
 nnoremap <leader>pC :Telescope command_history<CR>
 nnoremap <leader>pb :Telescope buffers<CR>
 nnoremap <leader>pa :Telescope current_buffer_tags<CR>
@@ -371,10 +379,11 @@ nnoremap <leader>py :Telescope filetypes<CR>
 nnoremap <leader>pu :Telescope lsp_document_symbols<CR>
 
 nnoremap <leader>pi :Include<CR>
-nnoremap <leader>pd :Telescope file_browser<CR>
-" nnoremap <leader>po :FasdFile<CR>
-" nnoremap <leader>pO :FasdDir<CR>
-" nnoremap <leader>pC :FasdCWD<CR>
+nnoremap <leader>po :FasdFile<CR>
+nnoremap <leader>pO :FasdDir<CR>
+nnoremap <leader>pz :FzfCd<CR>
+nnoremap <leader>pZ :FzfCdIter<CR>
+
 
 if PlugLoaded('telescope_frecency')
 lua require "telescope".load_extension("frecency")
@@ -390,7 +399,7 @@ let g:compe.enabled = v:true
 let g:compe.autocomplete = v:true
 let g:compe.min_length = 1
 let g:compe.preselect = 'enable'
-let g:compe.throttle_time = 80
+let g:compe.throttle_time = 150
 let g:compe.source_timeout = 200
 let g:compe.resolve_timeout = 800
 let g:compe.incomplete_delay = 400
@@ -418,6 +427,7 @@ endif
 if PlugLoaded('nvim_lspconfig')
 lua << EOF
 require'lspconfig'.rust_analyzer.setup{}
+require'lspconfig'.clangd.setup{}
 EOF
 
 nnoremap <silent> gD <Cmd>lua vim.lsp.buf.declaration()<CR>
@@ -439,9 +449,65 @@ nnoremap <silent> <leader>c] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 endif
-" =================
-"     Smoothie
-" =================
+
+" ==== CleverF =====
+if PlugLoaded('clever_f')
+let g:clever_f_not_overwrites_standard_mappings = 1
+function! MapCleverF()
+    nmap f <Plug>(clever-f-f)
+    xmap f <Plug>(clever-f-f)
+    omap f <Plug>(clever-f-f)
+    nmap F <Plug>(clever-f-F)
+    xmap F <Plug>(clever-f-F)
+    omap F <Plug>(clever-f-F)
+    nmap t <Plug>(clever-f-t)
+    xmap t <Plug>(clever-f-t)
+    omap t <Plug>(clever-f-t)
+    nmap T <Plug>(clever-f-T)
+    xmap T <Plug>(clever-f-T)
+    omap T <Plug>(clever-f-T)
+endfunction
+call MapCleverF()
+endif
+
+" ==== Multiple Cursors ====
+if PlugLoaded("vim_multiple_cursors")
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_start_word_key      = '<C-m>'
+let g:multi_cursor_select_all_word_key = '<A-m>'
+let g:multi_cursor_start_key           = 'g<C-m>'
+let g:multi_cursor_select_all_key      = 'g<A-m>'
+let g:multi_cursor_next_key            = '<C-m>'
+let g:multi_cursor_prev_key            = '<C-n>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
+
+function! Multiple_cursors_before()
+    if PlugLoaded('clever_f')
+        nunmap f
+        xunmap f
+        ounmap f
+        nunmap F
+        xunmap F
+        ounmap F
+        nunmap t
+        xunmap t
+        ounmap t
+        nunmap T
+        xunmap T
+        ounmap T
+    endif
+endfunction
+
+function! Multiple_cursors_after()
+    if PlugLoaded('clever_f')
+        call MapCleverF()
+    endif
+endfunction
+endif
+
+" ==== Smoothie ====
+if PlugLoaded("smoothie")
 " let g:smoothie_speed_exponentiation_factor = 1.3
 let g:smoothie_speed_constant_factor = 20
 let g:smoothie_no_default_mappings = 1
@@ -449,6 +515,30 @@ nmap <unique> <c-d>      <Plug>(SmoothieDownwards)
 nmap <unique> <c-u>      <Plug>(SmoothieUpwards)
 nmap <unique> <C-f>      <Plug>(SmoothieForwards)
 nmap <unique> <C-b>      <Plug>(SmoothieBackwards)
+endif
+
+
+" ==== TreeSitter ====
+if PlugLoaded('nvim_treesitter')
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+    ensure_installed = { "cpp", "jsonc", "javascript", "python" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+    ignore_install = { }, -- List of parsers to ignore installing
+    highlight = {
+        enable = true,              -- false will disable the whole extension
+        disable = { },  -- list of language that will be disabled
+    },
+    indent = {
+        enable = false
+    },
+    incremental_selection = {
+        enable = true
+    }
+}
+EOF
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+endif
 "=========================
 "  Key Mappings
 "=========================
@@ -495,7 +585,7 @@ endif
 execute 'nnoremap <M-g> :Git '
 noremap <M-/> :Commentary<CR>
 nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
-nnoremap <M-o> :GotoHeaderSwitch<CR>
+nnoremap <M-o> :ClangdSwitchSourceHeader<CR>
 nnoremap Q :Bdelete menu<CR>
 noremap <leader><C-s> :WriteSession<CR>
 
@@ -576,6 +666,11 @@ nnoremap <leader>ev :tab split ~/.vimrc<cr>
 nnoremap <leader>ez :tab split ~/.zshrc<cr>
 nnoremap <leader>et :tab split ~/.tmux.conf<cr>
 
+" Incrementing
+vnoremap <C-g> g<C-a>
+nnoremap <A-8> <C-a>
+nnoremap <A-7> <C-x>
+
 " ==== Insert Mode ====
 " Paste
 inoremap <C-v> <C-r>"
@@ -649,6 +744,15 @@ command! CP :let @" = expand('%')
 command! FormatClang silent execute '%!clang-format %'
 command! FormatJson silent execute '%!python -m json.tool'
 
+" FZF / Fasd Commands
+if PlugLoaded('fzf')
+command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'e', 'tmux': '-p'})
+command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p'})
+command! Include silent call Include()
+command! FzfCd call FzfCd()
+command! FzfCdIter call FzfCdIter()
+endif
+
 " ======= Functions ========
 function! Cwd() abort
     let l:path = getcwd()
@@ -668,131 +772,66 @@ augroup Cmds
     autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
 augroup END
 
+" ==== Fzf Functions ====
+" Easy way to Include c++ files
+function! Include() abort
+    let l:file = trim(system("fd '\.h$' | fzf-tmux -p"))
 
-" ========================================
-"  Quick UI menu
-" ========================================
-if PlugLoaded('vim_quickui')
-noremap <leader><CR> :call quickui#menu#open()<CR>
-nnoremap <leader>' ' :call quickui#tools#clever_context('k', g:context_menu_k, {})<cr>
-let g:quickui_border_style = 2
-let g:quickui_color_scheme = 'papercol_dark'
+    if l:file == ""
+        return
+    endif
 
-call quickui#menu#reset()
-call quickui#menu#install("&Fuzzy", [
-            \ ['&Ag', ':Ag'],
-            \ ['&History', ':History'],
-            \ ['&Commands', ':Commands'],
-            \ ['&GFile', ':Giles'],
-            \ ['G&it Status', ':GFiles?'],
-            \ ['C&olors',':Colors'],
-            \ ['All Buffer &Lines', ':Lines'],
-            \ ['C&urrent Buffer Lines', ':BLines'],
-            \ ['&Tags', ':Tags'],
-            \ ['&Buffer Tags', ':BTags'],
-            \ ['&Marks', ':Marks'],
-            \ ['&Windows', ':Windows'],
-            \ ['Co&mmand History', ':History:'],
-            \ ['&Edit History', ':History/'],
-            \ ['&Snippets', ':Snippets'],
-            \ ['Commi&ts', ':Commits'],
-            \ ['B&uffer Commits', ':BCommits'],
-            \ ['Ma&ps', ':Maps'],
-            \ ['Helpta&gs', ':Helptags'],
-            \ ['Filet&ypes', ':Filetypes'],
-            \ ['Files', ':Files'],
-            \ ['Buffers', ':Buffers']
-            \ ])
-
-" Folding
-call quickui#menu#install("F&olding", [
-            \ ["&Syntax\t(foldmethod)", ':setlocal foldmethod=syntax'],
-            \ ["&Manual\t(foldmethod)", ':setlocal foldmethod=manual'],
-            \ ["&Indent\t(foldmethod)", ':setlocal foldmethod=indent'],
-            \ ["&Close All", ':setlocal foldlevel=0'],
-            \ ["&Open All", ':setlocal foldlevel=99']
-            \ ])
-
-call quickui#menu#install("&Tools", [
-            \ ['&Find...', ':Farf'],
-            \ ['Find \& &Replace...', ':Farr'],
-            \ ['&Tag List', ':TlistToggle'],
-            \ ])
-
-call quickui#menu#install("&Git", [
-            \ ['&Status', ':Git'],
-            \ ['&Add', ':Git add --patch'],
-            \ ['&Blame', ':Git blame'],
-            \ ['&Undo Hunk', ':GitGutterUndoHunk'],
-            \ ['&Diff', ':Gdiffsplit'],
-            \ ['&Log', ':Git log'],
-            \ ['&Graph', ':Git log --oneline --decorate --graph'],
-            \ ])
-endif
-
-" TreeSitter
-if PlugLoaded('nvim_treesitter')
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "cpp", "jsonc", "javascript", "python" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-    ignore_install = { }, -- List of parsers to ignore installing
-    highlight = {
-        enable = true,              -- false will disable the whole extension
-        disable = { },  -- list of language that will be disabled
-    },
-    indent = {
-        enable = false
-    },
-    incremental_selection = {
-        enable = true
-    }
-}
-EOF
-set foldmethod=expr
-set foldexpr=nvim_treesitter#foldexpr()
-endif
-
-" Clever -F
-let g:clever_f_not_overwrites_standard_mappings = 1
-function! Multiple_cursors_before()
-    nunmap f
-    xunmap f
-    ounmap f
-    nunmap F
-    xunmap F
-    ounmap F
-    nunmap t
-    xunmap t
-    ounmap t
-    nunmap T
-    xunmap T
-    ounmap T
+    let l:root = trim(system("git rev-parse --show-toplevel"))
+    let l:fullpath = trim(system("realpath --relative-to=".l:root." ".l:file))
+    let l:include = '#include "'.l:fullpath.'"'
+    exe "normal! o" . l:include . "\<Esc>"
 endfunction
 
-function! Multiple_cursors_after()
-    nmap f <Plug>(clever-f-f)
-    xmap f <Plug>(clever-f-f)
-    omap f <Plug>(clever-f-f)
-    nmap F <Plug>(clever-f-F)
-    xmap F <Plug>(clever-f-F)
-    omap F <Plug>(clever-f-F)
-    nmap t <Plug>(clever-f-t)
-    xmap t <Plug>(clever-f-t)
-    omap t <Plug>(clever-f-t)
-    nmap T <Plug>(clever-f-T)
-    xmap T <Plug>(clever-f-T)
-    omap T <Plug>(clever-f-T)
+" Nerd Tree into Folder
+function! FzfCd() abort
+    let l:options = "../\n".trim(system("fd -t d"))
+    let l:file = trim(system("echo '".l:options."' | fzf-tmux -p --reverse"))
+    if l:file == ""
+        return
+    endif
+
+    let l:root = trim(system("git rev-parse --show-toplevel"))
+    let l:fullpath = trim(system("realpath ".l:file))
+
+    execute "cd ".l:fullpath
+    execute "NvimTreeRefresh"
 endfunction
 
-call Multiple_cursors_after()
+function! FzfCdIter() abort
+    let l:path = './'
+    while 1
+        let l:cmd = "fd --prune --base-directory=".l:path." -t d ."
 
-" Multiple Cursors
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_start_word_key      = '<C-m>'
-let g:multi_cursor_select_all_word_key = '<A-m>'
-let g:multi_cursor_start_key           = 'g<C-m>'
-let g:multi_cursor_select_all_key      = 'g<A-m>'
-let g:multi_cursor_next_key            = '<C-m>'
-let g:multi_cursor_prev_key            = '<C-n>'
-let g:multi_cursor_skip_key            = '<C-x>'
-let g:multi_cursor_quit_key            = '<Esc>'
+        let l:choices = ''
+        let l:choices .= '../\n'
+        let l:choices .= '<open>\n'
+        let l:choices .= trim(system(cmd))
+
+        if l:choices == ''
+            break
+        endif
+        let l:result = trim(system("echo '".l:choices."' | fzf-tmux -p --reverse"))
+
+        if l:result == '<open>'
+            break
+        endif
+
+        if l:result == ''
+            return
+        endif
+
+        let l:path = l:path.l:result.'/'
+    endwhile
+
+    if l:path == './'
+        return
+    endif
+
+    execute "cd ".l:path
+    execute "NvimTreeRefresh"
+endfunction!
