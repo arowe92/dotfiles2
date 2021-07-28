@@ -1,11 +1,11 @@
 " Options
-let g:GIT_TOOLS = 1
-let g:CPP_TOOLS = 0
-let g:GUI_TOOLS = 1
-let g:NVIM_TOOLS = 1
-let g:SNIPPETS = 1
-let g:AIRLINE = 1
-let g:TMUX = 1 && exists("$TMUX")
+let g:GIT_TOOLS = get(g:, 'GIT_TOOLS', 1)
+let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 1)
+let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
+let g:NVIM_TOOLS = get(g:, 'NVIM_TOOLS', 1)
+let g:SNIPPETS = get(g:, 'SNIPPETS', 0)
+let g:AIRLINE = get(g:, 'AIRLINE', 1)
+let g:TMUX = get(g:, 'TMUX', 1) && exists("$TMUX")
 
 if exists('$VIM_LITE')
     let g:GIT_TOOLS = 1
@@ -76,6 +76,7 @@ PlugDef 'brooth/far.vim' " Find & Replace
 PlugDef 'skywind3000/vim-quickui'
 PlugDef 'liuchengxu/vim-which-key'
 PlugDef 'kyazdani42/nvim-tree.lua'
+PlugDef 'simrat39/symbols-outline.nvim'
 endif
 
 if g:NVIM_TOOLS
@@ -258,6 +259,9 @@ let g:session_autosave_periodic=3
 let g:session_autosave='yes'
 let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
+
+let g:far#source='rgnvim'
+nnoremap <M-f> :execute(':F '.input('Search For: ').' **')<CR>
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -603,6 +607,7 @@ execute 'nnoremap <M-g> :Git '
 noremap <M-/> :Commentary<CR>
 nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 nnoremap <M-o> :ClangdSwitchSourceHeader<CR>
+nnoremap <M-u> :SymbolsOutline<CR>
 nnoremap Q :Bdelete menu<CR>
 noremap <leader><C-s> :WriteSession<CR>
 
@@ -725,6 +730,7 @@ vnoremap X "_D
 map <silent> n n
 
 " Easy Macros / Replacing
+nmap gs viwgs
 vmap gs "my/<C-R>m<CR>
 vmap <M-Q> gsNqq
 nmap <M-Q> viw<M-Q>
@@ -749,7 +755,7 @@ noremap <M-a> 1GVG
 " Paste line with in middle
 nnoremap <leader>sp "_r<Enter>PkJJ
 " run Clang
-nnoremap <leader>F :Clang<CR>
+nnoremap <leader>F :FormatClang<CR>
 
 " ===================
 " Custom Commands
@@ -857,6 +863,22 @@ endfunction
 
 function! Replace() abort
     let l:text = input("Text to Insert: ")
-    l:text = substitute(l:text, '/','\\/'. 'g')
+    let l:text = substitute(l:text, '/','\\/', 'g')
     execute ('%s/'.@".'/'.l:text.'/g')
 endfunction
+
+" ==== Custom 'Plugins' =====
+" ==== Copy To Other Window ====
+function! CopyOther() abort
+    let l:buffer = bufnr()
+    let l:line = line('.')
+    let l:col = col('.')
+    call win_gotoid(win_getid(max([3 - winnr(), 1])))
+    exe 'buffer '.l:buffer
+    call cursor(l:line, l:col)
+endfunction
+command! CopyOther :call CopyOther()
+
+noremap <C-x>c :CopyOther<CR>
+nnoremap gF :CopyOther \| norm gf
+
