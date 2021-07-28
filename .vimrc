@@ -82,6 +82,7 @@ endif
 if g:NVIM_TOOLS
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+PlugDef 'p00f/nvim-ts-rainbow'
 PlugDef 'hrsh7th/nvim-compe'
 PlugDef 'nvim-lua/popup.nvim'
 PlugDef 'nvim-lua/plenary.nvim'
@@ -152,7 +153,6 @@ PlugDef 'plasticboy/vim-markdown'
 PlugDef 'cespare/vim-toml'
 
 " ==== Appearance====
-PlugDef 'luochen1990/rainbow' | let g:rainbow_active = 1
 PlugDef 'Yggdroot/indentLine'
 PlugDef 'ryanoasis/vim-devicons'
 PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
@@ -219,7 +219,7 @@ endif
 "-------------------------
 if PlugLoaded('sonokai')
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
-let g:sonokai_style = 'andromeda'
+let g:sonokai_style = 'atlantis'
 let g:sonokai_enable_italic = 0
 let g:sonokai_disable_italic_comment = 0
 colorscheme sonokai
@@ -261,7 +261,7 @@ let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
 
 let g:far#source='rgnvim'
-nnoremap <M-f> :execute(':F '.input('Search For: ').' **')<CR>
+nnoremap <M-f> :execute(':F "'.input('Search For: ').'" **')<CR>
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -307,13 +307,9 @@ endif
 
 "==== Conflict Marker ====
 if PlugLoaded('conflict_marker')
-
-" =================
-"  Conflict Marker
-" =================
 let g:conflict_marker_enable_mappings = 1
-" nmap <buffer>]c <Plug>(conflict-marker-next-hunk)
-" nmap <buffer>[c <Plug>(conflict-marker-prev-hunk)
+" nmap <buffer>]x <Plug>(conflict-marker-next-hunk)
+" nmap <buffer>[x <Plug>(conflict-marker-prev-hunk)
 " nmap <buffer>ct <Plug>(conflict-marker-themselves)
 " nmap <buffer>co <Plug>(conflict-marker-ourselves)
 " nmap <buffer>cn <Plug>(conflict-marker-none)
@@ -540,8 +536,31 @@ require'nvim-treesitter.configs'.setup {
         node_incremental = "grn",
         scope_incremental = "grc",
         node_decremental = "gnm",
+    },
+    rainbow = {
+        enable = true,
+        extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+        max_file_lines = 1000, -- Do not enable for files with more than 1000 lines, int
+        colors = {
+            "#cc241d",
+            "#a89984",
+            "#b16286",
+            "#d79921",
+            "#689d6a",
+            "#d65d0e",
+            "#458588",
+            }, -- table of hex strings
+        termcolors = {
+            'Red',
+            'Green',
+            'Yellow',
+            'Blue',
+            'Magenta',
+            'Cyan',
+            'White',
+            } -- table of colour name strings
+        }
     }
-}
 EOF
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()

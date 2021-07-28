@@ -42,6 +42,7 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 export FZF_TMUX_OPTS="-p -w 65% -p 45%"
 export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
+# export FZF_DEFAULT_COMMAND="rg --hidden --follow --color=never"
 export FZF_DEFAULT_OPTS='--bind ctrl-e:preview-up,ctrl-y:preview-down,ctrl-u:preview-page-up,ctrl-d:preview-page-down --keep-right'
 
 ###################################
@@ -69,7 +70,6 @@ bindkey -M vicmd v edit-command-line
 zle -N fasd_svim
 bindkey '^o' fasd_svim
 
-bindkey -s '^f' '`fzf`'
 bindkey -s '^n' 'nvim\n'
 bindkey -M vicmd -s '^n' '^[invim\n'
 bindkey -s '^b' '`git branch | fzf`\t'
