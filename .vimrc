@@ -701,9 +701,9 @@ inoremap <C-e> <Esc>A
 nnoremap <expr>A getline('.') == '' ? "A\<C-f>" : "A"
 
 " Open / Close tags
-inoremap <M-[> [<CR><CR>]<UP><C-f>
 inoremap <M-{> {<CR><CR>}<UP><C-f>
-inoremap <M-(> (<CR><CR>)<UP><C-f>
+inoremap <M-[> []<Left>
+inoremap <M-(> ()<Left>
 inoremap <M-"> ""<Left>
 inoremap <M-'> ''<Left>
 
@@ -740,12 +740,16 @@ nnoremap <M-q> nzz@q
 if has('nvim')
 " Terminal Escape
 tnoremap <C-e> <C-\><C-n>
+tnoremap <C-k> <C-\><C-n><C-w>k
+tnoremap <C-j> <C-\><C-n><C-w>j
+tnoremap <C-l> <C-\><C-n><C-w>l
+tnoremap <C-h> <C-\><C-n><C-w>h
 autocmd TermOpen * setlocal nonumber norelativenumber
 endif
 
 " ==== Misc ====
 " Run Line in Vim
-nnoremap yr yy:<C-r>"<CR>
+autocmd FileType vim nnoremap <buffer> yr yy:<C-r>"<CR>
 " run line in shell
 nnoremap yR yy:!<C-r>"<CR>
 " Run Last Command
