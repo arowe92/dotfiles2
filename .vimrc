@@ -1,9 +1,8 @@
-" Options
 let g:GIT_TOOLS = get(g:, 'GIT_TOOLS', 1)
-let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 1)
+let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 0)
 let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
 let g:NVIM_TOOLS = get(g:, 'NVIM_TOOLS', 1)
-let g:SNIPPETS = get(g:, 'SNIPPETS', 0)
+let g:SNIPPETS = get(g:, 'SNIPPETS', 1)
 let g:AIRLINE = get(g:, 'AIRLINE', 1)
 let g:TMUX = get(g:, 'TMUX', 1) && exists("$TMUX")
 
@@ -69,6 +68,7 @@ PlugDef 'tpope/vim-surround'
 
 " GUI Essentials
 PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
+
 if g:GUI_TOOLS
 PlugDef 'mbbill/undotree'
 PlugDef 'yegappan/taglist'
@@ -104,7 +104,6 @@ endif
 
 " Tmux Integration
 if g:TMUX
-PlugDef 'preservim/vimux'
 PlugDef 'christoomey/vim-tmux-navigator'
 PlugDef 'roxma/vim-tmux-clipboard'
 PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -127,6 +126,7 @@ endif
 " Window Management
 PlugDef 'caenrique/nvim-maximize-window-toggle'
 PlugDef 'Asheq/close-buffers.vim'
+PlugDef 'caenrique/nvim-toggle-terminal'
 
 " Text Editing
 PlugDef 'terryma/vim-multiple-cursors'
@@ -159,8 +159,25 @@ PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
 
 " ==== Color schemes ====
 PlugDef 'sainnhe/sonokai'
+PlugDef 'AlessandroYorba/Sierra'
+PlugDef 'AlessandroYorba/Arcadia'
+PlugDef 'AlessandroYorba/Despacio'
+PlugDef 'AlessandroYorba/Breve'
+PlugDef 'AlessandroYorba/Alduin'
 
 call plug#end()
+
+"=========================
+" Appearance
+"-------------------------
+if PlugLoaded('sonokai')
+" Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
+let g:sonokai_style = 'maia'
+let g:sonokai_enable_italic = 0
+let g:sonokai_disable_italic_comment = 0
+endif
+
+colorscheme sonokai
 
 "=========================
 "    General Settings
@@ -213,17 +230,6 @@ GuiFont FuraMono NF:h11
 endif
 
 "== General Settings End ==
-
-"=========================
-" Appearance
-"-------------------------
-if PlugLoaded('sonokai')
-" Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
-let g:sonokai_style = 'atlantis'
-let g:sonokai_enable_italic = 0
-let g:sonokai_disable_italic_comment = 0
-colorscheme sonokai
-endif
 
 "=========================
 "    Plugin Settings
@@ -351,12 +357,9 @@ map <Leader>h <Plug>(easymotion-linebackward)
 endif
 
 "===== Vimux =============
-if PlugLoaded('vimux')
-let g:VimuxOrientation = "h"
-
-noremap <M-`> :VimuxTogglePane<CR>
-noremap <M-R> :VimuxPrompt:Command<CR>
-noremap <M-r> :VimuxRunLastCommand<CR>
+if PlugLoaded('toggle_terminal')
+noremap <silent> <M-`> :ToggleTerminal<CR>
+tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 " ==== Telescope =========
@@ -364,6 +367,7 @@ if PlugLoaded('telescope_nvim')
 nnoremap <C-p> <cmd>Files<cr>
 nnoremap <M-p> <cmd>Telescope frecency<cr>
 nnoremap <M-P> <cmd>Telescope command_history<cr>
+nnoremap <M-t> <cmd>Telescope<cr>
 
 nnoremap <leader>pp <cmd>Telescope find_files<cr>
 nnoremap <leader>pc :Telescope commands<CR>
@@ -472,13 +476,13 @@ endif
 " ==== Multiple Cursors ====
 if PlugLoaded("vim_multiple_cursors")
 let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_start_word_key      = '<C-m>'
-let g:multi_cursor_select_all_word_key = '<A-m>'
-let g:multi_cursor_start_key           = 'g<C-m>'
-let g:multi_cursor_select_all_key      = 'g<A-m>'
-let g:multi_cursor_next_key            = '<C-m>'
-let g:multi_cursor_prev_key            = '<C-n>'
-let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_start_word_key      = '<A-m>'
+let g:multi_cursor_select_all_word_key = '<A-M>'
+let g:multi_cursor_start_key           = 'g<A-m>'
+let g:multi_cursor_select_all_key      = 'g<A-M>'
+let g:multi_cursor_next_key            = '<A-m>'
+let g:multi_cursor_prev_key            = '<A-n>'
+let g:multi_cursor_skip_key            = '<A-N>'
 let g:multi_cursor_quit_key            = '<Esc>'
 
 function! Multiple_cursors_before()
@@ -579,6 +583,14 @@ vmap <A-s> grn
 vmap <A-S> grm
 nmap cM gnngrngrnc
 endif
+
+" Interesting Words
+let g:interestingWordsDefaultMappings = 0
+let g:interestingWordsRandomiseColors = 1
+nnoremap <silent> <leader>xi :call InterestingWords('n')<cr>
+vnoremap <silent> <leader>xi :call InterestingWords('v')<cr>
+nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
+
 "=========================
 "  Key Mappings
 "=========================
@@ -620,6 +632,24 @@ if PlugLoaded('sideways')
 noremap <M-<> :SidewaysLeft<CR>
 noremap <M->> :SidewaysRight<CR>
 endif
+
+" ==== Custom 'Plugins' =====
+" Copy To Other Window
+if 1
+function! CopyOther() abort
+    let l:buffer = bufnr()
+    let l:line = line('.')
+    let l:col = col('.')
+    call win_gotoid(win_getid(max([3 - winnr(), 1])))
+    exe 'buffer '.l:buffer
+    call cursor(l:line, l:col)
+endfunction
+command! CopyOther :call CopyOther()
+
+noremap <C-x>c :CopyOther<CR>
+nnoremap gF :CopyOther \| norm gf
+endif
+
 
 " Misc Plugins
 execute 'nnoremap <M-g> :Git '
@@ -717,7 +747,7 @@ nnoremap <A-7> <C-x>
 inoremap <C-v> <C-r>"
 " Move to End of line
 inoremap <C-e> <Esc>A
-nnoremap <expr>A getline('.') == '' ? "A\<C-f>" : "A"
+nnoremap <expr>A getline('.') == '' ? "A<C-f>" : "A"
 
 " Open / Close tags
 inoremap <M-{> {<CR><CR>}<UP><C-f>
@@ -817,7 +847,9 @@ augroup Cmds
     " Make C++ file doxygen
     autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen | set colorcolumn=120
     " Make Quick fix Preview By default
-    autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
+    " autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
+    autocmd BufRead *.cc,*.h setlocal bufhidden=delete
+    autocmd BufModifiedSet,BufWrite *.cc,*.h setlocal bufhidden=hide
 augroup END
 
 " ==== Fzf Functions ====
@@ -889,19 +921,4 @@ function! Replace() abort
     let l:text = substitute(l:text, '/','\\/', 'g')
     execute ('%s/'.@".'/'.l:text.'/g')
 endfunction
-
-" ==== Custom 'Plugins' =====
-" ==== Copy To Other Window ====
-function! CopyOther() abort
-    let l:buffer = bufnr()
-    let l:line = line('.')
-    let l:col = col('.')
-    call win_gotoid(win_getid(max([3 - winnr(), 1])))
-    exe 'buffer '.l:buffer
-    call cursor(l:line, l:col)
-endfunction
-command! CopyOther :call CopyOther()
-
-noremap <C-x>c :CopyOther<CR>
-nnoremap gF :CopyOther \| norm gf
 

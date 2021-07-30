@@ -44,6 +44,7 @@ export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hi
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 # export FZF_DEFAULT_COMMAND="rg --hidden --follow --color=never"
 export FZF_DEFAULT_OPTS='--bind ctrl-e:preview-up,ctrl-y:preview-down,ctrl-u:preview-page-up,ctrl-d:preview-page-down --keep-right'
+export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
 
 ###################################
 ## EVALS
