@@ -64,10 +64,13 @@ command! -nargs=+ PlugDef call PlugDef(<f-args>)
 PlugDef 'easymotion/vim-easymotion'
 PlugDef 'rhysd/clever-f.vim'
 PlugDef 'bogado/file-line'
-PlugDef 'tpope/vim-surround'
+" PlugDef 'tpope/vim-surround'
+PlugDef 'machakann/vim-sandwich'
 
 " GUI Essentials
 PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
+PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
+PlugDef 'junegunn/fzf.vim'
 
 if g:GUI_TOOLS
 PlugDef 'mbbill/undotree'
@@ -89,6 +92,8 @@ PlugDef 'nvim-lua/plenary.nvim'
 PlugDef 'nvim-telescope/telescope.nvim'
 PlugDef 'nvim-telescope/telescope-frecency.nvim'
 PlugDef 'tami5/sql.nvim'
+PlugDef 'RishabhRD/popfix'
+PlugDef 'RishabhRD/nvim-lsputils'
 endif
 
 if g:GIT_TOOLS
@@ -106,8 +111,6 @@ endif
 if g:TMUX
 PlugDef 'christoomey/vim-tmux-navigator'
 PlugDef 'roxma/vim-tmux-clipboard'
-PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
-PlugDef 'junegunn/fzf.vim'
 endif
 
 " Snippets
@@ -164,6 +167,10 @@ PlugDef 'AlessandroYorba/Arcadia'
 PlugDef 'AlessandroYorba/Despacio'
 PlugDef 'AlessandroYorba/Breve'
 PlugDef 'AlessandroYorba/Alduin'
+PlugDef 'morhetz/gruvbox'
+" PlugDef 'codota/tabnine-vim'
+PlugDef 'tzachar/compe-tabnine', { 'do': './install.sh' }
+PlugDef 'chrisbra/Colorizer'
 
 call plug#end()
 
@@ -308,7 +315,12 @@ let g:which_key_map.d = { 'name' : '+vimspector' }
 let g:which_key_map.e = { 'name' : '+edit' }
 let g:which_key_map.g = { 'name' : '+git' }
 let g:which_key_map.x = { 'name' : '+extension' }
+let g:which_key_map.W = { 'name' : '+WhichKey' }
+
 call which_key#register('<Space>', "g:which_key_map")
+
+" Show Help for char
+noremap <leader>W <cmd>execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
 "==== Conflict Marker ====
@@ -347,7 +359,7 @@ endif
 if PlugLoaded('easymotion')
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
 map <leader>f <Plug>(easymotion-bd-f2)
-map s <Plug>(easymotion-bd-f)
+map <leader>s <Plug>(easymotion-bd-f)
 map <Leader>w <Plug>(easymotion-bd-w)
 
 map <Leader>l <Plug>(easymotion-lineforward)
@@ -360,18 +372,21 @@ endif
 if PlugLoaded('toggle_terminal')
 noremap <silent> <M-`> :ToggleTerminal<CR>
 tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
+noremap <silent> <M-r> :ToggleTerminal<CR>
+tnoremap <silent> <M-r> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 " ==== Telescope =========
 if PlugLoaded('telescope_nvim')
-nnoremap <C-p> <cmd>Files<cr>
-nnoremap <M-p> <cmd>Telescope frecency<cr>
-nnoremap <M-P> <cmd>Telescope command_history<cr>
+nnoremap <C-p> <cmd>Telescope files<cr>
+nnoremap <M-p> <cmd>Telescope oldfiles<cr>
+nnoremap <M-P> <cmd>Telescope commands<cr>
 nnoremap <M-t> <cmd>Telescope<cr>
 
 nnoremap <leader>pp <cmd>Telescope find_files<cr>
 nnoremap <leader>pc :Telescope commands<CR>
 nnoremap <leader>ph :Telescope oldfiles<CR>
+nnoremap <leader>pH :Telescope frecency<CR>
 nnoremap <leader>pB :Telescope file_browser<CR>
 nnoremap <leader>pC :Telescope command_history<CR>
 nnoremap <leader>pb :Telescope buffers<CR>
@@ -381,17 +396,18 @@ nnoremap <leader>pg :Telescope current_buffer_fuzzy_find<CR>
 nnoremap <leader>py :Telescope filetypes<CR>
 nnoremap <leader>pu :Telescope lsp_document_symbols<CR>
 
+if PlugLoaded('telescope_frecency')
+lua require "telescope".load_extension("frecency")
+endif
+endif
+
+if PlugLoaded('fzf')
+nnoremap <C-p> <cmd>Files<cr>
 nnoremap <leader>pi :Include<CR>
 nnoremap <leader>po :FasdFile<CR>
 nnoremap <leader>pO :FasdDir<CR>
 nnoremap <leader>pz :FzfCd<CR>
 nnoremap <leader>pZ :FzfCdIter<CR>
-
-
-if PlugLoaded('telescope_frecency')
-lua require "telescope".load_extension("frecency")
-endif
-
 endif
 
 " ==== Compe =====
@@ -412,17 +428,19 @@ let g:compe.max_menu_width = 100
 let g:compe.documentation = v:true
 
 let g:compe.source = {}
-let g:compe.source.path = v:true
-let g:compe.source.buffer = v:true
-let g:compe.source.calc = v:true
-let g:compe.source.nvim_lsp = v:true
-let g:compe.source.ultisnips = v:true
+let g:compe.source.nvim_lsp = {"priotity": 100}
+let g:compe.source.path = {"priotity": 90}
+let g:compe.source.ultisnips = {"priotity": 80}
+let g:compe.source.tabnine = {"priotity": 80}
+let g:compe.source.buffer = {"priotity": 70}
+let g:compe.source.calc = {"priority": 60}
 
 inoremap <silent><expr> <C-Space> compe#complete()
-inoremap <silent><expr> <CR>      compe#confirm({'keys': '<CR>', 'select': 1})
+inoremap <silent><expr> <CR>     compe#confirm({'keys': '<CR>', 'select': 1})
 inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+inoremap <silent> <M-CR> <CR>
 endif
 " ----------------------
 
@@ -440,6 +458,9 @@ nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> gH <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> gt <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> gy <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> gY <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+
 
 nnoremap <silent> <leader>cwa <cmd>lua vim.lsp.buf.add_workspace_folder()<CR>
 nnoremap <silent> <leader>cwr <cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>
@@ -451,6 +472,21 @@ nnoremap <silent> <leader>c[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> <leader>c] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
+
+endif
+
+" === LSPUtil
+if PlugLoaded('lsputils')
+lua <<EOF
+vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
+vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
+vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
+vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
+vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
+EOF
 endif
 
 " ==== CleverF =====
@@ -476,13 +512,11 @@ endif
 " ==== Multiple Cursors ====
 if PlugLoaded("vim_multiple_cursors")
 let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_start_word_key      = '<A-m>'
-let g:multi_cursor_select_all_word_key = '<A-M>'
-let g:multi_cursor_start_key           = 'g<A-m>'
-let g:multi_cursor_select_all_key      = 'g<A-M>'
-let g:multi_cursor_next_key            = '<A-m>'
+let g:multi_cursor_start_word_key      = '<A-d>'
+let g:multi_cursor_select_all_word_key = '<A-D>'
+let g:multi_cursor_next_key            = '<A-d>'
 let g:multi_cursor_prev_key            = '<A-n>'
-let g:multi_cursor_skip_key            = '<A-N>'
+let g:multi_cursor_skip_key            = '<A-m>'
 let g:multi_cursor_quit_key            = '<Esc>'
 
 function! Multiple_cursors_before()
@@ -596,12 +630,12 @@ nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 "=========================
 
 " Surround
-if PlugLoaded('vim_surround')
-nnoremap <leader>0 :normal ysiw)<CR>i
-nnoremap yss :normal ysiw"<CR>
-nnoremap ysS :normal ysiw'<CR>
-nnoremap ysa :normal ysiW"<CR>
-nnoremap ysA :normal ysiW'<CR>
+if PlugLoaded('vim_sandwich')
+nnoremap sf :normal saiwf<CR>
+nnoremap sF :normal saiWf<CR>
+
+let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
+let g:sandwich#recipes += [{'buns': ['sandwich#magicchar#c#fname()', '">"'], 'kind': ['add', 'replace'], 'action': ['add'], 'expr': 1, 'input': ['c']}]
 endif
 
 " VimSpector
@@ -793,6 +827,8 @@ tnoremap <C-k> <C-\><C-n><C-w>k
 tnoremap <C-j> <C-\><C-n><C-w>j
 tnoremap <C-l> <C-\><C-n><C-w>l
 tnoremap <C-h> <C-\><C-n><C-w>h
+nnoremap <leader>t <cmd>vsplit \| wincmd l \| term<CR>
+nnoremap <leader>T <cmd>split \| wincmd j \| resize 10 \|term<CR>
 autocmd TermOpen * setlocal nonumber norelativenumber
 endif
 
@@ -850,6 +886,7 @@ augroup Cmds
     " autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
     autocmd BufRead *.cc,*.h setlocal bufhidden=delete
     autocmd BufModifiedSet,BufWrite *.cc,*.h setlocal bufhidden=hide
+    autocmd BufRead * if &filetype == 'vim' | nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> | endif
 augroup END
 
 " ==== Fzf Functions ====

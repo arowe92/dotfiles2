@@ -39,7 +39,7 @@ export EDITOR=nvim
 export _FASD_BACKENDS="native spotlight recently-used current"
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
-export FZF_TMUX_OPTS="-p -w 65% -p 45%"
+export FZF_TMUX_OPTS="-p70%,70%"
 export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 # export FZF_DEFAULT_COMMAND="rg --hidden --follow --color=never"
