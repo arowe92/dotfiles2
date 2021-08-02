@@ -69,6 +69,8 @@ PlugDef 'machakann/vim-sandwich'
 " GUI Essentials
 PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
 PlugDef 'dstein64/nvim-scrollview'
+PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
+PlugDef 'junegunn/fzf.vim'
 
 if g:GUI_TOOLS
 PlugDef 'mbbill/undotree'
@@ -99,7 +101,7 @@ PlugDef 'nvim-telescope/telescope.nvim'
 PlugDef 'tami5/sql.nvim'
 PlugDef 'nvim-telescope/telescope-frecency.nvim'
 
-"LSP Config
+" LSP Config
 PlugDef 'RishabhRD/popfix'
 PlugDef 'RishabhRD/nvim-lsputils'
 PlugDef 'neovim/nvim-lspconfig'
@@ -121,8 +123,6 @@ endif
 if g:TMUX
 PlugDef 'christoomey/vim-tmux-navigator'
 PlugDef 'roxma/vim-tmux-clipboard'
-PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
-PlugDef 'junegunn/fzf.vim'
 endif
 
 " Snippets
@@ -179,6 +179,10 @@ PlugDef 'AlessandroYorba/Arcadia'
 PlugDef 'AlessandroYorba/Despacio'
 PlugDef 'AlessandroYorba/Breve'
 PlugDef 'AlessandroYorba/Alduin'
+PlugDef 'morhetz/gruvbox'
+" PlugDef 'codota/tabnine-vim'
+PlugDef 'tzachar/compe-tabnine', { 'do': './install.sh' }
+PlugDef 'chrisbra/Colorizer'
 
 call plug#end()
 
@@ -334,9 +338,12 @@ let g:which_key_map.e = { 'name' : '+edit' }
 let g:which_key_map.g = { 'name' : '+git' }
 let g:which_key_map.x = { 'name' : '+extension' }
 let g:which_key_map['!'] = { 'name' : '+toggle' }
+let g:which_key_map.W = { 'name' : '+WhichKey' }
+
 call which_key#register('<Space>', "g:which_key_map")
 
-noremap <silent> <leader>W :execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
+" Show Help for char
+noremap <leader>W <cmd>execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
 "==== Conflict Marker ====
@@ -412,17 +419,18 @@ nnoremap <leader>pg :Telescope current_buffer_fuzzy_find<CR>
 nnoremap <leader>py :Telescope filetypes<CR>
 nnoremap <leader>pu :Telescope lsp_document_symbols<CR>
 
+if PlugLoaded('telescope_frecency')
+lua require "telescope".load_extension("frecency")
+endif
+endif
+
+if PlugLoaded('fzf')
+nnoremap <C-p> <cmd>Files<cr>
 nnoremap <leader>pi :Include<CR>
 nnoremap <leader>po :FasdFile<CR>
 nnoremap <leader>pO :FasdDir<CR>
 nnoremap <leader>pz :FzfCd<CR>
 nnoremap <leader>pZ :FzfCdIter<CR>
-
-
-if PlugLoaded('telescope_frecency')
-lua require "telescope".load_extension("frecency")
-endif
-
 endif
 
 " ==== Compe =====
@@ -451,10 +459,11 @@ let g:compe.source.ultisnips = v:true
 let g:compe.source.tabnine = v:true
 
 inoremap <silent><expr> <C-Space> compe#complete()
-inoremap <silent><expr> <CR>      compe#confirm({'keys': '<CR>', 'select': 1})
+inoremap <silent><expr> <CR>     compe#confirm({'keys': '<CR>', 'select': 1})
 inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+inoremap <silent> <M-CR> <CR>
 endif
 " ----------------------
 
@@ -472,6 +481,9 @@ nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> gH <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> gt <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> gy <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> gY <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+
 
 nnoremap <silent> <leader>cwa <cmd>lua vim.lsp.buf.add_workspace_folder()<CR>
 nnoremap <silent> <leader>cwr <cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>
@@ -485,6 +497,21 @@ nnoremap <silent> [c <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> ]c <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
+
+endif
+
+" === LSPUtil
+if PlugLoaded('lsputils')
+lua <<EOF
+vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
+vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
+vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
+vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
+vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
+EOF
 endif
 
 if PlugLoaded('nvim_lsputils')
@@ -523,13 +550,11 @@ endif
 " ==== Multiple Cursors ====
 if PlugLoaded("vim_multiple_cursors")
 let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_start_word_key      = '<A-m>'
-let g:multi_cursor_select_all_word_key = '<A-M>'
-let g:multi_cursor_start_key           = 'g<A-m>'
-let g:multi_cursor_select_all_key      = 'g<A-M>'
-let g:multi_cursor_next_key            = '<A-m>'
+let g:multi_cursor_start_word_key      = '<A-d>'
+let g:multi_cursor_select_all_word_key = '<A-D>'
+let g:multi_cursor_next_key            = '<A-d>'
 let g:multi_cursor_prev_key            = '<A-n>'
-let g:multi_cursor_skip_key            = '<A-N>'
+let g:multi_cursor_skip_key            = '<A-m>'
 let g:multi_cursor_quit_key            = '<Esc>'
 
 function! Multiple_cursors_before()
@@ -865,6 +890,7 @@ tnoremap <C-h> <C-\><C-n><C-w>h
 
 nnoremap <silent> <leader>t <cmd>vsplit \| wincmd l \| term<CR>
 nnoremap <silent> <leader>T <cmd>split \| wincmd j \| resize 10 \|term<CR>
+tnoremap <silent> <M-CR> <C-\><C-n>:ToggleOnly<CR>A
 
 augroup TerminalCmd
 au!
@@ -942,6 +968,7 @@ augroup Cmds
     autocmd BufRead * setlocal iskeyword-=:
     autocmd BufRead * setlocal iskeyword-=]
     autocmd BufRead * setlocal iskeyword-=[
+    autocmd BufRead * if &filetype == 'vim' | nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> | endif
 augroup END
 
 " ==== Fzf Functions ====
