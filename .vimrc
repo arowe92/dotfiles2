@@ -131,9 +131,9 @@ PlugDef 'liuchengxu/vim-which-key'
 PlugDef 'kyazdani42/nvim-tree.lua'
 PlugDef 'simrat39/symbols-outline.nvim'
 endif
+
 " ------------------------------------------------------------------
 if g:NVIM_TOOLS
-
 " TreeSitter
 PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 PlugDef 'p00f/nvim-ts-rainbow'
@@ -190,6 +190,7 @@ endif
 " ------------------------------------------------------------------
 " Sandbox
 PlugDef 'kana/vim-arpeggio'
+PlugDef 'mhinz/vim-startify'
 
 call plug#end()
 
@@ -289,6 +290,7 @@ let g:airline#extensions#nvimlsp#enabled = 1
 endif
 
 if PlugLoaded('arpeggio')
+call arpeggio#load()
 Arpeggionmap jk i
 Arpeggioimap jk <Esc>
 Arpeggionmap hl <S-Tab>
