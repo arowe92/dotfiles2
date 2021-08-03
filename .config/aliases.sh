@@ -11,7 +11,7 @@ _exists () {
 ## Aliases
 alias s='git status 2>/dev/null || (pwd && ls -lF)'
 alias add='git add --patch'
-alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw;"
+alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw; rm $HOME/.local/share/nvim/swap/*"
 
 alias cranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 

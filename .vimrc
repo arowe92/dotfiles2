@@ -64,7 +64,7 @@ command! -nargs=+ PlugDef call PlugDef(<f-args>)
 PlugDef 'easymotion/vim-easymotion'
 PlugDef 'rhysd/clever-f.vim'
 PlugDef 'bogado/file-line'
-PlugDef 'tpope/vim-surround'
+PlugDef 'machakann/vim-sandwich'
 
 " GUI Essentials
 PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
@@ -80,15 +80,28 @@ PlugDef 'simrat39/symbols-outline.nvim'
 endif
 
 if g:NVIM_TOOLS
-PlugDef 'neovim/nvim-lspconfig'
+
+" TreeSitter
 PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 PlugDef 'p00f/nvim-ts-rainbow'
+
+" compe
 PlugDef 'hrsh7th/nvim-compe'
+PlugDef 'tzachar/compe-tabnine', { 'do': './install.sh' }
+
+" Telescope
 PlugDef 'nvim-lua/popup.nvim'
 PlugDef 'nvim-lua/plenary.nvim'
 PlugDef 'nvim-telescope/telescope.nvim'
-PlugDef 'nvim-telescope/telescope-frecency.nvim'
+
+" Frecency
 PlugDef 'tami5/sql.nvim'
+PlugDef 'nvim-telescope/telescope-frecency.nvim'
+
+"LSP Config
+PlugDef 'RishabhRD/popfix'
+PlugDef 'RishabhRD/nvim-lsputils'
+PlugDef 'neovim/nvim-lspconfig'
 endif
 
 if g:GIT_TOOLS
@@ -172,7 +185,7 @@ call plug#end()
 "-------------------------
 if PlugLoaded('sonokai')
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
-let g:sonokai_style = 'maia'
+let g:sonokai_style = 'andromeda'
 let g:sonokai_enable_italic = 0
 let g:sonokai_disable_italic_comment = 0
 endif
@@ -290,12 +303,18 @@ let g:vim_printer_items = {
 if PlugLoaded('nvim_tree_lua')
 noremap <leader>\ :NvimTreeToggle<CR>
 noremap <leader>\| :NvimTreeFindFile<CR>
+noremap <leader>tp :call TogglePicker()<CR>
 
 let g:nvim_tree_hijack_netrw = 1
 let g:nvim_tree_disable_window_picker = 1
 let g:nvim_tree_highlight_opened_files = 1
 let g:nvim_tree_git_hl = 1
 let g:nvim_tree_update_cwd = 1
+
+function TogglePicker()
+let g:nvim_tree_disable_window_picker =  1 - g:nvim_tree_disable_window_picker
+endfunction
+
 endif
 
 " ====== Which Key =======
@@ -347,7 +366,7 @@ endif
 if PlugLoaded('easymotion')
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
 map <leader>f <Plug>(easymotion-bd-f2)
-map s <Plug>(easymotion-bd-f)
+map <leader>s <Plug>(easymotion-bd-f)
 map <Leader>w <Plug>(easymotion-bd-w)
 
 map <Leader>l <Plug>(easymotion-lineforward)
@@ -360,20 +379,23 @@ endif
 if PlugLoaded('toggle_terminal')
 noremap <silent> <M-`> :ToggleTerminal<CR>
 tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
+noremap <silent> <M-r> :ToggleTerminal<CR>
+tnoremap <silent> <M-r> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 " ==== Telescope =========
 if PlugLoaded('telescope_nvim')
 nnoremap <C-p> <cmd>Files<cr>
-nnoremap <M-p> <cmd>Telescope frecency<cr>
+nnoremap <M-p> <cmd>Telescope oldfiles<cr>
 nnoremap <M-P> <cmd>Telescope command_history<cr>
 nnoremap <M-t> <cmd>Telescope<cr>
 
 nnoremap <leader>pp <cmd>Telescope find_files<cr>
 nnoremap <leader>pc :Telescope commands<CR>
-nnoremap <leader>ph :Telescope oldfiles<CR>
-nnoremap <leader>pB :Telescope file_browser<CR>
 nnoremap <leader>pC :Telescope command_history<CR>
+nnoremap <leader>ph :Telescope oldfiles<CR>
+nnoremap <leader>pH :Telescope frecency<CR>
+nnoremap <leader>pB :Telescope file_browser<CR>
 nnoremap <leader>pb :Telescope buffers<CR>
 nnoremap <leader>pa :Telescope current_buffer_tags<CR>
 nnoremap <leader>pt :Telescope tags<CR>
@@ -417,6 +439,7 @@ let g:compe.source.buffer = v:true
 let g:compe.source.calc = v:true
 let g:compe.source.nvim_lsp = v:true
 let g:compe.source.ultisnips = v:true
+let g:compe.source.tabnine = v:true
 
 inoremap <silent><expr> <C-Space> compe#complete()
 inoremap <silent><expr> <CR>      compe#confirm({'keys': '<CR>', 'select': 1})
@@ -451,6 +474,19 @@ nnoremap <silent> <leader>c[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> <leader>c] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
+endif
+
+if PlugLoaded('nvim_lsputils')
+lua <<EOF
+vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
+vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
+vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
+vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
+vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
+EOF
 endif
 
 " ==== CleverF =====
@@ -596,12 +632,7 @@ nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 "=========================
 
 " Surround
-if PlugLoaded('vim_surround')
-nnoremap <leader>0 :normal ysiw)<CR>i
-nnoremap yss :normal ysiw"<CR>
-nnoremap ysS :normal ysiw'<CR>
-nnoremap ysa :normal ysiW"<CR>
-nnoremap ysA :normal ysiW'<CR>
+if PlugLoaded('vim-sandwich')
 endif
 
 " VimSpector
