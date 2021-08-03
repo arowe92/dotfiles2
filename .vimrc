@@ -279,8 +279,10 @@ let g:session_autosave='yes'
 let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
 
+if PlugLoaded('far')
 let g:far#source='rgnvim'
 nnoremap <M-f> :execute(':F "'.input('Search For: ').'" **')<CR>
+endif
 
 " == FZF ==
 " Use tmux FZF if tmux exists
@@ -303,7 +305,7 @@ let g:vim_printer_items = {
 if PlugLoaded('nvim_tree_lua')
 noremap <leader>\ :NvimTreeToggle<CR>
 noremap <leader>\| :NvimTreeFindFile<CR>
-noremap <leader>tp :call TogglePicker()<CR>
+noremap <leader>!p :call TogglePicker()<CR>
 
 let g:nvim_tree_hijack_netrw = 1
 let g:nvim_tree_disable_window_picker = 1
@@ -327,7 +329,10 @@ let g:which_key_map.d = { 'name' : '+vimspector' }
 let g:which_key_map.e = { 'name' : '+edit' }
 let g:which_key_map.g = { 'name' : '+git' }
 let g:which_key_map.x = { 'name' : '+extension' }
+let g:which_key_map['!'] = { 'name' : '+toggle' }
 call which_key#register('<Space>', "g:which_key_map")
+
+noremap <leader>W :execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
 "==== Conflict Marker ====
@@ -632,7 +637,16 @@ nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 "=========================
 
 " Surround
-if PlugLoaded('vim-sandwich')
+if PlugLoaded('vim_sandwich')
+nnoremap sf :normal saiwf<CR>
+nnoremap sF :normal saiWf<CR>
+
+let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
+
+nnoremap sdc :normal srb(sdf<CR>
+nnoremap src :normal srb(srff<CR>:normal srb<<CR>
+nnoremap sac :normal saiwf<CR>:normal srb<<CR>
+nnoremap saC :normal saiWf<CR>:normal srb<<CR>
 endif
 
 " VimSpector
@@ -703,7 +717,8 @@ inoremap <C-s> <ESC>:w<CR>
 " File /Buffer Operations
 nnoremap <C-c> :echo 'ctrl-c thrice to quit'<CR>
 nnoremap <C-c><C-c><C-c> :qall!<CR>
-map <C-w> :bd<CR>
+map <C-w> :close<CR>
+map <M-w> :bd<CR>
 map <C-q> :q<CR>
 
 " Easy Indenting
@@ -816,15 +831,21 @@ vmap <M-Q> gsNqq
 nmap <M-Q> viw<M-Q>
 nnoremap <M-q> nzz@q
 
-" === NVIM specific ===
+" === Terminal Maps ===
 if has('nvim')
-" Terminal Escape
 tnoremap <C-e> <C-\><C-n>
 tnoremap <C-k> <C-\><C-n><C-w>k
 tnoremap <C-j> <C-\><C-n><C-w>j
 tnoremap <C-l> <C-\><C-n><C-w>l
 tnoremap <C-h> <C-\><C-n><C-w>h
+
+nnoremap <silent> <leader>t <cmd>vsplit \| wincmd l \| term<CR>
+nnoremap <silent> <leader>T <cmd>split \| wincmd j \| resize 10 \|term<CR>
+
 autocmd TermOpen * setlocal nonumber norelativenumber
+autocmd TermOpen * normal i
+autocmd BufEnter * if bufname() =~ '^term:///' | exe 'normal A' | endif
+augroup END
 endif
 
 " ==== Misc ====
