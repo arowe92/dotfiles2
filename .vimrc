@@ -1,3 +1,8 @@
+"""""""""""""""""""
+"  Master Vim RC  "
+"""""""""""""""""""
+
+" RC Configuration
 let g:GIT_TOOLS = get(g:, 'GIT_TOOLS', 1)
 let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 0)
 let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
@@ -6,6 +11,7 @@ let g:SNIPPETS = get(g:, 'SNIPPETS', 1)
 let g:AIRLINE = get(g:, 'AIRLINE', 1)
 let g:TMUX = get(g:, 'TMUX', 1) && exists("$TMUX")
 
+" Light Weight Config
 if exists('$VIM_LITE')
     let g:GIT_TOOLS = 1
     let g:CPP_TOOLS = 0
@@ -15,6 +21,7 @@ if exists('$VIM_LITE')
     let g:AIRLINE = 0
 endif
 
+" Nvim VSCode Plugin Options
 if exists('g:vscode')
     let g:GIT_TOOLS = 0
     let g:CPP_TOOLS = 0
@@ -24,15 +31,12 @@ if exists('g:vscode')
     let g:AIRLINE = 0
 endif
 
-
 " Install vim-plug if it doesnt exist
 if empty(glob('~/.vim/autoload/plug.vim'))
-        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
-call plug#begin()
 
+call plug#begin()
 " Plugin Helpers
 function! FormatPlugName(name) abort
     let l:name = a:name
@@ -60,6 +64,7 @@ function! PlugDef(...) abort
 endfunction
 command! -nargs=+ PlugDef call PlugDef(<f-args>)
 
+" ------------------------------------------------------------------
 " Essentials
 PlugDef 'easymotion/vim-easymotion'
 PlugDef 'rhysd/clever-f.vim'
@@ -72,6 +77,51 @@ PlugDef 'dstein64/nvim-scrollview'
 PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
 PlugDef 'junegunn/fzf.vim'
 
+" Window Management
+PlugDef 'caenrique/nvim-maximize-window-toggle'
+PlugDef 'Asheq/close-buffers.vim'
+PlugDef 'caenrique/nvim-toggle-terminal'
+
+" Text Editing
+PlugDef 'terryma/vim-multiple-cursors'
+PlugDef 'AndrewRadev/sideways.vim'
+PlugDef 'tpope/vim-commentary'
+PlugDef 'tpope/vim-sensible'
+PlugDef 'tpope/vim-eunuch' " Unix Commands
+PlugDef 'meain/vim-printer'
+
+" Misc
+PlugDef 'tpope/vim-repeat'
+PlugDef 'lfv89/vim-interestingwords'
+PlugDef 'xolox/vim-misc'
+PlugDef 'xolox/vim-session'
+
+" Language Support
+PlugDef 'MaxMEllon/vim-jsx-pretty'
+PlugDef 'pangloss/vim-javascript',  { 'for': 'javascript' }
+PlugDef 'elixir-editors/vim-elixir'
+PlugDef 'rust-lang/rust.vim'
+PlugDef 'MTDL9/vim-log-highlighting'
+PlugDef 'plasticboy/vim-markdown'
+PlugDef 'cespare/vim-toml'
+
+" Appearance
+" PlugDef 'Yggdroot/indentLine'
+PlugDef 'lukas-reineke/indent-blankline.nvim'
+PlugDef 'ryanoasis/vim-devicons'
+PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
+
+" Color schemes
+PlugDef 'sainnhe/sonokai'
+PlugDef 'AlessandroYorba/Sierra'
+PlugDef 'AlessandroYorba/Arcadia'
+PlugDef 'AlessandroYorba/Despacio'
+PlugDef 'AlessandroYorba/Breve'
+PlugDef 'AlessandroYorba/Alduin'
+PlugDef 'morhetz/gruvbox'
+PlugDef 'chrisbra/Colorizer'
+
+" ------------------------------------------------------------------
 if g:GUI_TOOLS
 PlugDef 'mbbill/undotree'
 PlugDef 'yegappan/taglist'
@@ -81,7 +131,7 @@ PlugDef 'liuchengxu/vim-which-key'
 PlugDef 'kyazdani42/nvim-tree.lua'
 PlugDef 'simrat39/symbols-outline.nvim'
 endif
-
+" ------------------------------------------------------------------
 if g:NVIM_TOOLS
 
 " TreeSitter
@@ -106,83 +156,40 @@ PlugDef 'RishabhRD/popfix'
 PlugDef 'RishabhRD/nvim-lsputils'
 PlugDef 'neovim/nvim-lspconfig'
 endif
-
+" ------------------------------------------------------------------
 if g:GIT_TOOLS
 PlugDef 'tpope/vim-fugitive'
 PlugDef 'airblade/vim-gitgutter'
 PlugDef 'rhysd/conflict-marker.vim'
 endif
-
+" ------------------------------------------------------------------
 " Hardcore C++ tools
 if g:CPP_TOOLS
 PlugDef 'puremoLheurning/vimspector'
 PlugDef 'gauteh/vim-cppman'
 endif
-
+" ------------------------------------------------------------------
 " Tmux Integration
 if g:TMUX
 PlugDef 'christoomey/vim-tmux-navigator'
 PlugDef 'roxma/vim-tmux-clipboard'
 endif
-
+" ------------------------------------------------------------------
 " Snippets
 if g:SNIPPETS
 PlugDef 'SirVer/ultisnips'
 PlugDef 'honza/vim-snippets'
 endif
-
+" ------------------------------------------------------------------
 " Status bar
 if g:AIRLINE
 PlugDef 'vim-airline/vim-airline'
 PlugDef 'vim-airline/vim-airline-themes'
-PlugDef 'ojroques/vim-scrollstatus'
 endif
 
-" Window Management
-PlugDef 'caenrique/nvim-maximize-window-toggle'
-PlugDef 'Asheq/close-buffers.vim'
-PlugDef 'caenrique/nvim-toggle-terminal'
-
-" Text Editing
-PlugDef 'terryma/vim-multiple-cursors'
-PlugDef 'AndrewRadev/sideways.vim'
-PlugDef 'tpope/vim-commentary'
-PlugDef 'tpope/vim-sensible'
-PlugDef 'tpope/vim-eunuch' " Unix Commands
-PlugDef 'meain/vim-printer'
-
-" Misc
-PlugDef 'tpope/vim-repeat'
-PlugDef 'lfv89/vim-interestingwords'
-
-PlugDef 'xolox/vim-misc'
-PlugDef 'xolox/vim-session'
-
-" ==== Language Support  ====
-PlugDef 'MaxMEllon/vim-jsx-pretty'
-PlugDef 'pangloss/vim-javascript',  { 'for': 'javascript' }
-PlugDef 'elixir-editors/vim-elixir'
-PlugDef 'rust-lang/rust.vim'
-PlugDef 'MTDL9/vim-log-highlighting'
-PlugDef 'plasticboy/vim-markdown'
-PlugDef 'cespare/vim-toml'
-
-" ==== Appearance====
-PlugDef 'Yggdroot/indentLine'
-PlugDef 'ryanoasis/vim-devicons'
-PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
-
-" ==== Color schemes ====
-PlugDef 'sainnhe/sonokai'
-PlugDef 'AlessandroYorba/Sierra'
-PlugDef 'AlessandroYorba/Arcadia'
-PlugDef 'AlessandroYorba/Despacio'
-PlugDef 'AlessandroYorba/Breve'
-PlugDef 'AlessandroYorba/Alduin'
-PlugDef 'morhetz/gruvbox'
-" PlugDef 'codota/tabnine-vim'
-PlugDef 'tzachar/compe-tabnine', { 'do': './install.sh' }
-PlugDef 'chrisbra/Colorizer'
+" ------------------------------------------------------------------
+" Sandbox
+PlugDef 'kana/vim-arpeggio'
 
 call plug#end()
 
@@ -198,9 +205,16 @@ endif
 
 colorscheme sonokai
 
-"=========================
+" ------------------------------------------------------------------
+" =========================
 "    General Settings
-"-------------------------
+" -------------------------
+let g:arcadia_Sunset = 1
+let g:arcadia_Pitch = 1
+" colorscheme arcadia
+" colorscheme fahrenheit
+" colorscheme gruvbox
+
 set wrap
 set number
 set hlsearch
@@ -212,6 +226,7 @@ set showcmd
 set autowrite
 set mouse=a
 set wildmenu
+set wildmode=full
 set wildchar=<Tab>
 set foldlevel=99
 set cursorline
@@ -238,7 +253,7 @@ let mapleader=" "
 
 " Use ag if it exists
 if executable('rg')
-    " Use ag over grep
+    " Use rg over grep
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 elseif executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
@@ -249,6 +264,7 @@ GuiFont FuraMono NF:h11
 endif
 
 "== General Settings End ==
+" ------------------------------------------------------------------
 
 "=========================
 "    Plugin Settings
@@ -262,12 +278,26 @@ let g:airline_left_alt_sep = "\uE0B5"
 let g:airline_right_alt_sep = "\uE0B7"
 let g:airline_section_c_only_filename = 1
 let g:airline_section_x = '%{Cwd()}'
-let g:airline_section_y = '%{ScrollStatus()}'
+let g:airline_section_y = airline#section#create_right(['filetype'])
 let g:airline_section_z = airline#section#create(['%l:%c'])
-let g:airline_extensions = ["tabline", "hunks", "searchcount", "coc"]
+let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+let g:airline_extensions = ["tabline", "hunks", "searchcount", "nvimlsp"]
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline#extensions#tabline#enabled = 2
 let g:airline#extensions#searchcount#enabled = 1
+let g:airline#extensions#nvimlsp#enabled = 1
+endif
+
+if PlugLoaded('arpeggio')
+Arpeggionmap jk i
+Arpeggioimap jk <Esc>
+Arpeggionmap hl <S-Tab>
+Arpeggionmap kl :wincmd l<CR>
+Arpeggionmap hj :wincmd h<CR>
+Arpeggionmap yu :bprev<CR>
+Arpeggionmap io :bnext<CR>
+Arpeggionmap hu <C-d>
+Arpeggionmap li <C-U>
 endif
 
 " Scroll Status
@@ -278,18 +308,8 @@ let g:scrollstatus_symbol_bar = '━'
 let g:goto_header_use_find = 1
 let g:goto_header_includes_dirs = ["."]
 
-" Misc PLugins
-let g:autoload_session = 0
-let g:indentLine_char = '▏'
-let g:UltiSnipsExpandTrigger="<M-u>"
-let g:session_autosave_periodic=3
-let g:session_autosave='yes'
-let g:session_autoload='no'
-let g:interestingWordsDefaultMappings = 0
-
 if PlugLoaded('far')
 let g:far#source='rgnvim'
-nnoremap <M-f> :execute(':F "'.input('Search For: ').'" **')<CR>
 endif
 
 " == FZF ==
@@ -395,17 +415,19 @@ endif
 if PlugLoaded('toggle_terminal')
 noremap <silent> <M-`> :ToggleTerminal<CR>
 tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
-noremap <silent> <M-r> :ToggleTerminal<CR>
-tnoremap <silent> <M-r> <C-\><C-n>:ToggleTerminal<CR>
+noremap <silent> <M-t> :ToggleTerminal<CR>
+tnoremap <silent> <M-t> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 " ==== Telescope =========
 if PlugLoaded('telescope_nvim')
 nnoremap <C-p> <cmd>Files<cr>
 nnoremap <M-p> <cmd>Telescope oldfiles<cr>
-nnoremap <M-P> <cmd>Telescope command_history<cr>
-nnoremap <M-t> <cmd>Telescope<cr>
+nnoremap <M-r> <cmd>Telescope command_history<cr>
+nnoremap <M-R> <cmd>Telescope commands<cr>
+nnoremap <M-e> <cmd>Telescope<cr>
 
+nnoremap <leader>p  <cmd>Telescope<cr>
 nnoremap <leader>pp <cmd>Telescope find_files<cr>
 nnoremap <leader>pc :Telescope commands<CR>
 nnoremap <leader>pC :Telescope command_history<CR>
@@ -465,13 +487,14 @@ inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 inoremap <silent> <M-CR> <CR>
 endif
-" ----------------------
+" ------------------------------------------------------------------
 
 " Nvim LSP
 if PlugLoaded('nvim_lspconfig')
 lua << EOF
 require'lspconfig'.rust_analyzer.setup{}
 require'lspconfig'.clangd.setup{}
+require'lspconfig'.pyright.setup{}
 EOF
 
 nnoremap <silent> gD <Cmd>lua vim.lsp.buf.declaration()<CR>
@@ -500,7 +523,7 @@ nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 
 endif
 
-" === LSPUtil
+" ===== LSPUtil =====
 if PlugLoaded('lsputils')
 lua <<EOF
 vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
@@ -641,10 +664,10 @@ EOF
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 
+" Incremental Selection
 nmap <A-s> gnn
 vmap <A-s> grn
 vmap <A-S> grm
-nmap cM gnngrngrnc
 endif
 
 " Interesting Words
@@ -654,11 +677,7 @@ nnoremap <silent> <leader>xi :call InterestingWords('n')<cr>
 vnoremap <silent> <leader>xi :call InterestingWords('v')<cr>
 nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 
-"=========================
-"  Key Mappings
-"=========================
-
-" Surround
+" Sandwich
 if PlugLoaded('vim_sandwich')
 nnoremap sf :normal saiwf<CR>
 nnoremap sF :normal saiWf<CR>
@@ -732,17 +751,29 @@ nnoremap <leader>x<m-H> :call system("tmux popup how2 -l ".&filetype." ".input("
 command! -nargs=+ StackOverflow exe "term how2 -l ".&filetype." ".<q-args>
 endif
 
+" ------------------------------------------------------------------
+" Misc PLugins
+let g:session_autosave='yes'
+let g:session_autosave_periodic=3
+let g:session_autoload='no'
+let g:interestingWordsDefaultMappings = 0
+let g:indentLine_char = '▏'
+let g:autoload_session = 0
+let g:UltiSnipsExpandTrigger="<M-u>"
 
-" Misc Plugins
+nnoremap <M-f> :execute('silent grep "'.input('Search For: ').'" \| Telescope quickfix')<CR>
+nnoremap <M-F> <cmd>Telescope live_grep<CR>
+
 execute 'nnoremap <M-g> :Git '
-noremap <M-/> :Commentary<CR>
-nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 nnoremap <M-o> :ClangdSwitchSourceHeader<CR>
 nnoremap <M-u> :SymbolsOutline<CR>
+nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 nnoremap Q :Bdelete menu<CR>
+noremap <M-/> :Commentary<CR>
 noremap <leader><C-s> :WriteSession<CR>
 
 
+" ------------------------------------------------------------------
 " ==== Native Mappings ====
 " Clear the highlighting of :set hlsearch
 nnoremap <silent> <leader>H :nohlsearch<cr>
@@ -857,20 +888,29 @@ cnoremap <C-l> <C-w>v<C-w><C-l>
 cnoremap <C-h> <C-w>v<C-w><C-h>
 
 " ==== Vim Command Overrides ====
+" Move to end of line easy
+nnoremap H 0
+nnoremap L $
+
 " Command Prompt
 noremap ; :<Up>
+
 " End visual mode at bottom
 vmap y ygv<Esc>
+
 " X Does not go to clipboard
 vnoremap x "_d
 vnoremap X "_D
 vnoremap X "_D
-" silent search if wrap-around
+
+" silent search if wrap-around enabled
 map <silent> n n
 
+" Asterisk is hard
+nnoremap gs *
+vnoremap gs *
+
 " Easy Macros / Replacing
-nmap gs viwgs
-vmap gs "my/<C-R>m<CR>
 vmap <M-Q> gsNqq
 nmap <M-Q> viw<M-Q>
 nnoremap <M-q> nzz@q
@@ -914,6 +954,7 @@ nnoremap <leader>xp "_r<Enter>PkJJ
 " run Clang
 nnoremap <leader>F :FormatClang<CR>
 
+" ------------------------------------------------------------------
 " ===================
 " Custom Commands
 " ===================
@@ -921,6 +962,7 @@ nnoremap <leader>F :FormatClang<CR>
 command! CP :let @" = expand('%')
 " Grep
 command! -nargs=1 Grep silent grep <q-args> | copen
+command! -nargs=+ Find silent grep <q-args> | copen
 
 " Format Commands file
 command! FormatClang silent execute '%!clang-format %'
