@@ -52,3 +52,12 @@ plugin_vim () {
     sed -i ~/.vimrc -e "s{\(.*NEW_PLUGINS.*\){\1\nPlug '$url'{g" > ~/new_vim
     nvim '+:PlugInstall | :qall'
 }
+
+swap () {
+    file1="$1"
+    file2="$2"
+    tmp="$1.bak"
+    mv -nv $file1 $tmp
+    mv -nv $file2 $file1
+    mv -nv $tmp $file2
+}

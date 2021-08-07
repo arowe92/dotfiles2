@@ -7,6 +7,9 @@ mkalias () {
 _exists () {
     command -v $1 > /dev/null
 }
+## Env Aliases
+_exists bat && export MANPAGER='bat -p -l man'
+_exists bat && export PAGER='bat -p'
 
 ## Aliases
 alias s='git status 2>/dev/null || (pwd && ls -lF)'
@@ -17,6 +20,7 @@ alias cranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdi
 
 alias ls='/bin/ls --color=tty'
 _exists exa && alias ls='exa'
+_exists ugrep && alias zg='ugrep -B5 -A5 --fuzzy=+3'
 
 ## Fasd Aliases
 alias a='fasd -a'

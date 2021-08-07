@@ -30,12 +30,11 @@ export PATH
 ###################################
 ## EXPORTS
 ###################################
-# Path to your oh-my-zsh installation.
+## Env Aliases
 export ZSH="$HOME/.oh-my-zsh"
 export TERM='xterm-256color'
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export KEYTIMEOUT=1
-export EDITOR=nvim
 export _FASD_BACKENDS="native spotlight recently-used current"
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
@@ -45,6 +44,12 @@ export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 # export FZF_DEFAULT_COMMAND="rg --hidden --follow --color=never"
 export FZF_DEFAULT_OPTS='--bind ctrl-e:preview-up,ctrl-y:preview-down,ctrl-u:preview-page-up,ctrl-d:preview-page-down --keep-right'
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
+
+# Pagers
+_exists () { command -v $1 > /dev/null }
+_exists nvim && export EDITOR=nvim
+_exists bat && export MANPAGER='bat -p -l man'
+_exists bat && export PAGER='bat -p'
 
 ###################################
 ## EVALS
