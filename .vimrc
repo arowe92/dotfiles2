@@ -68,6 +68,7 @@ PlugDef 'machakann/vim-sandwich'
 
 " GUI Essentials
 PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
+PlugDef 'dstein64/nvim-scrollview'
 
 if g:GUI_TOOLS
 PlugDef 'mbbill/undotree'
@@ -113,6 +114,7 @@ endif
 " Hardcore C++ tools
 if g:CPP_TOOLS
 PlugDef 'puremoLheurning/vimspector'
+PlugDef 'gauteh/vim-cppman'
 endif
 
 " Tmux Integration
@@ -211,7 +213,7 @@ set foldlevel=99
 set cursorline
 set hidden
 set noshowmode
-set iskeyword=@,48-57,_,192-255,=,~,*,! " Removed: :[]<>
+set iskeyword-=:,[,],<,>
 set termguicolors
 
 " Tabs
@@ -252,6 +254,8 @@ if PlugLoaded('airline')
 let g:airline_powerline_fonts = 1
 let g:airline_left_sep = "\uE0B4"
 let g:airline_right_sep = "\uE0B6"
+let g:airline_left_alt_sep = "\uE0B5"
+let g:airline_right_alt_sep = "\uE0B7"
 let g:airline_section_c_only_filename = 1
 let g:airline_section_x = '%{Cwd()}'
 let g:airline_section_y = '%{ScrollStatus()}'
@@ -321,7 +325,7 @@ endif
 
 " ====== Which Key =======
 if PlugLoaded('which_key')
-noremap <leader> :WhichKey ' '<CR>
+noremap <silent> <leader> :WhichKey ' '<CR>
 let g:which_key_map =  {}
 let g:which_key_map.p = { 'name' : '+fuzzy' }
 let g:which_key_map.c = { 'name' : '+coc' }
@@ -332,7 +336,7 @@ let g:which_key_map.x = { 'name' : '+extension' }
 let g:which_key_map['!'] = { 'name' : '+toggle' }
 call which_key#register('<Space>', "g:which_key_map")
 
-noremap <leader>W :execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
+noremap <silent> <leader>W :execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
 "==== Conflict Marker ====
@@ -370,9 +374,9 @@ endif
 "===== EasyMotion ========
 if PlugLoaded('easymotion')
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
-map <leader>f <Plug>(easymotion-bd-f2)
-map <leader>s <Plug>(easymotion-bd-f)
-map <Leader>w <Plug>(easymotion-bd-w)
+map <leader>f <Plug>(easymotion-bd-f)
+map <leader>F <Plug>(easymotion-bd-f2)
+map <leader>s <Plug>(easymotion-bd-w)
 
 map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
@@ -477,6 +481,8 @@ nnoremap <silent> <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <silent> <leader>ce <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 nnoremap <silent> <leader>c[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> <leader>c] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+nnoremap <silent> [c <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <silent> ]c <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 endif
@@ -610,15 +616,6 @@ EOF
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 
-nmap <leader>s0 gnngrngrn
-nmap <leader>s9 gnngrn
-nmap <leader>s1 gnngrn
-nmap <leader>s2 gnngrngrn
-nmap <leader>s3 gnngrngrngrn
-nmap <leader>s4 gnngrngrngrngrn
-vmap <leader>ss grn
-nmap <leader>ss gnn
-vmap <leader>sd grm
 nmap <A-s> gnn
 vmap <A-s> grn
 vmap <A-S> grm
@@ -640,6 +637,12 @@ nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 if PlugLoaded('vim_sandwich')
 nnoremap sf :normal saiwf<CR>
 nnoremap sF :normal saiWf<CR>
+nnoremap sw' :normal saiw'<CR>
+nnoremap sw" :normal saiw"<CR>
+nnoremap sw( :normal saiw(<CR>
+nnoremap sw< :normal saiw<<CR>
+nnoremap sw[ :normal saiw[<CR>
+nnoremap sw{ :normal saiw{<CR>
 
 let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
 
@@ -695,6 +698,15 @@ noremap <C-x>c :CopyOther<CR>
 nnoremap gF :CopyOther \| norm gf
 endif
 
+if executable('how2')
+nnoremap <leader>xh :execute("vsplit \| term how2 -l ".&filetype." ".expand("<cword>"))<CR>
+nnoremap <leader>xH :execute("vsplit \| term how2 -l ".&filetype." ".input("Search Stack Overflow: "))<CR>
+nnoremap <leader>x<m-h> :call system("tmux popup how2 -l ".&filetype." ".expand("<cword>"))<CR>
+nnoremap <leader>x<m-H> :call system("tmux popup how2 -l ".&filetype." ".input("Search Stack Overflow: "))<CR>
+
+command! -nargs=+ StackOverflow exe "term how2 -l ".&filetype." ".<q-args>
+endif
+
 
 " Misc Plugins
 execute 'nnoremap <M-g> :Git '
@@ -717,9 +729,17 @@ inoremap <C-s> <ESC>:w<CR>
 " File /Buffer Operations
 nnoremap <C-c> :echo 'ctrl-c thrice to quit'<CR>
 nnoremap <C-c><C-c><C-c> :qall!<CR>
-map <C-w> :close<CR>
-map <M-w> :bd<CR>
-map <C-q> :q<CR>
+noremap <C-w> :bd<CR>
+noremap <C-q> :q<CR>
+
+if PlugLoaded('scrollview')
+command Buffdelete
+      \ silent! ScrollViewDisable
+      \ | bdelete
+      \ | silent! ScrollViewEnable
+noremap <C-w> :Buffdelete<CR>
+endif
+
 
 " Easy Indenting
 nnoremap <M-H> <<
@@ -806,7 +826,6 @@ inoremap <M-'> ''<Left>
 cnoremap <C-v> <C-r>"
 cnoremap <M-v> <C-f>
 
-" ==== Terminal Mode ===
 cnoremap <C-j> <C-W>s<C-w><C-k>
 cnoremap <C-k> <C-w>s<C-w><C-k>
 cnoremap <C-l> <C-w>v<C-w><C-l>
@@ -831,6 +850,11 @@ vmap <M-Q> gsNqq
 nmap <M-Q> viw<M-Q>
 nnoremap <M-q> nzz@q
 
+" Run Macro and return to location
+nnoremap <silent><m-e> :exe 'normal mb@'.nr2char(getchar()).'`bmb'<CR>
+nnoremap <silent><m-e><m-e> mb@@`bmb
+nnoremap <silent><m-E> :exe 'normal mb@'.nr2char(getchar()).'`bmbj'<CR>
+
 " === Terminal Maps ===
 if has('nvim')
 tnoremap <C-e> <C-\><C-n>
@@ -842,9 +866,11 @@ tnoremap <C-h> <C-\><C-n><C-w>h
 nnoremap <silent> <leader>t <cmd>vsplit \| wincmd l \| term<CR>
 nnoremap <silent> <leader>T <cmd>split \| wincmd j \| resize 10 \|term<CR>
 
+augroup TerminalCmd
+au!
 autocmd TermOpen * setlocal nonumber norelativenumber
 autocmd TermOpen * normal i
-autocmd BufEnter * if bufname() =~ '^term:///' | exe 'normal A' | endif
+autocmd BufEnter * if bufname() =~ '^term://' | exe 'normal A' | endif
 augroup END
 endif
 
@@ -858,7 +884,7 @@ noremap <leader>r @:<CR>
 " Select All
 noremap <M-a> 1GVG
 " Paste line with in middle
-nnoremap <leader>sp "_r<Enter>PkJJ
+nnoremap <leader>xp "_r<Enter>PkJJ
 " run Clang
 nnoremap <leader>F :FormatClang<CR>
 
@@ -876,9 +902,18 @@ command! FormatJson silent execute '%!python -m json.tool'
 
 " FZF / Fasd Commands
 if PlugLoaded('fzf')
-command! FasdFile call fzf#run({'source': 'fasd -lf', 'sink': 'cd', 'tmux': '-p80%,60%', 'options': '--preview="prev {}"'})
-command! FasdDir call fzf#run({'source': 'fasd -ld', 'sink': 'cd', 'tmux': '-p80%,60%', 'options': '--preview="prev {}"'})
-command! Include silent call Include()
+
+" Run FZF With Defaults
+function! Fzf(dict)
+call fzf#run(extend(copy({
+            \ 'tmux': '-p80%,80%',
+            \ 'options': '--preview="bat -n --color=always {}"'
+            \ }), a:dict))
+endfunction
+
+command! FasdFile call Fzf({'source': 'fasd -lf', 'sink': 'e'})
+command! FasdDir call Fzf({'source': 'fasd -ld', 'sink': 'cd', 'options': '--preview="exa --tree -L 2 {}"'})
+command! Include call Fzf({'source': 'fd "\.h$"', 'sink': function('Include')}))
 command! FzfCd call FzfCd()
 command! FzfCdIter call FzfCdIter()
 endif
@@ -902,12 +937,18 @@ augroup Cmds
     " autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
     autocmd BufRead *.cc,*.h setlocal bufhidden=delete
     autocmd BufModifiedSet,BufWrite *.cc,*.h setlocal bufhidden=hide
+    autocmd BufRead * setlocal iskeyword-=<
+    autocmd BufRead * setlocal iskeyword-=>
+    autocmd BufRead * setlocal iskeyword-=:
+    autocmd BufRead * setlocal iskeyword-=]
+    autocmd BufRead * setlocal iskeyword-=[
 augroup END
 
 " ==== Fzf Functions ====
 " Easy way to Include c++ files
-function! Include() abort
-    let l:file = trim(system("fd '\.h$' | fzf-tmux -p --preview='prev {}'"))
+function! Include(file, ...) abort
+    let l:file = a:file
+    " let l:file = trim(system("fd '\.h$' | fzf-tmux -p --preview='prev {}'"))
 
     if l:file == ""
         return
@@ -973,4 +1014,16 @@ function! Replace() abort
     let l:text = substitute(l:text, '/','\\/', 'g')
     execute ('%s/'.@".'/'.l:text.'/g')
 endfunction
+
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 

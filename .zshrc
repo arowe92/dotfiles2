@@ -12,6 +12,7 @@ zplug "plugins/fzf", from:oh-my-zsh
 zplug "clvv/fasd"
 zplug "zsh-users/zsh-autosuggestions", defer:2
 zplug "zsh-users/zsh-history-substring-search", defer:3
+zplug "zsh-users/zsh-syntax-highlighting", defer:3
 
 zplug "themes/alanpeabody", from:oh-my-zsh, as:theme
 
@@ -74,7 +75,7 @@ bindkey '^o' fasd_svim
 bindkey -s '^n' 'nvim\n'
 bindkey -M vicmd -s '^n' '^[invim\n'
 bindkey -s '^b' '`git branch | fzf`\t'
-# bindkey -s '^g' 'git checkout `git branch | fzf`\t'
+bindkey -s '^g' 'git checkout `git branch | fzf`\t'
 
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up
