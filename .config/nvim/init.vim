@@ -1,4 +1,4 @@
-set guifont="FiraCode NF:h11"
+set guifont=FiraCode\ NF:h14
 
 set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath

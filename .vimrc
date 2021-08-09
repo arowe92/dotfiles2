@@ -182,15 +182,45 @@ PlugDef 'axlebedev/footprints'
 
 call plug#end()
 
+call arpeggio#load()
+
+" - x x -
 Arpeggionmap jk i
 Arpeggioimap jk <Esc>
+
+" x - - x
 Arpeggionmap hl <S-Tab>
-Arpeggionmap kl :wincmd l<CR>
-Arpeggionmap hj :wincmd h<CR>
+
+" . . k l
+Arpeggionmap kl w
+Arpeggionmap hj b
+
+" . j . l
+Arpeggionmap jl W
+Arpeggionmap hk B
+
+" . . i o
+" - - - -
 Arpeggionmap yu :bprev<CR>
 Arpeggionmap io :bnext<CR>
+
+" . u . o
+" - - - -
+Arpeggionmap uo :tabnext<CR>
+Arpeggionmap yi :tabprev<CR>
+
+" - . i -
+" . - - k
 Arpeggionmap hu <C-d>
 Arpeggionmap li <C-U>
+
+" h - - - ;
+Arpeggionmap h; A
+
+" - u - -
+" - - - -
+" n - - -
+Arpeggionmap nu <c-r>
 
 "=========================
 " Appearance
@@ -233,6 +263,7 @@ set hidden
 set noshowmode
 set iskeyword=@,48-57,_,192-255,=,~,*,! " Removed: :[]<>
 set termguicolors
+set guifont=FiraCode\ NF:h14
 
 " Tabs
 set shiftwidth=4
@@ -661,7 +692,6 @@ nnoremap sdc :normal srb(sdf<CR>
 nnoremap src :normal srb(srff<CR>:normal srb<<CR>
 nnoremap sac :normal saiwf<CR>:normal srb<<CR>
 nnoremap saC :normal saiWf<CR>:normal srb<<CR>
-
 endif
 
 " VimSpector
@@ -738,8 +768,8 @@ noremap <leader><C-s> :WriteSession<CR>
 nnoremap <silent> <leader>H :nohlsearch<cr>
 
 " Save  File
-nnoremap <C-s> :w<CR>
-inoremap <C-s> <ESC>:w<CR>
+nnoremap <C-s> <cmd>w<CR>
+inoremap <C-s> <cmd>w<CR>
 
 " File /Buffer Operations
 nnoremap <C-c> :echo 'ctrl-c thrice to quit'<CR>
@@ -751,18 +781,18 @@ map <C-q> :q<CR>
 " Easy Indenting
 nnoremap <M-H> <<
 nnoremap <M-L> >>
-inoremap <M-H> <Esc><<<CR>gi
-inoremap <M-L> <Esc>>><CR>gi
+inoremap <M-H> <cmd>normal <<<CR>
+inoremap <M-L> <cmd>normal >><CR>
 vnoremap <M-H> <gv
 vnoremap <M-L> >gv
 
 " Easy Line Moving
-nnoremap <A-K> :m .-2<CR>
-nnoremap <A-J> :m .+1<CR>
-inoremap <A-J> <Esc>:m .+1<CR>gi
-inoremap <A-K> <Esc>:m .-2<CR>gi
-vnoremap <A-J> :m '>+1<CR>gv
-vnoremap <A-K> :m '<-2<CR>gv
+nnoremap <A-K> <cmd>m .-2<CR>
+nnoremap <A-J> <cmd>m .+1<CR>
+inoremap <A-J> <cmd>m .+1<CR>
+inoremap <A-K> <cmd>m .-2<CR>
+vnoremap <A-J> <Esc>:m '>+1<CR>gv
+vnoremap <A-K> <Esc>:m '<-2<CR>gv
 
 " Split Lines
 nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
@@ -1012,4 +1042,15 @@ function! Replace() abort
     let l:text = substitute(l:text, '/','\\/', 'g')
     execute ('%s/'.@".'/'.l:text.'/g')
 endfunction
+
+
+" ----------------------------------------------
+"  Sandbox
+nnoremap <leader>xc :CP<CR>
+nnoremap <leader>xC :cd %:p:h \| NvimTreeOpen <CR>
+
+" Yank Line #
+command! -count=0 CpLine exe ":".<count>.' | normal yy``p=='
+nnoremap yg :<c-u>exe v:count1.'CpLine'<CR>
+
 
