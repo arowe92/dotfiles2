@@ -15,8 +15,8 @@ _exists bat && export PAGER='bat -p'
 alias s='git status 2>/dev/null || (pwd && ls -lF)'
 alias add='git add --patch'
 alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw; rm $HOME/.local/share/nvim/swap/*"
-
-alias cranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+alias qvim="VIM_LITE=1 nvim"
+alias cap="tmux capture-pane -p -S -"
 
 alias ls='/bin/ls --color=tty'
 _exists exa && alias ls='exa'

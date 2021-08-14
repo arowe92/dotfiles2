@@ -8,7 +8,7 @@ let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 0)
 let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
 let g:NVIM_TOOLS = get(g:, 'NVIM_TOOLS', 1)
 let g:SNIPPETS = get(g:, 'SNIPPETS', 1)
-let g:AIRLINE = get(g:, 'AIRLINE', 1)
+let g:STATUS_LINE = get(g:, 'STATUS_LINE', 1)
 let g:TMUX = get(g:, 'TMUX', 1) && exists("$TMUX")
 
 " Light Weight Config
@@ -18,7 +18,7 @@ if exists('$VIM_LITE')
     let g:GUI_TOOLS = 0
     let g:NVIM_TOOLS = 0
     let g:SNIPPETS = 1
-    let g:AIRLINE = 0
+    let g:STATUS_LINE = 0
 endif
 
 " Nvim VSCode Plugin Options
@@ -28,7 +28,7 @@ if exists('g:vscode')
     let g:GUI_TOOLS = 0
     let g:NVIM_TOOLS = 0
     let g:SNIPPETS = 0
-    let g:AIRLINE = 0
+    let g:STATUS_LINE = 0
 endif
 
 " Install vim-plug if it doesnt exist
@@ -119,7 +119,6 @@ PlugDef 'AlessandroYorba/Despacio'
 PlugDef 'AlessandroYorba/Breve'
 PlugDef 'AlessandroYorba/Alduin'
 PlugDef 'morhetz/gruvbox'
-PlugDef 'chrisbra/Colorizer'
 
 " ------------------------------------------------------------------
 if g:GUI_TOOLS
@@ -130,6 +129,7 @@ PlugDef 'skywind3000/vim-quickui'
 PlugDef 'liuchengxu/vim-which-key'
 PlugDef 'kyazdani42/nvim-tree.lua'
 PlugDef 'simrat39/symbols-outline.nvim'
+PlugDef 'mhinz/vim-startify'
 endif
 
 " ------------------------------------------------------------------
@@ -155,6 +155,10 @@ PlugDef 'nvim-telescope/telescope-frecency.nvim'
 PlugDef 'RishabhRD/popfix'
 PlugDef 'RishabhRD/nvim-lsputils'
 PlugDef 'neovim/nvim-lspconfig'
+
+" Clap
+PlugDef 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
+PlugDef 'goolord/nvim-clap-lsp'
 endif
 " ------------------------------------------------------------------
 if g:GIT_TOOLS
@@ -181,40 +185,39 @@ PlugDef 'SirVer/ultisnips'
 PlugDef 'honza/vim-snippets'
 endif
 " ------------------------------------------------------------------
-" Status bar
-if g:AIRLINE
-PlugDef 'vim-airline/vim-airline'
-PlugDef 'vim-airline/vim-airline-themes'
+" " Status bar
+if g:STATUS_LINE
+PlugDef 'itchyny/lightline.vim'
+PlugDef 'pacha/vem-tabline'
 endif
 
 " ------------------------------------------------------------------
 " Sandbox
-PlugDef 'kana/vim-arpeggio'
-PlugDef 'mhinz/vim-startify'
+PlugDef 'xolox/vim-notes'
+
 
 call plug#end()
 
 "=========================
 " Appearance
 "-------------------------
-if PlugLoaded('sonokai')
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
 let g:sonokai_style = 'andromeda'
 let g:sonokai_enable_italic = 0
-let g:sonokai_disable_italic_comment = 0
-endif
+let g:sonokai_disable_italic_comment = 1
 
-colorscheme sonokai
-
-" ------------------------------------------------------------------
-" =========================
-"    General Settings
-" -------------------------
 let g:arcadia_Sunset = 1
 let g:arcadia_Pitch = 1
+
+colorscheme sonokai
 " colorscheme arcadia
 " colorscheme fahrenheit
 " colorscheme gruvbox
+
+
+" =========================
+"    General Settings
+" -------------------------
 
 set wrap
 set number
@@ -233,7 +236,7 @@ set foldlevel=99
 set cursorline
 set hidden
 set noshowmode
-set iskeyword-=:,[,],<,>
+set iskeyword=@,48-57,_,192-255,=,~,*,!
 set termguicolors
 
 " Tabs
@@ -264,67 +267,35 @@ if exists(':GuiFont')
 GuiFont FuraMono NF:h11
 endif
 
-"== General Settings End ==
+function Toggle_setting(name)
+exe "set ".a:name."!"
+exe "echo '".a:name." =' &".a:name
+endfunction
+
+" Setting Toggles
+noremap <leader>1w <cmd>call Toggle_setting("wrap")<CR>
+noremap <leader>1n <cmd>call Toggle_setting("number")<CR>
+
 " ------------------------------------------------------------------
 
 "=========================
 "    Plugin Settings
 "-------------------------
-" ===== Airline ======
-if PlugLoaded('airline')
-let g:airline_powerline_fonts = 1
-let g:airline_left_sep = "\uE0B4"
-let g:airline_right_sep = "\uE0B6"
-let g:airline_left_alt_sep = "\uE0B5"
-let g:airline_right_alt_sep = "\uE0B7"
-let g:airline_section_c_only_filename = 1
-let g:airline_section_x = '%{Cwd()}'
-let g:airline_section_y = airline#section#create_right(['filetype'])
-let g:airline_section_z = airline#section#create(['%l:%c'])
-let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
-let g:airline_extensions = ["tabline", "hunks", "searchcount", "nvimlsp"]
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline#extensions#tabline#enabled = 2
-let g:airline#extensions#searchcount#enabled = 1
-let g:airline#extensions#nvimlsp#enabled = 1
+" ===== Statusline ======
+if PlugLoaded('lightline')
+let g:lightline = {
+            \ 'colorscheme': 'wombat',
+            \ 'enable': { 'tabline': 0 },
+            \ }
 endif
-
-if PlugLoaded('arpeggio')
-call arpeggio#load()
-Arpeggionmap jk i
-Arpeggioimap jk <Esc>
-Arpeggionmap hl <S-Tab>
-Arpeggionmap kl :wincmd l<CR>
-Arpeggionmap hj :wincmd h<CR>
-Arpeggionmap yu :bprev<CR>
-Arpeggionmap io :bnext<CR>
-Arpeggionmap hu <C-d>
-Arpeggionmap li <C-U>
-endif
-
-" Scroll Status
-let g:scrollstatus_symbol_track = '─'
-let g:scrollstatus_symbol_bar = '━'
-
-" Goto Header
-let g:goto_header_use_find = 1
-let g:goto_header_includes_dirs = ["."]
 
 if PlugLoaded('far')
 let g:far#source='rgnvim'
 endif
 
-" == FZF ==
-" Use tmux FZF if tmux exists
-if g:TMUX
-    let g:fzf_layout = { 'tmux': '-p80%,60%' }
-else
-    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
-endif
-
 " Vim Printer
-let g:vim_printer_print_below_keybinding = '<leader>gp'
-let g:vim_printer_print_above_keybinding = '<leader>gP'
+let g:vim_printer_print_below_keybinding = '<leader>xc'
+let g:vim_printer_print_above_keybinding = '<leader>xC'
 let g:vim_printer_items = {
             \ 'javascript': 'console.log("{$}:", {$})',
             \ 'python': 'print("{$}:", {$})',
@@ -368,17 +339,32 @@ call which_key#register('<Space>', "g:which_key_map")
 noremap <leader>W <cmd>execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
+"==== Startify ====
+if PlugLoaded('startify')
+let g:startify_change_to_dir = 0
+let g:startify_session_dir = '~/.vim/sessions'
+let g:startify_bookmarks = ["~/repos/sims/pythia/src",
+            \ "~/dot/.vimrc",
+            \ "~/dot/",
+            \ "~/repos/sims",
+            \ "~/.vimrc",
+            \ ]
+
+let g:startify_lists = [
+            \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+            \ { 'type': 'sessions',  'header': ['   Sessions']       },
+            \ { 'type': 'files',     'header': ['   Recent Files']            },
+            \ { 'type': 'dir',       'header': ['   Recent from '. getcwd()] },
+            \ { 'type': 'commands',  'header': ['   Commands']       },
+            \ ]
+
+endif
+" =================
+
+
 "==== Conflict Marker ====
 if PlugLoaded('conflict_marker')
 let g:conflict_marker_enable_mappings = 1
-" nmap <buffer>]x <Plug>(conflict-marker-next-hunk)
-" nmap <buffer>[x <Plug>(conflict-marker-prev-hunk)
-" nmap <buffer>ct <Plug>(conflict-marker-themselves)
-" nmap <buffer>co <Plug>(conflict-marker-ourselves)
-" nmap <buffer>cn <Plug>(conflict-marker-none)
-" nmap <buffer>cb <Plug>(conflict-marker-both)
-" nmap <buffer>cB <Plug>(conflict-marker-both-rev)
-
 highlight ConflictMarkerBegin guibg=#2f7366
 highlight ConflictMarkerOurs guibg=#2e5049
 highlight ConflictMarkerTheirs guibg=#344f69
@@ -404,7 +390,7 @@ endif
 if PlugLoaded('easymotion')
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
 map <leader>f <Plug>(easymotion-bd-f)
-map <leader>F <Plug>(easymotion-bd-f2)
+map <leader>S <Plug>(easymotion-bd-f2)
 map <leader>s <Plug>(easymotion-bd-w)
 
 map <Leader>l <Plug>(easymotion-lineforward)
@@ -421,13 +407,41 @@ noremap <silent> <M-t> :ToggleTerminal<CR>
 tnoremap <silent> <M-t> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
+
+" Fuzzy Commands
+command! Fuzzy         Clap
+command! FuzzyFiles    Clap files .
+command! FuzzyFilesR   Clap
+command! FuzzyCom      Clap command
+command! FuzzyComR     Clap command_history
+command! FuzzyQF       Clap quickfix
+command! FuzzyFindFile Clap quickfix
+command! FuzzyFindAll  Telescope live_grep
+
+" Fuzzy Mappings
+" "Search Word
+nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
+vnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
+nnoremap <M-f> <cmd>execute('silent grep "'.input('Search For: ').'" \| FuzzyQF ')<CR>
+nnoremap <M-F> <cmd>FuzzyFindAll<CR>
+
+nnoremap <C-p> <cmd>FuzzyFiles<cr>
+nnoremap <M-p> <cmd>FuzzyFilesR<cr>
+nnoremap <M-r> <cmd>FuzzyComR<cr>
+nnoremap <M-R> <cmd>FuzzyCom<cr>
+nnoremap <M-e> <cmd>Fuzzy<cr>
+
 " ==== Telescope =========
 if PlugLoaded('telescope_nvim')
-nnoremap <C-p> <cmd>Files<cr>
-nnoremap <M-p> <cmd>Telescope oldfiles<cr>
-nnoremap <M-r> <cmd>Telescope command_history<cr>
-nnoremap <M-R> <cmd>Telescope commands<cr>
-nnoremap <M-e> <cmd>Telescope<cr>
+
+lua << EOF
+require('telescope').setup{
+    defaults = {
+        borderchars = {"─", "│", "─", "│", "┌", "┐", "┘", "└"},
+        layout_strategy = "vertical",
+    }
+}
+EOF
 
 nnoremap <leader>p  <cmd>Telescope<cr>
 nnoremap <leader>pp <cmd>Telescope find_files<cr>
@@ -449,12 +463,49 @@ endif
 endif
 
 if PlugLoaded('fzf')
-nnoremap <C-p> <cmd>Files<cr>
+" Use tmux FZF if tmux exists
+if g:TMUX
+    let g:fzf_layout = { 'tmux': '-p80%,60%' }
+else
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+endif
+
+" FZF Custom Scripts
 nnoremap <leader>pi :Include<CR>
 nnoremap <leader>po :FasdFile<CR>
 nnoremap <leader>pO :FasdDir<CR>
 nnoremap <leader>pz :FzfCd<CR>
 nnoremap <leader>pZ :FzfCdIter<CR>
+
+" FZF QuickFix
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+endif
+
+
+if PlugLoaded('clap')
+" let g:clap_layout={ 'width': '80%', 'height': '33%', 'row': '33%', 'col': '0%' }
+let g:clap_layout = { 'relative': 'editor' }
+let g:clap_preview_direction = 'UD'
+
+autocmd FileType clap_input call compe#setup({ 'enabled': v:false }, 0)
+
+lua << EOF
+vim.lsp.handlers['textDocument/codeAction']     = require'clap-lsp.codeAction'.code_action_handler
+vim.lsp.handlers['textDocument/definition']     = require'clap-lsp.locations'.definition_handler
+vim.lsp.handlers['textDocument/documentSymbol'] = require'clap-lsp.symbols'.document_handler
+vim.lsp.handlers['textDocument/references']     = require'clap-lsp.locations'.references_handler
+vim.lsp.handlers['workspace/symbol']            = require'clap-lsp.symbols'.workspace_handler
+EOF
 endif
 
 " ==== Compe =====
@@ -527,19 +578,6 @@ endif
 
 " ===== LSPUtil =====
 if PlugLoaded('lsputils')
-lua <<EOF
-vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
-vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
-vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
-vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
-vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
-vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
-vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
-vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
-EOF
-endif
-
-if PlugLoaded('nvim_lsputils')
 lua <<EOF
 vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
 vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
@@ -740,8 +778,9 @@ function! CopyOther() abort
 endfunction
 command! CopyOther :call CopyOther()
 
-noremap <C-x>c :CopyOther<CR>
-nnoremap gF :CopyOther \| norm gf
+noremap <C-x>c <cmd>CopyOther<CR>
+nnoremap gF :call CopyOther() \| norm gf<CR>
+nnoremap gK :call CopyOther() \| norm gk<cr>
 endif
 
 if executable('how2')
@@ -753,6 +792,48 @@ nnoremap <leader>x<m-H> :call system("tmux popup how2 -l ".&filetype." ".input("
 command! -nargs=+ StackOverflow exe "term how2 -l ".&filetype." ".<q-args>
 endif
 
+" Git Patch
+if 1
+function! CommitQF()
+    " Get the result of git show in a list
+    let flist = system('git diff --name-only HEAD | tail -n +7')
+    let flist = split(flist, '\n')
+
+    " Create the dictionnaries used to populate the quickfix list
+    let list = []
+    for f in flist
+        let dic = {'filename': f, "lnum": 1}
+        call add(list, dic)
+    endfor
+
+    " Populate the qf list
+    call setqflist(list)
+endfunction
+
+nnoremap <leader>xg <cmd>GitPatch<CR>
+nnoremap <leader>xG <cmd>call CommitQF()<CR>
+endif
+
+" Next Fold
+if 1
+function! NextClosedFold(dir)
+    let cmd = 'norm!z' . a:dir
+    let view = winsaveview()
+    let [l0, l, open] = [0, view.lnum, 1]
+    while l != l0 && open
+        exe cmd
+        let [l0, l] = [l, line('.')]
+        let open = foldclosed(l) < 0
+    endwhile
+    if open
+        call winrestview(view)
+    endif
+endfunction
+
+nnoremap <silent> [z :call NextClosedFold('k')<cr>
+nnoremap <silent> ]z :call NextClosedFold('j')<cr>
+endif
+
 " ------------------------------------------------------------------
 " Misc PLugins
 let g:session_autosave='yes'
@@ -762,9 +843,6 @@ let g:interestingWordsDefaultMappings = 0
 let g:indentLine_char = '▏'
 let g:autoload_session = 0
 let g:UltiSnipsExpandTrigger="<M-u>"
-
-nnoremap <M-f> :execute('silent grep "'.input('Search For: ').'" \| Telescope quickfix')<CR>
-nnoremap <M-F> <cmd>Telescope live_grep<CR>
 
 execute 'nnoremap <M-g> :Git '
 nnoremap <M-o> :ClangdSwitchSourceHeader<CR>
@@ -787,7 +865,8 @@ inoremap <C-s> <ESC>:w<CR>
 " File /Buffer Operations
 nnoremap <C-c> :echo 'ctrl-c thrice to quit'<CR>
 nnoremap <C-c><C-c><C-c> :qall!<CR>
-noremap <C-w> :bd<CR>
+noremap <nowait> <C-w> :bd<CR>
+noremap <M-w> :close<CR>
 noremap <C-q> :q<CR>
 
 if PlugLoaded('scrollview')
@@ -856,6 +935,12 @@ nnoremap <C-x>t :tab split<CR>
 noremap <C-x>k :tabn<CR>
 noremap <C-x>j :tabp<CR>
 
+" QuickFix Managing
+nnoremap <silent> <leader>qo <cmd>copen<CR>
+nnoremap <silent> <leader>qc <cmd>cclose<CR>
+nnoremap <silent> <leader>qq <cmd>copen<CR>
+nnoremap <silent> <leader>qx <cmd>call setqflist([], 'r')<CR>
+
 " Vimrc
 nnoremap <leader>ev :tab split ~/.vimrc<cr>
 nnoremap <leader>ez :tab split ~/.zshrc<cr>
@@ -891,7 +976,7 @@ cnoremap <C-h> <C-w>v<C-w><C-h>
 
 " ==== Vim Command Overrides ====
 " Move to end of line easy
-nnoremap H 0
+nnoremap H ^
 nnoremap L $
 
 " Command Prompt
@@ -916,11 +1001,6 @@ vnoremap gs *
 vmap <M-Q> gsNqq
 nmap <M-Q> viw<M-Q>
 nnoremap <M-q> nzz@q
-
-" Run Macro and return to location
-nnoremap <silent><m-e> :exe 'normal mb@'.nr2char(getchar()).'`bmb'<CR>
-nnoremap <silent><m-e><m-e> mb@@`bmb
-nnoremap <silent><m-E> :exe 'normal mb@'.nr2char(getchar()).'`bmbj'<CR>
 
 " === Terminal Maps ===
 if has('nvim')
@@ -955,6 +1035,8 @@ noremap <M-a> 1GVG
 nnoremap <leader>xp "_r<Enter>PkJJ
 " run Clang
 nnoremap <leader>F :FormatClang<CR>
+" Easy Semicolon
+nnoremap <silent> <M-;> mmA;<esc>`mmm
 
 " ------------------------------------------------------------------
 " ===================
@@ -977,7 +1059,7 @@ if PlugLoaded('fzf')
 function! Fzf(dict)
 call fzf#run(extend(copy({
             \ 'tmux': '-p80%,80%',
-            \ 'options': '--preview="bat -n --color=always {}"'
+            \ 'options': '--preview="bat -p --color=always {}"'
             \ }), a:dict))
 endfunction
 
@@ -1004,7 +1086,7 @@ augroup Cmds
     " Make C++ file doxygen
     autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen | set colorcolumn=120
     " Make Quick fix Preview By default
-    " autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Enter> <Enter>:wincmd j<CR> | endif
+    autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Tab> <Enter>:wincmd j<CR> | endif
     autocmd BufRead *.cc,*.h setlocal bufhidden=delete
     autocmd BufModifiedSet,BufWrite *.cc,*.h setlocal bufhidden=hide
     autocmd BufRead * setlocal iskeyword-=<
@@ -1012,6 +1094,7 @@ augroup Cmds
     autocmd BufRead * setlocal iskeyword-=:
     autocmd BufRead * setlocal iskeyword-=]
     autocmd BufRead * setlocal iskeyword-=[
+    autocmd BufRead * nnoremap <buffer> <nowait> <c-w> <cmd>bdelete<CR>
     autocmd BufRead * if &filetype == 'vim' | nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> | endif
 augroup END
 
@@ -1086,15 +1169,6 @@ function! Replace() abort
     execute ('%s/'.@".'/'.l:text.'/g')
 endfunction
 
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
-endfunction
-
-let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-
+" ---------------------------------------------------
+" SandBox
+let g:notes_directories = ['~/.vim/notes']
