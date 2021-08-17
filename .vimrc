@@ -187,13 +187,65 @@ endif
 " ------------------------------------------------------------------
 " " Status bar
 if g:STATUS_LINE
-PlugDef 'itchyny/lightline.vim'
+PlugDef 'hoob3rt/lualine.nvim'
+" PlugDef 'itchyny/lightline.vim'
 PlugDef 'pacha/vem-tabline'
+
 endif
 
 " ------------------------------------------------------------------
 " Sandbox
 PlugDef 'xolox/vim-notes'
+PlugDef 'rose-pine/neovim'
+
+PlugDef 'rafamadriz/neon'
+PlugDef 'tomasiser/vim-code-dark'
+PlugDef 'marko-cerovac/material.nvim'
+PlugDef 'bluz71/vim-nightfly-guicolors'
+PlugDef 'bluz71/vim-moonfly-colors'
+PlugDef 'ChristianChiarulli/nvcode-color-schemes.vim'
+PlugDef 'folke/tokyonight.nvim'
+PlugDef 'sainnhe/sonokai'
+PlugDef 'kyazdani42/blue-moon'
+PlugDef 'mhartington/oceanic-next'
+PlugDef 'Iron-E/nvim-highlite'
+PlugDef 'glepnir/zephyr-nvim'
+PlugDef 'rockerBOO/boo-colorscheme-nvim'
+PlugDef 'jim-at-jibba/ariake-vim-colors'
+PlugDef 'Th3Whit3Wolf/onebuddy'
+PlugDef 'RishabhRD/nvim-rdark'
+PlugDef 'ishan9299/modus-theme-vim'
+PlugDef 'sainnhe/edge'
+PlugDef 'theniceboy/nvim-deus'
+PlugDef 'bkegley/gloombuddy'
+PlugDef 'Th3Whit3Wolf/one-nvim'
+PlugDef 'PHSix/nvim-hybrid'
+PlugDef 'Th3Whit3Wolf/space-nvim'
+PlugDef 'yonlu/omni.vim'
+PlugDef 'ray-x/aurora'
+PlugDef 'novakne/kosmikoa.nvim'
+PlugDef 'tanvirtin/monokai.nvim'
+PlugDef 'nekonako/xresources-nvim'
+PlugDef 'savq/melange'
+PlugDef 'RRethy/nvim-base16'
+PlugDef 'fenetikm/falcon'
+PlugDef 'maaslalani/nordbuddy'
+PlugDef 'shaunsingh/nord.nvim'
+PlugDef 'MordechaiHadad/nvim-papadark'
+PlugDef 'ishan9299/nvim-solarized-lua'
+PlugDef 'shaunsingh/moonlight.nvim'
+PlugDef 'navarasu/onedark.nvim'
+PlugDef 'lourenci/github-colors'
+PlugDef 'sainnhe/gruvbox-material'
+PlugDef 'sainnhe/everforest'
+PlugDef 'NTBBloodbath/doom-one.nvim'
+PlugDef 'dracula/vim'
+PlugDef 'yashguptaz/calvera-dark.nvim'
+PlugDef 'nxvu699134/vn-night.nvim'
+PlugDef 'adisen99/codeschool.nvim'
+PlugDef 'projekt0n/github-nvim-theme'
+PlugDef 'kdheepak/monochrome.nvim'
+PlugDef 'rose-pine/neovim'
 
 
 call plug#end()
@@ -238,6 +290,9 @@ set hidden
 set noshowmode
 set iskeyword=@,48-57,_,192-255,=,~,*,!
 set termguicolors
+set fillchars=vert:\│,eob:\ " Space
+set scrolloff=3 " Keep 3 lines below and above the cursor
+
 
 " Tabs
 set shiftwidth=4
@@ -578,16 +633,16 @@ endif
 
 " ===== LSPUtil =====
 if PlugLoaded('lsputils')
-lua <<EOF
-vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
-vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
-vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
-vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
-vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
-vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
-vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
-vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
-EOF
+" lua <<EOF
+" vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
+" vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
+" vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
+" vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
+" vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+" vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+" vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+" vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
+" EOF
 endif
 
 " ==== CleverF =====
@@ -850,7 +905,6 @@ nnoremap <M-u> :SymbolsOutline<CR>
 nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 nnoremap Q :Bdelete menu<CR>
 noremap <M-/> :Commentary<CR>
-noremap <leader><C-s> :WriteSession<CR>
 
 
 " ------------------------------------------------------------------
@@ -859,38 +913,38 @@ noremap <leader><C-s> :WriteSession<CR>
 nnoremap <silent> <leader>H :nohlsearch<cr>
 
 " Save  File
-nnoremap <C-s> :w<CR>
-inoremap <C-s> <ESC>:w<CR>
+nnoremap <C-s> <cmd>w<CR>
+inoremap <C-s> <ESC><cmd>w<CR>
 
 " File /Buffer Operations
-nnoremap <C-c> :echo 'ctrl-c thrice to quit'<CR>
-nnoremap <C-c><C-c><C-c> :qall!<CR>
-noremap <nowait> <C-w> :bd<CR>
-noremap <M-w> :close<CR>
-noremap <C-q> :q<CR>
+nnoremap <C-c> <cmd>echo 'ctrl-c thrice to quit'<CR>
+nnoremap <C-c><C-c><C-c> <cmd>qall!<CR>
+noremap <nowait> <C-w> <cmd>bd<CR>
+noremap <M-w> <cmd>close<CR>
+noremap <C-q> <cmd>q<CR>
 
 if PlugLoaded('scrollview')
 command Buffdelete
       \ silent! ScrollViewDisable
       \ | bdelete
       \ | silent! ScrollViewEnable
-noremap <C-w> :Buffdelete<CR>
+noremap <C-w> <cmd>Buffdelete<CR>
 endif
 
 
 " Easy Indenting
 nnoremap <M-H> <<
 nnoremap <M-L> >>
-inoremap <M-H> <Esc><<<CR>gi
-inoremap <M-L> <Esc>>><CR>gi
+inoremap <M-H> <cmd>normal <<<CR>
+inoremap <M-L> <cmd>normal >><CR>
 vnoremap <M-H> <gv
 vnoremap <M-L> >gv
 
 " Easy Line Moving
-nnoremap <A-K> :m .-2<CR>
-nnoremap <A-J> :m .+1<CR>
-inoremap <A-J> <Esc>:m .+1<CR>gi
-inoremap <A-K> <Esc>:m .-2<CR>gi
+nnoremap <A-K> <cmd>m .-2<CR>
+nnoremap <A-J> <cmd>m .+1<CR>
+inoremap <A-K> <cmd>m .-2<CR>
+inoremap <A-J> <cmd>m .+1<CR>
 vnoremap <A-J> :m '>+1<CR>gv
 vnoremap <A-K> :m '<-2<CR>gv
 
@@ -1172,3 +1226,85 @@ endfunction
 " ---------------------------------------------------
 " SandBox
 let g:notes_directories = ['~/.vim/notes']
+
+nnoremap <left> <cmd>bprev<cr>
+nnoremap <right> <cmd>bnext<cr>
+nnoremap <up> <cmd>tabprev<cr>
+nnoremap <down> <cmd>tabnext<cr>
+
+" let g:gitgutter_sign_added = 'xx'
+" let g:gitgutter_sign_modified = 'yy'
+" let g:gitgutter_sign_removed = 'zz'
+let g:gitgutter_sign_removed_first_line = ''
+let g:gitgutter_sign_removed_above_and_below = ''
+let g:gitgutter_sign_modified_removed = ''
+
+function! NumL ()
+    return system:"('$')
+endfunction
+function! GetTime ()
+    return trim(system('date +"%I:%m"'))
+endfunction
+
+function! GetDate ()
+    if exists("$TMUX")
+        return ''
+    else
+        return trim(system('date +"%I:%m%P %a %m/%d" | sed -e "s/ 0/ /" -e "s/^0//"'))
+    endif
+endfunction
+
+lua  << EOF
+local Mode = {}
+Mode.map = {
+  ['n']    = '',
+  ['no']   = '',
+  ['nov']  = '',
+  ['noV']  = '',
+  ['no']   = '',
+  ['niI']  = '',
+  ['niR']  = '',
+  ['niV']  = '',
+  ['v']    = '濾',
+  ['V']    = '濾',
+  ['']   = '礪',
+  ['s']    = 's',
+  ['S']    = 'S',
+  ['']   = 'S',
+  ['i']    = '',
+  ['ic']   = '',
+  ['ix']   = '',
+  ['R']    = 'r',
+  ['Rc']   = 'r',
+  ['Rv']   = 'R',
+  ['Rx']   = 'R',
+  ['c']    = '',
+  ['cv']   = 'X',
+  ['ce']   = 'X',
+  ['r']    = 'r',
+  ['rm']   = 'more',
+  ['r?']   = '',
+  ['!']    = '',
+  ['t']    = '',
+}
+-- LuaFormatter on
+function Mode.get_mode()
+  local mode_code = vim.api.nvim_get_mode().mode
+  if Mode.map[mode_code] == nil then return mode_code end
+  return Mode.map[mode_code]
+end
+
+require'lualine'.setup{
+    options = {
+        theme = 'auto',
+    },
+    sections = {
+        lualine_a = {Mode.get_mode},
+        lualine_b = {''},
+        lualine_c = {'filename'},
+
+        lualine_x = {'Cwd'},
+        lualine_y = {'branch', 'GetDate'},
+        lualine_z = {'GetTime', 'NumL', 'diagnostics'},
+    }
+}
