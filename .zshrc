@@ -45,6 +45,7 @@ export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 # export FZF_DEFAULT_COMMAND="rg --hidden --follow --color=never"
 export FZF_DEFAULT_OPTS='--bind ctrl-e:preview-up,ctrl-y:preview-down,ctrl-u:preview-page-up,ctrl-d:preview-page-down --keep-right'
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
+export BAT_CONFIG_PATH="$HOME/.bat.conf"
 
 # Pagers
 _exists () { command -v $1 > /dev/null }
