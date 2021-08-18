@@ -188,7 +188,6 @@ endif
 " " Status bar
 if g:STATUS_LINE
 PlugDef 'hoob3rt/lualine.nvim'
-" PlugDef 'itchyny/lightline.vim'
 PlugDef 'pacha/vem-tabline'
 
 endif
@@ -246,7 +245,7 @@ PlugDef 'adisen99/codeschool.nvim'
 PlugDef 'projekt0n/github-nvim-theme'
 PlugDef 'kdheepak/monochrome.nvim'
 PlugDef 'rose-pine/neovim'
-
+PlugDef 'EdenEast/nightfox.nvim'
 
 call plug#end()
 
@@ -261,7 +260,8 @@ let g:sonokai_disable_italic_comment = 1
 let g:arcadia_Sunset = 1
 let g:arcadia_Pitch = 1
 
-colorscheme sonokai
+" colorscheme sonokai
+colorscheme nightfox
 " colorscheme arcadia
 " colorscheme fahrenheit
 " colorscheme gruvbox
@@ -1098,6 +1098,13 @@ nnoremap <silent> <M-;> mmA;<esc>`mmm
 " ===================
 " Copy The Path of the file
 command! CP :let @" = expand('%')
+command! CdFile cd %:p:h
+command! CdGit exe 'cd '.finddir('.git', '.;').'/../'
+
+" Change Dir
+nnoremap <leader>Cf <cmd>CdFile<CR>
+nnoremap <leader>Cg <cmd>CdGit<CR>
+
 " Grep
 command! -nargs=1 Grep silent grep <q-args> | copen
 command! -nargs=+ Find silent grep <q-args> | copen
@@ -1296,7 +1303,7 @@ end
 
 require'lualine'.setup{
     options = {
-        theme = 'auto',
+        theme = 'nightfox',
     },
     sections = {
         lualine_a = {Mode.get_mode},
@@ -1308,3 +1315,5 @@ require'lualine'.setup{
         lualine_z = {'GetTime', 'NumL', 'diagnostics'},
     }
 }
+EOF
+
