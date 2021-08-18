@@ -10,6 +10,7 @@ let g:NVIM_TOOLS = get(g:, 'NVIM_TOOLS', 1)
 let g:SNIPPETS = get(g:, 'SNIPPETS', 1)
 let g:STATUS_LINE = get(g:, 'STATUS_LINE', 1)
 let g:TMUX = get(g:, 'TMUX', 1) && exists("$TMUX")
+let g:NERD_FONT = get(g:, 'NERD_FONT', 1)
 
 " Light Weight Config
 if exists('$VIM_LITE')
@@ -260,7 +261,7 @@ call plug#end() "
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
 let g:sonokai_style = 'andromeda'
 let g:sonokai_enable_italic = 0
-let g:sonokai_disable_italic_comment = 1
+let g:sonokai_disable_italic_comment = 0
 
 let g:arcadia_Sunset = 1
 let g:arcadia_Pitch = 1
@@ -319,6 +320,11 @@ if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 elseif executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
+endif
+
+" Use 3.8 if exists
+if executable('python3.8')
+let g:python3_host_prog = 'python3.8'
 endif
 
 if exists(':GuiFont')
@@ -448,6 +454,13 @@ nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
 nnoremap <leader>gt :GitGutterToggle<CR>
 nnoremap <leader>ga :GitGutterStageHunk<CR>
 nnoremap <leader>gu :GitGutterUndoHunk<CR>
+
+" Cool symbols
+if g:NERD_FONT
+    let g:gitgutter_sign_removed_first_line = ''
+    let g:gitgutter_sign_removed_above_and_below = ''
+    let g:gitgutter_sign_modified_removed = ''
+endif
 endif
 
 "===== EasyMotion ======== {{{2
@@ -562,7 +575,9 @@ if PlugLoaded('clap')
 let g:clap_layout = { 'relative': 'editor' }
 let g:clap_preview_direction = 'UD'
 
+if PlugLoaded('compe')
 autocmd FileType clap_input call compe#setup({ 'enabled': v:false }, 0)
+endif
 
 lua << EOF
 vim.lsp.handlers['textDocument/codeAction']     = require'clap-lsp.codeAction'.code_action_handler
@@ -660,6 +675,89 @@ if PlugLoaded('lsputils')
 " vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
 " EOF
 endif
+
+" ===== Lua Line =====
+if PlugLoaded('lualine')
+
+function! NumL ()
+    return system:"('$')
+endfunction
+function! GetTime ()
+    return trim(system('date +"%I:%m"'))
+endfunction
+
+function! GetDate ()
+    if exists("$TMUX")
+        return ''
+    else
+        return trim(system('date +"%I:%m%P %a %m/%d" | sed -e "s/ 0/ /" -e "s/^0//"'))
+    endif
+endfunction
+
+lua  << EOF
+local Map = {}
+if vim.g.NERD_FONT then
+Map = {
+  ['n']    = '',
+  ['v']    = '濾',
+  ['V']    = '濾',
+  ['']   = '礪',
+  ['s']    = 's',
+  ['S']    = 'S',
+  ['']   = 'S',
+  ['i']    = '',
+  ['R']    = 'r',
+  ['c']    = '',
+  ['cv']   = 'X',
+  ['ce']   = 'X',
+  ['r']    = 'r',
+  ['rm']   = 'more',
+  ['r?']   = '',
+  ['!']    = '',
+  ['t']    = '',
+}
+else
+Map = {
+  ['']   = 'v',
+  ['']   = 's',
+  ['i']    = 'i',
+  ['R']    = 'r',
+  ['c']    = ':',
+  ['cv']   = 'X',
+  ['ce']   = 'X',
+  ['r']    = 'r',
+  ['rm']   = 'more',
+  ['r?']   = '?',
+  ['t']    = '>',
+}
+end
+
+function get_mode()
+  local m = vim.api.nvim_get_mode().mode
+  local f = m.sub(m, 1, 1)
+  if Map[m] ~= nil then return Map[m] end
+  if Map[f] ~= nil then return Map[f] end
+  return m
+end
+
+require'lualine'.setup{
+    options = {
+        theme = 'auto',
+    },
+    sections = {
+        lualine_a = {get_mode},
+        lualine_b = {''},
+        lualine_c = {'filename'},
+
+        lualine_x = {'Cwd'},
+        lualine_y = {'branch', 'GetDate'},
+        lualine_z = {'GetTime', 'NumL', 'diagnostics'},
+    }
+}
+EOF
+endif
+" ==== Lua Line End ====
+
 
 " ==== CleverF ===== {{{2
 if PlugLoaded('clever_f')
@@ -939,11 +1037,8 @@ noremap <M-w> <cmd>close<CR>
 noremap <C-q> <cmd>q<CR>
 
 if PlugLoaded('scrollview')
-command Buffdelete
-      \ silent! ScrollViewDisable
-      \ | bdelete
-      \ | silent! ScrollViewEnable
-noremap <C-w> <cmd>Buffdelete<CR>
+command! Buffdelete  silent! ScrollViewDisable  \| bdelete  \| silent! ScrollViewEnable
+noremap <silent> <C-w> <cmd>Buffdelete<CR>
 endif
 
 " Easy Indenting
@@ -995,6 +1090,20 @@ noremap <C-x>h :bp<CR>
 noremap <M-]> :bn<CR>
 noremap <M-[> :bp<CR>
 nnoremap <S-Tab> <C-^>
+
+" Arrow Keys for B movement
+nnoremap <left> <cmd>bprev<cr>
+nnoremap <right> <cmd>bnext<cr>
+nnoremap <up> <cmd>tabprev<cr>
+nnoremap <down> <cmd>tabnext<cr>
+
+" Better Buffers
+if PlugLoaded('vem_tabline')
+nmap <M-Left> <Plug>vem_move_buffer_left-
+nmap <M-Right> <Plug>vem_move_buffer_right-
+nmap <Left> <Plug>vem_prev_buffer-
+nmap <Right> <Plug>vem_next_buffer-
+endif
 
 "" Tabs
 noremap <M-}> :tabn<CR>
@@ -1169,7 +1278,7 @@ augroup Cmds
     autocmd BufRead * setlocal iskeyword-=:
     autocmd BufRead * setlocal iskeyword-=]
     autocmd BufRead * setlocal iskeyword-=[
-    autocmd BufRead * nnoremap <buffer> <nowait> <c-w> <cmd>bdelete<CR>
+    autocmd BufRead * nnoremap <buffer> <nowait> <c-w> <cmd>Buffdelete<CR>
     autocmd BufRead * if &filetype == 'vim' | nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> | endif
 augroup END
 
