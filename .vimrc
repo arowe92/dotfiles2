@@ -1,8 +1,8 @@
 """""""""""""""""""
 "  Master Vim RC  "
 """""""""""""""""""
-
-" RC Configuration
+"  Configuration {{{1
+"  RC Configuration {{{2
 let g:GIT_TOOLS = get(g:, 'GIT_TOOLS', 1)
 let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 0)
 let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
@@ -31,6 +31,7 @@ if exists('g:vscode')
     let g:STATUS_LINE = 0
 endif
 
+"  Vim-Plug {{{2
 " Install vim-plug if it doesnt exist
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -196,7 +197,9 @@ endif
 " Sandbox
 PlugDef 'xolox/vim-notes'
 PlugDef 'rose-pine/neovim'
+PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 
+" Colorschemes {{{3
 PlugDef 'rafamadriz/neon'
 PlugDef 'tomasiser/vim-code-dark'
 PlugDef 'marko-cerovac/material.nvim'
@@ -246,12 +249,14 @@ PlugDef 'projekt0n/github-nvim-theme'
 PlugDef 'kdheepak/monochrome.nvim'
 PlugDef 'rose-pine/neovim'
 PlugDef 'EdenEast/nightfox.nvim'
+"
+call plug#end() "
 
-call plug#end()
-
-"=========================
-" Appearance
-"-------------------------
+" =========================
+"  General Settings {{{1
+" ----------------------
+"
+"  Appearance {{{2
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
 let g:sonokai_style = 'andromeda'
 let g:sonokai_enable_italic = 0
@@ -259,6 +264,7 @@ let g:sonokai_disable_italic_comment = 1
 
 let g:arcadia_Sunset = 1
 let g:arcadia_Pitch = 1
+let g:nightfox_style = 'nightfox'
 
 " colorscheme sonokai
 colorscheme nightfox
@@ -266,11 +272,8 @@ colorscheme nightfox
 " colorscheme fahrenheit
 " colorscheme gruvbox
 
-
-" =========================
-"    General Settings
-" -------------------------
-
+"  Vim Settings {{{2
+"-------------------------
 set wrap
 set number
 set hlsearch
@@ -293,7 +296,6 @@ set termguicolors
 set fillchars=vert:\│,eob:\ " Space
 set scrolloff=3 " Keep 3 lines below and above the cursor
 
-
 " Tabs
 set shiftwidth=4
 set tabstop=4
@@ -310,6 +312,7 @@ set tags+=~/.vim/tags
 " Map key
 let mapleader=" "
 
+"  Programs {{{2
 " Use ag if it exists
 if executable('rg')
     " Use rg over grep
@@ -322,33 +325,38 @@ if exists(':GuiFont')
 GuiFont FuraMono NF:h11
 endif
 
+"  Toggle Settings {{{2
 function Toggle_setting(name)
 exe "set ".a:name."!"
-exe "echo '".a:name." =' &".a:name
+exe "echo '".a:name." =' &".a:name." ? 'on' : 'off'"
+endfunction
+
+let setting_cycles = {
+            \ "foldmethod": ['manual', 'marker', 'expr', 'syntax']
+            \ }
+
+function Cycle_setting(name)
+let next = g:setting_cycles[a:name][0]
+let g:setting_cycles[a:name] = g:setting_cycles[a:name][1:] + [l:next]
+exe "set ".a:name."=".l:next
+echo a:name.' = '.l:next
 endfunction
 
 " Setting Toggles
-noremap <leader>1w <cmd>call Toggle_setting("wrap")<CR>
-noremap <leader>1n <cmd>call Toggle_setting("number")<CR>
-
+noremap <leader>7w <cmd>call Toggle_setting("wrap")<CR>
+noremap <leader>7n <cmd>call Toggle_setting("number")<CR>
+noremap <leader>7f <cmd>call Cycle_setting("foldmethod")<CR>
 " ------------------------------------------------------------------
 
 "=========================
-"    Plugin Settings
+"   Plugin Settings {{{1
 "-------------------------
-" ===== Statusline ======
-if PlugLoaded('lightline')
-let g:lightline = {
-            \ 'colorscheme': 'wombat',
-            \ 'enable': { 'tabline': 0 },
-            \ }
-endif
-
+" Far {{{2
 if PlugLoaded('far')
 let g:far#source='rgnvim'
 endif
 
-" Vim Printer
+" Vim Printer {{{2
 let g:vim_printer_print_below_keybinding = '<leader>xc'
 let g:vim_printer_print_above_keybinding = '<leader>xC'
 let g:vim_printer_items = {
@@ -356,8 +364,9 @@ let g:vim_printer_items = {
             \ 'python': 'print("{$}:", {$})',
             \ 'cpp': 'info(0) << "{$}:" << {$} << std::endl;',
             \ }
+"
 
-"====== Nvim Tree ========
+"====== Nvim Tree ======== {{{2
 if PlugLoaded('nvim_tree_lua')
 noremap <leader>\ :NvimTreeToggle<CR>
 noremap <leader>\| :NvimTreeFindFile<CR>
@@ -375,7 +384,7 @@ endfunction
 
 endif
 
-" ====== Which Key =======
+" ====== Which Key ======= {{{2
 if PlugLoaded('which_key')
 noremap <silent> <leader> :WhichKey ' '<CR>
 let g:which_key_map =  {}
@@ -385,7 +394,7 @@ let g:which_key_map.d = { 'name' : '+vimspector' }
 let g:which_key_map.e = { 'name' : '+edit' }
 let g:which_key_map.g = { 'name' : '+git' }
 let g:which_key_map.x = { 'name' : '+extension' }
-let g:which_key_map['!'] = { 'name' : '+toggle' }
+let g:which_key_map['1'] = { 'name' : '+toggle' }
 let g:which_key_map.W = { 'name' : '+WhichKey' }
 
 call which_key#register('<Space>', "g:which_key_map")
@@ -394,7 +403,7 @@ call which_key#register('<Space>', "g:which_key_map")
 noremap <leader>W <cmd>execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
-"==== Startify ====
+"==== Startify ==== {{{2
 if PlugLoaded('startify')
 let g:startify_change_to_dir = 0
 let g:startify_session_dir = '~/.vim/sessions'
@@ -417,7 +426,7 @@ endif
 " =================
 
 
-"==== Conflict Marker ====
+"==== Conflict Marker ==== {{{2
 if PlugLoaded('conflict_marker')
 let g:conflict_marker_enable_mappings = 1
 highlight ConflictMarkerBegin guibg=#2f7366
@@ -427,7 +436,7 @@ highlight ConflictMarkerEnd guibg=#2f628e
 highlight ConflictMarkerCommonAncestorsHunk guibg=#754a81
 endif
 
-"==== Git Gutter ====
+"==== Git Gutter ==== {{{2
 if PlugLoaded('gitgutter')
 let g:gitgutter_map_keys = 0
 
@@ -441,7 +450,7 @@ nnoremap <leader>ga :GitGutterStageHunk<CR>
 nnoremap <leader>gu :GitGutterUndoHunk<CR>
 endif
 
-"===== EasyMotion ========
+"===== EasyMotion ======== {{{2
 if PlugLoaded('easymotion')
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
 map <leader>f <Plug>(easymotion-bd-f)
@@ -454,7 +463,7 @@ map <Leader>k <Plug>(easymotion-k)
 map <Leader>h <Plug>(easymotion-linebackward)
 endif
 
-"===== Vimux =============
+" Vimux {{{2
 if PlugLoaded('toggle_terminal')
 noremap <silent> <M-`> :ToggleTerminal<CR>
 tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
@@ -463,7 +472,7 @@ tnoremap <silent> <M-t> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 
-" Fuzzy Commands
+" Fuzzy Commands {{{2
 command! Fuzzy         Clap
 command! FuzzyFiles    Clap files .
 command! FuzzyFilesR   Clap
@@ -473,7 +482,7 @@ command! FuzzyQF       Clap quickfix
 command! FuzzyFindFile Clap quickfix
 command! FuzzyFindAll  Telescope live_grep
 
-" Fuzzy Mappings
+" Fuzzy Mappings {{{3
 " "Search Word
 nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
 vnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
@@ -486,7 +495,7 @@ nnoremap <M-r> <cmd>FuzzyComR<cr>
 nnoremap <M-R> <cmd>FuzzyCom<cr>
 nnoremap <M-e> <cmd>Fuzzy<cr>
 
-" ==== Telescope =========
+" ==== Telescope ========= {{{3
 if PlugLoaded('telescope_nvim')
 
 lua << EOF
@@ -517,6 +526,7 @@ lua require "telescope".load_extension("frecency")
 endif
 endif
 
+" Fzf {{{3
 if PlugLoaded('fzf')
 " Use tmux FZF if tmux exists
 if g:TMUX
@@ -546,7 +556,7 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 endif
 
-
+" Clap {{{3
 if PlugLoaded('clap')
 " let g:clap_layout={ 'width': '80%', 'height': '33%', 'row': '33%', 'col': '0%' }
 let g:clap_layout = { 'relative': 'editor' }
@@ -563,7 +573,7 @@ vim.lsp.handlers['workspace/symbol']            = require'clap-lsp.symbols'.work
 EOF
 endif
 
-" ==== Compe =====
+" ==== Compe ===== {{{2
 if PlugLoaded('compe')
 set completeopt=menuone,noselect
 let g:compe = {}
@@ -597,7 +607,7 @@ inoremap <silent> <M-CR> <CR>
 endif
 " ------------------------------------------------------------------
 
-" Nvim LSP
+" Nvim LSP {{{2
 if PlugLoaded('nvim_lspconfig')
 lua << EOF
 require'lspconfig'.rust_analyzer.setup{}
@@ -629,9 +639,15 @@ nnoremap <silent> ]c <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 
+
+nmap <leader>1cu <Plug>(toggle-lsp-diag-underline)
+nmap <leader>1cs <Plug>(toggle-lsp-diag-signs)
+nmap <leader>1cv <Plug>(toggle-lsp-diag-vtext)
+nmap <leader>1cp <Plug>(toggle-lsp-diag-update_in_insert)
+nmap <leader>1ca  <Plug>(toggle-lsp-diag)
 endif
 
-" ===== LSPUtil =====
+" ===== LSPUtil ===== {{{2
 if PlugLoaded('lsputils')
 " lua <<EOF
 " vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
@@ -645,7 +661,7 @@ if PlugLoaded('lsputils')
 " EOF
 endif
 
-" ==== CleverF =====
+" ==== CleverF ===== {{{2
 if PlugLoaded('clever_f')
 let g:clever_f_not_overwrites_standard_mappings = 1
 function! MapCleverF()
@@ -665,7 +681,7 @@ endfunction
 call MapCleverF()
 endif
 
-" ==== Multiple Cursors ====
+" ==== Multiple Cursors ==== {{{2
 if PlugLoaded("vim_multiple_cursors")
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_start_word_key      = '<A-d>'
@@ -699,7 +715,7 @@ function! Multiple_cursors_after()
 endfunction
 endif
 
-" ==== Smoothie ====
+" ==== Smoothie ==== {{{2
 if PlugLoaded("smoothie")
 " let g:smoothie_speed_exponentiation_factor = 1.3
 let g:smoothie_speed_constant_factor = 20
@@ -711,7 +727,7 @@ nmap <unique> <C-b>      <Plug>(SmoothieBackwards)
 endif
 
 
-" ==== TreeSitter ====
+" ==== TreeSitter ==== {{{2
 if PlugLoaded('nvim_treesitter')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -765,14 +781,14 @@ vmap <A-s> grn
 vmap <A-S> grm
 endif
 
-" Interesting Words
+" Interesting Words {{{2
 let g:interestingWordsDefaultMappings = 0
 let g:interestingWordsRandomiseColors = 1
 nnoremap <silent> <leader>xi :call InterestingWords('n')<cr>
 vnoremap <silent> <leader>xi :call InterestingWords('v')<cr>
 nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 
-" Sandwich
+" Sandwich {{{2
 if PlugLoaded('vim_sandwich')
 nnoremap sf :normal saiwf<CR>
 nnoremap sF :normal saiWf<CR>
@@ -791,7 +807,7 @@ nnoremap sac :normal saiwf<CR>:normal srb<<CR>
 nnoremap saC :normal saiWf<CR>:normal srb<<CR>
 endif
 
-" VimSpector
+" VimSpector {{{2
 if PlugLoaded('vimspector')
 nmap <leader>dc <Plug>VimspectorContinue
 nmap <leader>ds <Plug>VimspectorLaunch
@@ -808,20 +824,20 @@ nmap <leader>dl <Plug>VimspectorStepInto
 nmap <leader>dh <Plug>VimspectorStepOut
 endif
 
-" Switch to Layout / Maximize Pane
+" Switch to Layout / Maximize Pane {{{2
 if PlugLoaded('nvim_maximize_window_toggle')
 nnoremap <leader>m :ToggleOnly<CR>
 nnoremap <M-Enter> :ToggleOnly<CR>
 endif
 
-if PlugLoaded('sideways')
+if PlugLoaded('sideways') " {{{2
 " Move Arguments left or right
 noremap <M-<> :SidewaysLeft<CR>
 noremap <M->> :SidewaysRight<CR>
 endif
 
-" ==== Custom 'Plugins' =====
-" Copy To Other Window
+" ==== Custom 'Plugins' ===== {{{2
+" Copy To Other Window {{{3
 if 1
 function! CopyOther() abort
     let l:buffer = bufnr()
@@ -838,7 +854,7 @@ nnoremap gF :call CopyOther() \| norm gf<CR>
 nnoremap gK :call CopyOther() \| norm gk<cr>
 endif
 
-if executable('how2')
+if executable('how2') " {{{3
 nnoremap <leader>xh :execute("vsplit \| term how2 -l ".&filetype." ".expand("<cword>"))<CR>
 nnoremap <leader>xH :execute("vsplit \| term how2 -l ".&filetype." ".input("Search Stack Overflow: "))<CR>
 nnoremap <leader>x<m-h> :call system("tmux popup how2 -l ".&filetype." ".expand("<cword>"))<CR>
@@ -847,7 +863,7 @@ nnoremap <leader>x<m-H> :call system("tmux popup how2 -l ".&filetype." ".input("
 command! -nargs=+ StackOverflow exe "term how2 -l ".&filetype." ".<q-args>
 endif
 
-" Git Patch
+" Git Patch {{{3
 if 1
 function! CommitQF()
     " Get the result of git show in a list
@@ -869,7 +885,7 @@ nnoremap <leader>xg <cmd>GitPatch<CR>
 nnoremap <leader>xG <cmd>call CommitQF()<CR>
 endif
 
-" Next Fold
+" Next Fold {{{3
 if 1
 function! NextClosedFold(dir)
     let cmd = 'norm!z' . a:dir
@@ -885,12 +901,12 @@ function! NextClosedFold(dir)
     endif
 endfunction
 
-nnoremap <silent> [z :call NextClosedFold('k')<cr>
-nnoremap <silent> ]z :call NextClosedFold('j')<cr>
+nnoremap <silent> [Z :call NextClosedFold('k')<cr>
+nnoremap <silent> ]Z :call NextClosedFold('j')<cr>
 endif
 
 " ------------------------------------------------------------------
-" Misc PLugins
+" Misc PLugins {{{2
 let g:session_autosave='yes'
 let g:session_autosave_periodic=3
 let g:session_autoload='no'
@@ -906,9 +922,8 @@ nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 nnoremap Q :Bdelete menu<CR>
 noremap <M-/> :Commentary<CR>
 
-
 " ------------------------------------------------------------------
-" ==== Native Mappings ====
+"  Mappings {{{1
 " Clear the highlighting of :set hlsearch
 nnoremap <silent> <leader>H :nohlsearch<cr>
 
@@ -931,7 +946,6 @@ command Buffdelete
 noremap <C-w> <cmd>Buffdelete<CR>
 endif
 
-
 " Easy Indenting
 nnoremap <M-H> <<
 nnoremap <M-L> >>
@@ -953,7 +967,7 @@ nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
 nnoremap S/ :execute 's/\/\ */\/\r/g' \| :nohl<CR>
 nnoremap SS :execute 's/\('.input("String to Split on").'\)\ */\1\r/g' \| :nohl<CR>
 
-" ==== Windows and Panes ====
+" ==== Windows and Panes ==== {{{2
 " Remap window prefix
 map <C-x> <C-w>
 
@@ -1019,7 +1033,7 @@ inoremap <M-(> ()<Left>
 inoremap <M-"> ""<Left>
 inoremap <M-'> ''<Left>
 
-" ==== Command Mode ===
+" ==== Command Mode ==== {{{2
 cnoremap <C-v> <C-r>"
 cnoremap <M-v> <C-f>
 
@@ -1028,7 +1042,7 @@ cnoremap <C-k> <C-w>s<C-w><C-k>
 cnoremap <C-l> <C-w>v<C-w><C-l>
 cnoremap <C-h> <C-w>v<C-w><C-h>
 
-" ==== Vim Command Overrides ====
+" ==== Vim Command Overrides ==== {{{2
 " Move to end of line easy
 nnoremap H ^
 nnoremap L $
@@ -1056,7 +1070,7 @@ vmap <M-Q> gsNqq
 nmap <M-Q> viw<M-Q>
 nnoremap <M-q> nzz@q
 
-" === Terminal Maps ===
+" === Terminal Maps === {{{2
 if has('nvim')
 tnoremap <C-e> <C-\><C-n>
 tnoremap <C-k> <C-\><C-n><C-w>k
@@ -1076,7 +1090,7 @@ autocmd BufEnter * if bufname() =~ '^term://' | exe 'normal A' | endif
 augroup END
 endif
 
-" ==== Misc ====
+" ==== Misc ==== {{{2
 " Run Line in Vim
 autocmd FileType vim nnoremap <buffer> yr yy:<C-r>"<CR>
 " run line in shell
@@ -1094,7 +1108,7 @@ nnoremap <silent> <M-;> mmA;<esc>`mmm
 
 " ------------------------------------------------------------------
 " ===================
-" Custom Commands
+"  Commands {{{1
 " ===================
 " Copy The Path of the file
 command! CP :let @" = expand('%')
@@ -1131,7 +1145,7 @@ command! FzfCd call FzfCd()
 command! FzfCdIter call FzfCdIter()
 endif
 
-" ======= Functions ========
+"  Functions {{{1
 function! Cwd() abort
     let l:path = getcwd()
     let l:pattern = getenv("HOME")
@@ -1139,7 +1153,7 @@ function! Cwd() abort
     return l:new_path
 endfunction
 
-" ========= Auto Commands ==============
+"  Auto Commands {{{1
 augroup Cmds
     au!
     " Remove spaces at end of line
@@ -1159,7 +1173,7 @@ augroup Cmds
     autocmd BufRead * if &filetype == 'vim' | nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> | endif
 augroup END
 
-" ==== Fzf Functions ====
+" ==== Fzf Functions ==== {{{2
 " Easy way to Include c++ files
 function! Include(file, ...) abort
     let l:file = a:file
@@ -1175,7 +1189,7 @@ function! Include(file, ...) abort
     exe "normal! o" . l:include . "\<Esc>"
 endfunction
 
-" Nerd Tree into Folder
+" Nerd Tree into Folder {{{3
 function! FzfCd() abort
     let l:options = "../\n".trim(system("fd -t d"))
     let l:file = trim(system("echo '".l:options."' | fzf-tmux -p --reverse --preview='prev {}'"))
@@ -1190,7 +1204,7 @@ function! FzfCd() abort
     execute "NvimTreeRefresh"
 endfunction
 
-function! FzfCdIter() abort
+function! FzfCdIter() abort " {{{3
     let l:path = './'
     while 1
         let l:cmd = "fd --prune --base-directory=".l:path." -t d ."
@@ -1231,7 +1245,8 @@ function! Replace() abort
 endfunction
 
 " ---------------------------------------------------
-" SandBox
+
+"  SandBox {{{1
 let g:notes_directories = ['~/.vim/notes']
 
 nnoremap <left> <cmd>bprev<cr>
