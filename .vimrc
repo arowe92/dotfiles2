@@ -12,7 +12,7 @@ let g:STATUS_LINE = get(g:, 'STATUS_LINE', 1)
 let g:TMUX = get(g:, 'TMUX', 1) && exists("$TMUX")
 let g:NERD_FONT = get(g:, 'NERD_FONT', 1)
 
-" Light Weight Config
+" Light Weight Config {{{3
 if exists('$VIM_LITE')
     let g:GIT_TOOLS = 1
     let g:CPP_TOOLS = 0
@@ -22,7 +22,7 @@ if exists('$VIM_LITE')
     let g:STATUS_LINE = 0
 endif
 
-" Nvim VSCode Plugin Options
+" Nvim VSCode Plugin Options {{{3
 if exists('g:vscode')
     let g:GIT_TOOLS = 0
     let g:CPP_TOOLS = 0
@@ -39,7 +39,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin()
-" Plugin Helpers
+" Plugin Helpers {{{3
 function! FormatPlugName(name) abort
     let l:name = a:name
     let l:name = substitute(l:name, "[-.]", '_', 'g')
@@ -72,24 +72,24 @@ function SourceByLine(file)
 endfunction
 
 " ------------------------------------------------------------------
-" Essentials
+" Essentials {{{3
 PlugDef 'easymotion/vim-easymotion'
 PlugDef 'rhysd/clever-f.vim'
 PlugDef 'bogado/file-line'
 PlugDef 'machakann/vim-sandwich'
 
-" GUI Essentials
+" GUI Essentials {{{3
 PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
 PlugDef 'dstein64/nvim-scrollview'
 PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
 PlugDef 'junegunn/fzf.vim'
 
-" Window Management
+" Window Management {{{3
 PlugDef 'caenrique/nvim-maximize-window-toggle'
 PlugDef 'Asheq/close-buffers.vim'
 PlugDef 'caenrique/nvim-toggle-terminal'
 
-" Text Editing
+" Text Editing {{{3
 PlugDef 'mg979/vim-visual-multi', {'branch': 'master'}
 PlugDef 'AndrewRadev/sideways.vim'
 PlugDef 'tpope/vim-commentary'
@@ -97,13 +97,13 @@ PlugDef 'tpope/vim-sensible'
 PlugDef 'tpope/vim-eunuch' " Unix Commands
 PlugDef 'meain/vim-printer'
 
-" Misc
+" Misc {{{3
 PlugDef 'tpope/vim-repeat'
 PlugDef 'lfv89/vim-interestingwords'
 PlugDef 'xolox/vim-misc'
 PlugDef 'xolox/vim-session'
 
-" Language Support
+" Language Support {{{3
 PlugDef 'MaxMEllon/vim-jsx-pretty'
 PlugDef 'pangloss/vim-javascript',  { 'for': 'javascript' }
 PlugDef 'elixir-editors/vim-elixir'
@@ -113,7 +113,7 @@ PlugDef 'plasticboy/vim-markdown'
 PlugDef 'cespare/vim-toml'
 
 " Appearance
-" PlugDef 'Yggdroot/indentLine'
+" PlugDef 'Yggdroot/indentLine' {{{3
 PlugDef 'lukas-reineke/indent-blankline.nvim'
 PlugDef 'ryanoasis/vim-devicons'
 PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
@@ -123,7 +123,7 @@ PlugDef 'EdenEast/nightfox.nvim'
 silent call SourceByLine($DOTFILE_PATH."/colors.vim")
 
 " ------------------------------------------------------------------
-if g:GUI_TOOLS
+if g:GUI_TOOLS " {{{3
 PlugDef 'mbbill/undotree'
 PlugDef 'yegappan/taglist'
 PlugDef 'brooth/far.vim' " Find & Replace
@@ -135,7 +135,7 @@ PlugDef 'mhinz/vim-startify'
 endif
 
 " ------------------------------------------------------------------
-if g:NVIM_TOOLS
+if g:NVIM_TOOLS " {{{3
 " TreeSitter
 PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 PlugDef 'p00f/nvim-ts-rainbow'
@@ -161,39 +161,38 @@ PlugDef 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
 PlugDef 'goolord/nvim-clap-lsp'
 endif
 " ------------------------------------------------------------------
-if g:GIT_TOOLS
+if g:GIT_TOOLS " {{{3
 PlugDef 'tpope/vim-fugitive'
 PlugDef 'airblade/vim-gitgutter'
 PlugDef 'rhysd/conflict-marker.vim'
 endif
 " ------------------------------------------------------------------
-" Hardcore C++ tools
+" Hardcore C++ tools {{{3
 if g:CPP_TOOLS
 PlugDef 'puremoLheurning/vimspector'
 PlugDef 'gauteh/vim-cppman'
 endif
 " ------------------------------------------------------------------
-" Tmux Integration
+" Tmux Integration {{{3
 if g:TMUX
 PlugDef 'christoomey/vim-tmux-navigator'
 PlugDef 'roxma/vim-tmux-clipboard'
 endif
 " ------------------------------------------------------------------
-" Snippets
+" Snippets {{{3
 if g:SNIPPETS
 PlugDef 'SirVer/ultisnips'
 PlugDef 'honza/vim-snippets'
 endif
 " ------------------------------------------------------------------
-" " Status bar
+" " Status bar {{{3
 if g:STATUS_LINE
 PlugDef 'hoob3rt/lualine.nvim'
 PlugDef 'pacha/vem-tabline'
-
 endif
 
 " ------------------------------------------------------------------
-" Sandbox
+" Sandbox {{{3
 PlugDef 'xolox/vim-notes'
 PlugDef 'rose-pine/neovim'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
@@ -485,7 +484,7 @@ command! FuzzyFindAll  Telescope live_grep
 " Fuzzy Mappings {{{3
 " "Search Word
 nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
-vnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
+xnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
 
 nnoremap <leader>xf <cmd>execute('silent grep "'.input('Search For: ').'" \| FuzzyQF ')<CR>
 
@@ -800,15 +799,15 @@ set foldexpr=nvim_treesitter#foldexpr()
 
 " Incremental Selection
 nmap <A-s> gnn
-vmap <A-s> grn
-vmap <A-S> grm
+xmap <A-s> grn
+xmap <A-S> grm
 endif " nvim_treesitter
 
 "  Interesting Words {{{2
 let g:interestingWordsDefaultMappings = 0
 let g:interestingWordsRandomiseColors = 1
 nnoremap <silent> <leader>xi :call InterestingWords('n')<cr>
-vnoremap <silent> <leader>xi :call InterestingWords('v')<cr>
+xnoremap <silent> <leader>xi :call InterestingWords('v')<cr>
 nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 
 "  Sandwich {{{2
@@ -1098,22 +1097,22 @@ nnoremap L $
 noremap ; :<Up>
 
 " End visual mode at bottom
-vmap y ygv<Esc>
+xmap y ygv<Esc>
 
 " X Does not go to clipboard
-vnoremap x "_d
-vnoremap X "_D
-vnoremap X "_D
+xnoremap x "_d
+xnoremap X "_D
+xnoremap X "_D
 
 " silent search if wrap-around enabled
 map <silent> n n
 
 " Asterisk is hard
 nnoremap gs *
-vnoremap gs *
+xnoremap gs *
 
 " Easy Macros / Replacing
-vmap <M-Q> gsNqq
+xmap <M-Q> gsNqq
 nmap <M-Q> viw<M-Q>
 nnoremap <M-q> nzz@q
 
