@@ -50,7 +50,7 @@ export BAT_CONFIG_PATH="$HOME/.bat.conf"
 # Pagers
 _exists () { command -v $1 > /dev/null }
 _exists nvim && export EDITOR=nvim
-_exists bat && export MANPAGER='bat -p -l man'
+_exists bat && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 _exists bat && export PAGER='bat -p'
 
 ###################################
@@ -75,8 +75,8 @@ bindkey '^w' backward-kill-word
 bindkey '^ ' autosuggest-execute
 bindkey -M vicmd v edit-command-line
 
-zle -N fasd_svim
-bindkey '^o' fasd_svim
+bindkey -s '^o' '`fasd_echo`\t'
+bindkey -s '^p' 'nvim `fasd_echo`\n'
 
 bindkey -s '^n' 'nvim\n'
 bindkey -M vicmd -s '^n' '^[invim\n'

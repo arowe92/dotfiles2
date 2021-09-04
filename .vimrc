@@ -65,6 +65,11 @@ function! PlugDef(...) abort
     execute ('let g:plugin_'.l:name.' = 1')
 endfunction
 command! -nargs=+ PlugDef call PlugDef(<f-args>)
+function SourceByLine(file)
+    for l:line in readfile(a:file)
+        execute l:line
+    endfor
+endfunction
 
 " ------------------------------------------------------------------
 " Essentials
@@ -85,7 +90,7 @@ PlugDef 'Asheq/close-buffers.vim'
 PlugDef 'caenrique/nvim-toggle-terminal'
 
 " Text Editing
-PlugDef 'terryma/vim-multiple-cursors'
+PlugDef 'mg979/vim-visual-multi', {'branch': 'master'}
 PlugDef 'AndrewRadev/sideways.vim'
 PlugDef 'tpope/vim-commentary'
 PlugDef 'tpope/vim-sensible'
@@ -113,14 +118,9 @@ PlugDef 'lukas-reineke/indent-blankline.nvim'
 PlugDef 'ryanoasis/vim-devicons'
 PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
 
-" Color schemes
-PlugDef 'sainnhe/sonokai'
-PlugDef 'AlessandroYorba/Sierra'
-PlugDef 'AlessandroYorba/Arcadia'
-PlugDef 'AlessandroYorba/Despacio'
-PlugDef 'AlessandroYorba/Breve'
-PlugDef 'AlessandroYorba/Alduin'
-PlugDef 'morhetz/gruvbox'
+" Colorschemes {{{3
+PlugDef 'EdenEast/nightfox.nvim'
+silent call SourceByLine($DOTFILE_PATH."/colors.vim")
 
 " ------------------------------------------------------------------
 if g:GUI_TOOLS
@@ -154,8 +154,6 @@ PlugDef 'tami5/sql.nvim'
 PlugDef 'nvim-telescope/telescope-frecency.nvim'
 
 " LSP Config
-PlugDef 'RishabhRD/popfix'
-PlugDef 'RishabhRD/nvim-lsputils'
 PlugDef 'neovim/nvim-lspconfig'
 
 " Clap
@@ -200,57 +198,6 @@ PlugDef 'xolox/vim-notes'
 PlugDef 'rose-pine/neovim'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 
-" Colorschemes {{{3
-PlugDef 'rafamadriz/neon'
-PlugDef 'tomasiser/vim-code-dark'
-PlugDef 'marko-cerovac/material.nvim'
-PlugDef 'bluz71/vim-nightfly-guicolors'
-PlugDef 'bluz71/vim-moonfly-colors'
-PlugDef 'ChristianChiarulli/nvcode-color-schemes.vim'
-PlugDef 'folke/tokyonight.nvim'
-PlugDef 'sainnhe/sonokai'
-PlugDef 'kyazdani42/blue-moon'
-PlugDef 'mhartington/oceanic-next'
-PlugDef 'Iron-E/nvim-highlite'
-PlugDef 'glepnir/zephyr-nvim'
-PlugDef 'rockerBOO/boo-colorscheme-nvim'
-PlugDef 'jim-at-jibba/ariake-vim-colors'
-PlugDef 'Th3Whit3Wolf/onebuddy'
-PlugDef 'RishabhRD/nvim-rdark'
-PlugDef 'ishan9299/modus-theme-vim'
-PlugDef 'sainnhe/edge'
-PlugDef 'theniceboy/nvim-deus'
-PlugDef 'bkegley/gloombuddy'
-PlugDef 'Th3Whit3Wolf/one-nvim'
-PlugDef 'PHSix/nvim-hybrid'
-PlugDef 'Th3Whit3Wolf/space-nvim'
-PlugDef 'yonlu/omni.vim'
-PlugDef 'ray-x/aurora'
-PlugDef 'novakne/kosmikoa.nvim'
-PlugDef 'tanvirtin/monokai.nvim'
-PlugDef 'nekonako/xresources-nvim'
-PlugDef 'savq/melange'
-PlugDef 'RRethy/nvim-base16'
-PlugDef 'fenetikm/falcon'
-PlugDef 'maaslalani/nordbuddy'
-PlugDef 'shaunsingh/nord.nvim'
-PlugDef 'MordechaiHadad/nvim-papadark'
-PlugDef 'ishan9299/nvim-solarized-lua'
-PlugDef 'shaunsingh/moonlight.nvim'
-PlugDef 'navarasu/onedark.nvim'
-PlugDef 'lourenci/github-colors'
-PlugDef 'sainnhe/gruvbox-material'
-PlugDef 'sainnhe/everforest'
-PlugDef 'NTBBloodbath/doom-one.nvim'
-PlugDef 'dracula/vim'
-PlugDef 'yashguptaz/calvera-dark.nvim'
-PlugDef 'nxvu699134/vn-night.nvim'
-PlugDef 'adisen99/codeschool.nvim'
-PlugDef 'projekt0n/github-nvim-theme'
-PlugDef 'kdheepak/monochrome.nvim'
-PlugDef 'rose-pine/neovim'
-PlugDef 'EdenEast/nightfox.nvim'
-"
 call plug#end() "
 
 " =========================
@@ -265,10 +212,19 @@ let g:sonokai_disable_italic_comment = 0
 
 let g:arcadia_Sunset = 1
 let g:arcadia_Pitch = 1
-let g:nightfox_style = 'nightfox'
 
-" colorscheme sonokai
+lua <<EOF
+require'nightfox'.setup({
+  fox = "nightfox", -- change the colorscheme to use nordfox
+  styles = {
+    comments = "italic",
+    keywords = "bold",
+  },
+})
+EOF
+
 colorscheme nightfox
+" colorscheme sonokai
 " colorscheme arcadia
 " colorscheme fahrenheit
 " colorscheme gruvbox
@@ -292,10 +248,11 @@ set foldlevel=99
 set cursorline
 set hidden
 set noshowmode
-set iskeyword=@,48-57,_,192-255,=,~,*,!
+set iskeyword=@,48-57,_,192-255
 set termguicolors
 set fillchars=vert:\│,eob:\ " Space
 set scrolloff=3 " Keep 3 lines below and above the cursor
+set foldmethod=expr
 
 " Tabs
 set shiftwidth=4
@@ -338,7 +295,9 @@ exe "echo '".a:name." =' &".a:name." ? 'on' : 'off'"
 endfunction
 
 let setting_cycles = {
-            \ "foldmethod": ['manual', 'marker', 'expr', 'syntax']
+            \ "foldmethod": ['manual', 'expr', 'syntax', 'marker'],
+            \ "mouse": ['a', ''],
+            \ "colorcolumn": ['120', '']
             \ }
 
 function Cycle_setting(name)
@@ -352,17 +311,39 @@ endfunction
 noremap <leader>7w <cmd>call Toggle_setting("wrap")<CR>
 noremap <leader>7n <cmd>call Toggle_setting("number")<CR>
 noremap <leader>7f <cmd>call Cycle_setting("foldmethod")<CR>
+noremap <leader>7c <cmd>call Cycle_setting("colorcolumn")<CR>
 " ------------------------------------------------------------------
 
 "=========================
 "   Plugin Settings {{{1
 "-------------------------
-" Far {{{2
+"  Visual Multi {{{2
+if PlugLoaded('visual-multi')
+let g:VM_default_mappings = 1
+let g:VM_maps = {}
+let g:VM_maps['Find Under']                  = '<M-d>'
+let g:VM_maps['Find Subword Under']          = '<M-d>'
+let g:VM_maps['Select All']                  = '<M-D>'
+let g:VM_maps['Visual All']                  = '<M-D>'
+let g:VM_maps["Add Cursor Down"]             = '<S-Down>'
+let g:VM_maps["Add Cursor Up"]               = '<S-Up>'
+
+let g:VM_maps['Visual Cursors']              = '<Tab>'
+let g:VM_maps['Visual Add']                  = 'v'
+
+" Increase numbers
+let g:VM_maps['Increase']                  = 'C-g'
+let g:VM_maps['Decrease']                  = 'C-x'
+
+let g:VM_theme = 'purplegray'
+endif
+
+"  Far {{{2
 if PlugLoaded('far')
 let g:far#source='rgnvim'
 endif
 
-" Vim Printer {{{2
+"  Vim Printer {{{2
 let g:vim_printer_print_below_keybinding = '<leader>xc'
 let g:vim_printer_print_above_keybinding = '<leader>xC'
 let g:vim_printer_items = {
@@ -370,13 +351,13 @@ let g:vim_printer_items = {
             \ 'python': 'print("{$}:", {$})',
             \ 'cpp': 'info(0) << "{$}:" << {$} << std::endl;',
             \ }
-"
 
-"====== Nvim Tree ======== {{{2
+
+"  Nvim Tree {{{2
 if PlugLoaded('nvim_tree_lua')
 noremap <leader>\ :NvimTreeToggle<CR>
 noremap <leader>\| :NvimTreeFindFile<CR>
-noremap <leader>!p :call TogglePicker()<CR>
+noremap <leader>7p :call TogglePicker()<CR>
 
 let g:nvim_tree_hijack_netrw = 1
 let g:nvim_tree_disable_window_picker = 1
@@ -390,7 +371,13 @@ endfunction
 
 endif
 
-" ====== Which Key ======= {{{2
+"  Nvim Tree {{{2
+if PlugLoaded('chadtree')
+noremap <leader>\ :CHADopen<CR>
+noremap <leader>\| :CHADopen %<CR>
+endif
+
+"  Which Key {{{2
 if PlugLoaded('which_key')
 noremap <silent> <leader> :WhichKey ' '<CR>
 let g:which_key_map =  {}
@@ -400,8 +387,8 @@ let g:which_key_map.d = { 'name' : '+vimspector' }
 let g:which_key_map.e = { 'name' : '+edit' }
 let g:which_key_map.g = { 'name' : '+git' }
 let g:which_key_map.x = { 'name' : '+extension' }
-let g:which_key_map['1'] = { 'name' : '+toggle' }
 let g:which_key_map.W = { 'name' : '+WhichKey' }
+let g:which_key_map['7'] = { 'name' : '+toggle' }
 
 call which_key#register('<Space>', "g:which_key_map")
 
@@ -409,7 +396,7 @@ call which_key#register('<Space>', "g:which_key_map")
 noremap <leader>W <cmd>execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
-"==== Startify ==== {{{2
+"  Startify {{{2
 if PlugLoaded('startify')
 let g:startify_change_to_dir = 0
 let g:startify_session_dir = '~/.vim/sessions'
@@ -428,11 +415,10 @@ let g:startify_lists = [
             \ { 'type': 'commands',  'header': ['   Commands']       },
             \ ]
 
+nnoremap <leader>es <cmd>Startify<cr>
 endif
-" =================
 
-
-"==== Conflict Marker ==== {{{2
+"  Conflict Marker {{{2
 if PlugLoaded('conflict_marker')
 let g:conflict_marker_enable_mappings = 1
 highlight ConflictMarkerBegin guibg=#2f7366
@@ -442,7 +428,7 @@ highlight ConflictMarkerEnd guibg=#2f628e
 highlight ConflictMarkerCommonAncestorsHunk guibg=#754a81
 endif
 
-"==== Git Gutter ==== {{{2
+"  Git Gutter {{{2
 if PlugLoaded('gitgutter')
 let g:gitgutter_map_keys = 0
 
@@ -463,7 +449,7 @@ if g:NERD_FONT
 endif
 endif
 
-"===== EasyMotion ======== {{{2
+"  EasyMotion {{{2
 if PlugLoaded('easymotion')
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
 map <leader>f <Plug>(easymotion-bd-f)
@@ -476,7 +462,7 @@ map <Leader>k <Plug>(easymotion-k)
 map <Leader>h <Plug>(easymotion-linebackward)
 endif
 
-" Vimux {{{2
+"  Terminal Toggle {{{2
 if PlugLoaded('toggle_terminal')
 noremap <silent> <M-`> :ToggleTerminal<CR>
 tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
@@ -485,28 +471,31 @@ tnoremap <silent> <M-t> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 
-" Fuzzy Commands {{{2
+"  Fuzzy Commands {{{2
 command! Fuzzy         Clap
 command! FuzzyFiles    Clap files .
-command! FuzzyFilesR   Clap
+command! FuzzyFilesR   Clap recent_files
 command! FuzzyCom      Clap command
 command! FuzzyComR     Clap command_history
 command! FuzzyQF       Clap quickfix
 command! FuzzyFindFile Clap quickfix
+command! FuzzyInc      Clap blines
 command! FuzzyFindAll  Telescope live_grep
 
 " Fuzzy Mappings {{{3
 " "Search Word
 nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
 vnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
-nnoremap <M-f> <cmd>execute('silent grep "'.input('Search For: ').'" \| FuzzyQF ')<CR>
-nnoremap <M-F> <cmd>FuzzyFindAll<CR>
+
+nnoremap <leader>xf <cmd>execute('silent grep "'.input('Search For: ').'" \| FuzzyQF ')<CR>
 
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
 nnoremap <M-p> <cmd>FuzzyFilesR<cr>
 nnoremap <M-r> <cmd>FuzzyComR<cr>
 nnoremap <M-R> <cmd>FuzzyCom<cr>
 nnoremap <M-e> <cmd>Fuzzy<cr>
+nnoremap <M-f> <cmd>FuzzyInc<cr>
+nnoremap <M-F> <cmd>FuzzyFindAll<CR>
 
 " ==== Telescope ========= {{{3
 if PlugLoaded('telescope_nvim')
@@ -514,10 +503,19 @@ if PlugLoaded('telescope_nvim')
 lua << EOF
 require('telescope').setup{
     defaults = {
-        borderchars = {"─", "│", "─", "│", "┌", "┐", "┘", "└"},
+    results_title = false,
+    preview_title = false,
+    prompt_title = false,
+     borderchars = {
+      { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+      prompt = { "─", "│", "─", "│", "╭", "╮", "┘", "└" },
+      results = { "─", "│", "─", "│", "├", "┤", "│", "│" },
+      preview = { "─", "│", "─", "│", "┌", "┐", "╯", "╰" },
+    },
         layout_strategy = "vertical",
     }
 }
+
 EOF
 
 nnoremap <leader>p  <cmd>Telescope<cr>
@@ -588,7 +586,7 @@ vim.lsp.handlers['workspace/symbol']            = require'clap-lsp.symbols'.work
 EOF
 endif
 
-" ==== Compe ===== {{{2
+"  Compe {{{2
 if PlugLoaded('compe')
 set completeopt=menuone,noselect
 let g:compe = {}
@@ -613,16 +611,16 @@ let g:compe.source.nvim_lsp = v:true
 let g:compe.source.ultisnips = v:true
 let g:compe.source.tabnine = v:true
 
-inoremap <silent><expr> <C-Space> compe#complete()
-inoremap <silent><expr> <CR>     compe#confirm({'keys': '<CR>', 'select': 1})
+inoremap <silent><expr> <M-CR>    compe#complete()
+inoremap <silent><expr> <Tab>     compe#confirm({'keys': '<Tab>', 'select': 1})
 inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-inoremap <silent> <M-CR> <CR>
+" inoremap <silent> <M-CR> <CR>
 endif
 " ------------------------------------------------------------------
 
-" Nvim LSP {{{2
+"  Nvim LSP {{{2
 if PlugLoaded('nvim_lspconfig')
 lua << EOF
 require'lspconfig'.rust_analyzer.setup{}
@@ -662,21 +660,8 @@ nmap <leader>1cp <Plug>(toggle-lsp-diag-update_in_insert)
 nmap <leader>1ca  <Plug>(toggle-lsp-diag)
 endif
 
-" ===== LSPUtil ===== {{{2
-if PlugLoaded('lsputils')
-" lua <<EOF
-" vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
-" vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
-" vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
-" vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
-" vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
-" vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
-" vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
-" vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
-" EOF
-endif
 
-" ===== Lua Line =====
+"  Lua Line {{{2
 if PlugLoaded('lualine')
 
 function! NumL ()
@@ -694,10 +679,18 @@ function! GetDate ()
     endif
 endfunction
 
+function! TSStatus()
+    let l:status = nvim_treesitter#statusline({})
+    if l:status == v:null
+        return ''
+    endif
+    return l:status
+endfunction
+
 lua  << EOF
-local Map = {}
+local ModeMap = {}
 if vim.g.NERD_FONT then
-Map = {
+ModeMap = {
   ['n']    = '',
   ['v']    = '濾',
   ['V']    = '濾',
@@ -717,7 +710,7 @@ Map = {
   ['t']    = '',
 }
 else
-Map = {
+ModeMap = {
   ['']   = 'v',
   ['']   = 's',
   ['i']    = 'i',
@@ -735,19 +728,19 @@ end
 function get_mode()
   local m = vim.api.nvim_get_mode().mode
   local f = m.sub(m, 1, 1)
-  if Map[m] ~= nil then return Map[m] end
-  if Map[f] ~= nil then return Map[f] end
+  if ModeMap[m] ~= nil then return ModeMap[m] end
+  if ModeMap[f] ~= nil then return ModeMap[f] end
   return m
 end
 
 require'lualine'.setup{
     options = {
-        theme = 'auto',
+        theme = 'nightfox',
     },
     sections = {
         lualine_a = {get_mode},
-        lualine_b = {''},
-        lualine_c = {'filename'},
+        lualine_b = {'filename'},
+        lualine_c = {'TSStatus'},
 
         lualine_x = {'Cwd'},
         lualine_y = {'branch', 'GetDate'},
@@ -758,74 +751,7 @@ EOF
 endif
 " ==== Lua Line End ====
 
-
-" ==== CleverF ===== {{{2
-if PlugLoaded('clever_f')
-let g:clever_f_not_overwrites_standard_mappings = 1
-function! MapCleverF()
-    nmap f <Plug>(clever-f-f)
-    xmap f <Plug>(clever-f-f)
-    omap f <Plug>(clever-f-f)
-    nmap F <Plug>(clever-f-F)
-    xmap F <Plug>(clever-f-F)
-    omap F <Plug>(clever-f-F)
-    nmap t <Plug>(clever-f-t)
-    xmap t <Plug>(clever-f-t)
-    omap t <Plug>(clever-f-t)
-    nmap T <Plug>(clever-f-T)
-    xmap T <Plug>(clever-f-T)
-    omap T <Plug>(clever-f-T)
-endfunction
-call MapCleverF()
-endif
-
-" ==== Multiple Cursors ==== {{{2
-if PlugLoaded("vim_multiple_cursors")
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_start_word_key      = '<A-d>'
-let g:multi_cursor_select_all_word_key = '<A-D>'
-let g:multi_cursor_next_key            = '<A-d>'
-let g:multi_cursor_prev_key            = '<A-n>'
-let g:multi_cursor_skip_key            = '<A-m>'
-let g:multi_cursor_quit_key            = '<Esc>'
-
-function! Multiple_cursors_before()
-    if PlugLoaded('clever_f')
-        nunmap f
-        xunmap f
-        ounmap f
-        nunmap F
-        xunmap F
-        ounmap F
-        nunmap t
-        xunmap t
-        ounmap t
-        nunmap T
-        xunmap T
-        ounmap T
-    endif
-endfunction
-
-function! Multiple_cursors_after()
-    if PlugLoaded('clever_f')
-        call MapCleverF()
-    endif
-endfunction
-endif
-
-" ==== Smoothie ==== {{{2
-if PlugLoaded("smoothie")
-" let g:smoothie_speed_exponentiation_factor = 1.3
-let g:smoothie_speed_constant_factor = 20
-let g:smoothie_no_default_mappings = 1
-nmap <unique> <c-d>      <Plug>(SmoothieDownwards)
-nmap <unique> <c-u>      <Plug>(SmoothieUpwards)
-nmap <unique> <C-f>      <Plug>(SmoothieForwards)
-nmap <unique> <C-b>      <Plug>(SmoothieBackwards)
-endif
-
-
-" ==== TreeSitter ==== {{{2
+"  TreeSitter {{{2
 if PlugLoaded('nvim_treesitter')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -870,32 +796,31 @@ require'nvim-treesitter.configs'.setup {
         }
     }
 EOF
-set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 
 " Incremental Selection
 nmap <A-s> gnn
 vmap <A-s> grn
 vmap <A-S> grm
-endif
+endif " nvim_treesitter
 
-" Interesting Words {{{2
+"  Interesting Words {{{2
 let g:interestingWordsDefaultMappings = 0
 let g:interestingWordsRandomiseColors = 1
 nnoremap <silent> <leader>xi :call InterestingWords('n')<cr>
 vnoremap <silent> <leader>xi :call InterestingWords('v')<cr>
 nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 
-" Sandwich {{{2
+"  Sandwich {{{2
 if PlugLoaded('vim_sandwich')
-nnoremap sf :normal saiwf<CR>
-nnoremap sF :normal saiWf<CR>
-nnoremap sw' :normal saiw'<CR>
-nnoremap sw" :normal saiw"<CR>
-nnoremap sw( :normal saiw(<CR>
-nnoremap sw< :normal saiw<<CR>
-nnoremap sw[ :normal saiw[<CR>
-nnoremap sw{ :normal saiw{<CR>
+nnoremap ssf :normal saiwf<CR>
+nnoremap ssF :normal saiWf<CR>
+nnoremap ss' :normal saiw'<CR>
+nnoremap ss" :normal saiw"<CR>
+nnoremap ss( :normal saiw(<CR>
+nnoremap ss< :normal saiw<<CR>
+nnoremap ss[ :normal saiw[<CR>
+nnoremap ss{ :normal saiw{<CR>
 
 let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
 
@@ -905,7 +830,7 @@ nnoremap sac :normal saiwf<CR>:normal srb<<CR>
 nnoremap saC :normal saiWf<CR>:normal srb<<CR>
 endif
 
-" VimSpector {{{2
+"  VimSpector {{{2
 if PlugLoaded('vimspector')
 nmap <leader>dc <Plug>VimspectorContinue
 nmap <leader>ds <Plug>VimspectorLaunch
@@ -922,19 +847,20 @@ nmap <leader>dl <Plug>VimspectorStepInto
 nmap <leader>dh <Plug>VimspectorStepOut
 endif
 
-" Switch to Layout / Maximize Pane {{{2
+"  Switch to Layout / Maximize Pane {{{2
 if PlugLoaded('nvim_maximize_window_toggle')
 nnoremap <leader>m :ToggleOnly<CR>
 nnoremap <M-Enter> :ToggleOnly<CR>
 endif
 
-if PlugLoaded('sideways') " {{{2
+"  Sideways {{{2
+if PlugLoaded('sideways')
 " Move Arguments left or right
 noremap <M-<> :SidewaysLeft<CR>
 noremap <M->> :SidewaysRight<CR>
 endif
 
-" ==== Custom 'Plugins' ===== {{{2
+"  Custom 'Plugins' {{{2
 " Copy To Other Window {{{3
 if 1
 function! CopyOther() abort
@@ -1003,8 +929,18 @@ nnoremap <silent> [Z :call NextClosedFold('k')<cr>
 nnoremap <silent> ]Z :call NextClosedFold('j')<cr>
 endif
 
+" clever-f {{{2
+if PlugLoaded('clever_f')
+    let g:clever_f_across_no_line = 1
+
+    nnoremap <Esc> <cmd>call clever_f#reset()<CR>
+    nnoremap <leader>7C <cmd>ToggleMultiLine<CR>
+
+    command! ToggleMultiLine exe "let g:clever_f_across_no_line = ".(1 - g:clever_f_across_no_line)."\| echo 'Across Lines: '.(1 - g:clever_f_across_no_line)"
+endif
+
 " ------------------------------------------------------------------
-" Misc PLugins {{{2
+"  Misc PLugins {{{2
 let g:session_autosave='yes'
 let g:session_autosave_periodic=3
 let g:session_autoload='no'
@@ -1012,6 +948,7 @@ let g:interestingWordsDefaultMappings = 0
 let g:indentLine_char = '▏'
 let g:autoload_session = 0
 let g:UltiSnipsExpandTrigger="<M-u>"
+
 
 execute 'nnoremap <M-g> :Git '
 nnoremap <M-o> :ClangdSwitchSourceHeader<CR>
@@ -1037,8 +974,9 @@ noremap <M-w> <cmd>close<CR>
 noremap <C-q> <cmd>q<CR>
 
 if PlugLoaded('scrollview')
-command! Buffdelete  silent! ScrollViewDisable  \| bdelete  \| silent! ScrollViewEnable
-noremap <silent> <C-w> <cmd>Buffdelete<CR>
+" command! Buffdelete  silent! ScrollViewDisable  \| bdelete \| silent! ScrollViewEnable
+command! Buffdelete ScrollViewDisable | call vem_tabline#tabline.delete_buffer() | ScrollViewEnable
+noremap <C-w> <cmd>Buffdelete<CR>
 endif
 
 " Easy Indenting
@@ -1094,8 +1032,8 @@ nnoremap <S-Tab> <C-^>
 " Arrow Keys for B movement
 nnoremap <left> <cmd>bprev<cr>
 nnoremap <right> <cmd>bnext<cr>
-nnoremap <up> <cmd>tabprev<cr>
-nnoremap <down> <cmd>tabnext<cr>
+nnoremap <up> <cmd>tabnext<cr>
+nnoremap <down> <cmd>tabprev<cr>
 
 " Better Buffers
 if PlugLoaded('vem_tabline')
@@ -1202,14 +1140,18 @@ endif
 " ==== Misc ==== {{{2
 " Run Line in Vim
 autocmd FileType vim nnoremap <buffer> yr yy:<C-r>"<CR>
+autocmd FileType vim xnoremap <buffer> yr y:@"<CR>
 " run line in shell
 nnoremap yR yy:!<C-r>"<CR>
+" Yank link
+nmap yg <cmd>exe "normal ".v:count."Gyy``"<cr>
+nmap yG ygp
 " Run Last Command
 noremap <leader>r @:<CR>
 " Select All
 noremap <M-a> 1GVG
 " Paste line with in middle
-nnoremap <leader>xp "_r<Enter>PkJJ
+nnoremap <leader>P "_r<Enter>PkJJ
 " run Clang
 nnoremap <leader>F :FormatClang<CR>
 " Easy Semicolon
@@ -1223,6 +1165,9 @@ nnoremap <silent> <M-;> mmA;<esc>`mmm
 command! CP :let @" = expand('%')
 command! CdFile cd %:p:h
 command! CdGit exe 'cd '.finddir('.git', '.;').'/../'
+
+nnoremap <leader>ef <cmd>CdFile<CR>
+nnoremap <leader>eg <cmd>CdGit<CR>
 
 " Change Dir
 nnoremap <leader>Cf <cmd>CdFile<CR>
@@ -1267,19 +1212,23 @@ augroup Cmds
     au!
     " Remove spaces at end of line
     autocmd BufWritePre * :%s/\s\+$//e
-    " Make C++ file doxygen
-    autocmd BufNewFile,BufRead *.h,*.cc   set syntax=cpp.doxygen | set colorcolumn=120
+
     " Make Quick fix Preview By default
     autocmd WinEnter * if &buftype == 'quickfix' | nnoremap <buffer><nowait><silent> <Tab> <Enter>:wincmd j<CR> | endif
-    autocmd BufRead *.cc,*.h setlocal bufhidden=delete
-    autocmd BufModifiedSet,BufWrite *.cc,*.h setlocal bufhidden=hide
-    autocmd BufRead * setlocal iskeyword-=<
-    autocmd BufRead * setlocal iskeyword-=>
-    autocmd BufRead * setlocal iskeyword-=:
-    autocmd BufRead * setlocal iskeyword-=]
-    autocmd BufRead * setlocal iskeyword-=[
     autocmd BufRead * nnoremap <buffer> <nowait> <c-w> <cmd>Buffdelete<CR>
-    autocmd BufRead * if &filetype == 'vim' | nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> | endif
+
+    " C++
+    autocmd BufNewFile,BufRead *.h,*.cc set syntax=cpp.doxygen |
+                \ setlocal bufhidden=delete |
+                \ setlocal iskeyword=@,48-57,_,192-255
+    autocmd BufModifiedSet,BufWrite *.cc,*.h setlocal bufhidden=hide
+    autocmd BufEnter *.h,*.cc setlocal iskeyword=@,48-57,_,192-255
+
+    " Vim
+    autocmd BufRead * if &filetype == 'vim' |
+                \ nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> |
+                \ set foldmethod=marker |
+                \ endif
 augroup END
 
 " ==== Fzf Functions ==== {{{2
@@ -1358,86 +1307,41 @@ endfunction
 "  SandBox {{{1
 let g:notes_directories = ['~/.vim/notes']
 
-nnoremap <left> <cmd>bprev<cr>
-nnoremap <right> <cmd>bnext<cr>
-nnoremap <up> <cmd>tabprev<cr>
-nnoremap <down> <cmd>tabnext<cr>
-
-" let g:gitgutter_sign_added = 'xx'
-" let g:gitgutter_sign_modified = 'yy'
-" let g:gitgutter_sign_removed = 'zz'
 let g:gitgutter_sign_removed_first_line = ''
 let g:gitgutter_sign_removed_above_and_below = ''
 let g:gitgutter_sign_modified_removed = ''
 
-function! NumL ()
-    return system:"('$')
+let g:startify_enable_unsafe = 1
+
+" let g:clever_f_mark_char_color = ""
+
+" capture (dump) the (somewhat long) ouput of the commands like `:digraph`, `:map', `:highlight`, `:scripnames` etc.
+function! Dump(cmd) abort
+
+    " Start a new split or maybe a buffer or a tab
+    " enew | " open a new buffer
+    vsplit | enew | " open a new split (with 10% height (?))
+    " tabnew | " open a new tab
+
+    " Make it a scratch buffer ( `:help special-buffers`)
+    setlocal bufhidden=wipe buftype=nofile nobuflisted nolist noswapfile norelativenumber nonumber
+
+    " Write the cmd output to the buffer
+    put =execute(a:cmd)
+    " There are 2 empty line at the beginning of the buffer before the ouput of
+    " the cmd. Not sure from where they are comning from. Anyhow I will delete
+    " them.
+    norm gg2dd
+
+    " No modifications to this buffer
+    setlocal readonly nomodifiable nomodified
+
+    " Press escape to close when you're done
+    nnoremap <buffer><silent> <Esc> :bd<CR>
+
 endfunction
-function! GetTime ()
-    return trim(system('date +"%I:%m"'))
-endfunction
 
-function! GetDate ()
-    if exists("$TMUX")
-        return ''
-    else
-        return trim(system('date +"%I:%m%P %a %m/%d" | sed -e "s/ 0/ /" -e "s/^0//"'))
-    endif
-endfunction
+" Define a command to use the function easier
+command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 
-lua  << EOF
-local Mode = {}
-Mode.map = {
-  ['n']    = '',
-  ['no']   = '',
-  ['nov']  = '',
-  ['noV']  = '',
-  ['no']   = '',
-  ['niI']  = '',
-  ['niR']  = '',
-  ['niV']  = '',
-  ['v']    = '濾',
-  ['V']    = '濾',
-  ['']   = '礪',
-  ['s']    = 's',
-  ['S']    = 'S',
-  ['']   = 'S',
-  ['i']    = '',
-  ['ic']   = '',
-  ['ix']   = '',
-  ['R']    = 'r',
-  ['Rc']   = 'r',
-  ['Rv']   = 'R',
-  ['Rx']   = 'R',
-  ['c']    = '',
-  ['cv']   = 'X',
-  ['ce']   = 'X',
-  ['r']    = 'r',
-  ['rm']   = 'more',
-  ['r?']   = '',
-  ['!']    = '',
-  ['t']    = '',
-}
--- LuaFormatter on
-function Mode.get_mode()
-  local mode_code = vim.api.nvim_get_mode().mode
-  if Mode.map[mode_code] == nil then return mode_code end
-  return Mode.map[mode_code]
-end
-
-require'lualine'.setup{
-    options = {
-        theme = 'nightfox',
-    },
-    sections = {
-        lualine_a = {Mode.get_mode},
-        lualine_b = {''},
-        lualine_c = {'filename'},
-
-        lualine_x = {'Cwd'},
-        lualine_y = {'branch', 'GetDate'},
-        lualine_z = {'GetTime', 'NumL', 'diagnostics'},
-    }
-}
-EOF
-
+let g:clap_enable_background_shadow = v:false

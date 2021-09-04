@@ -7,9 +7,6 @@ mkalias () {
 _exists () {
     command -v $1 > /dev/null
 }
-## Env Aliases
-_exists bat && export MANPAGER='bat -p -l man'
-_exists bat && export PAGER='bat -p'
 
 ## Aliases
 alias s='git status 2>/dev/null || (pwd && ls -lF)'
@@ -54,3 +51,10 @@ for program in ${programs[@]}; do
     alias "${bin}x"="fasd_fzf -l$flag $bin"
 done;
 
+alias py="python3"
+
+if [[ ! -z "$VIM" ]]; then
+    alias nvim='nvr'
+else
+    alias nvim='nvim_socket'
+fi

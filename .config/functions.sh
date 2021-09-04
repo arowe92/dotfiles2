@@ -39,8 +39,8 @@ fasd_fn () {
     $_cmd $(echo $_args | xargs) "$_fasd_ret"
 }
 
-fasd_svim () {
-    fasd_fzf -l svim
+fasd_echo () {
+    fasd_fzf -la echo -n
 }
 
 # Enable file completion for prev function
@@ -60,4 +60,40 @@ swap () {
     mv -nv $file1 $tmp
     mv -nv $file2 $file1
     mv -nv $tmp $file2
+}
+
+nvim_socket () {
+    nvim="`ps aux | grep nvim | awk '{ print $11 }' | grep ^/usr/bin/nvim`"
+    if [[ -z "$nvim" ]]; then
+        rm /tmp/nvimsocket > /dev/null 2>&1;
+    fi
+    /usr/bin/nvim $@
+}
+
+pyhelp () {
+    import="$1"
+    help="$2"
+    version="$3"
+
+    if [[ -z "$help" ]]; then
+        help="$import"
+    else
+        help="$import.$help"
+    fi
+
+    if [[ -z "$version" ]]; then
+        version="3.7"
+    fi
+
+    if [[ "$help" =~ '\.$' ]]; then
+        help=${help:0:-1}
+        if [[ "$import" =~ '\.$' ]]; then
+            import=${import:0:-1}
+        fi;
+        cmd="import $import; [print(a) for a in dir($help)]"
+        py="`python$version -c $cmd`"
+        help=$help.$(echo $py | fzf-tmux $FZF_TMUX_OPTS)
+    fi;
+
+    bash -c "python$version -c 'import $import; help($help)'"
 }
