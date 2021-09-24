@@ -149,9 +149,6 @@ PlugDef 'nvim-lua/popup.nvim'
 PlugDef 'nvim-lua/plenary.nvim'
 PlugDef 'nvim-telescope/telescope.nvim'
 
-" Frecency
-PlugDef 'tami5/sql.nvim'
-PlugDef 'nvim-telescope/telescope-frecency.nvim'
 
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
@@ -196,6 +193,8 @@ endif
 PlugDef 'xolox/vim-notes'
 PlugDef 'rose-pine/neovim'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
+PlugDef 'folke/trouble.nvim'
+PlugDef 'manicmaniac/coconut.vim'
 
 call plug#end() "
 
@@ -331,9 +330,10 @@ let g:VM_maps['Visual Cursors']              = '<Tab>'
 let g:VM_maps['Visual Add']                  = 'v'
 
 " Increase numbers
-let g:VM_maps['Increase']                  = 'C-g'
-let g:VM_maps['Decrease']                  = 'C-x'
+" let g:VM_maps['Increase']                  = 'C-g'
+" let g:VM_maps['Decrease']                  = 'C-x'
 
+let g:VM_case_setting = 'sensitive'
 let g:VM_theme = 'purplegray'
 endif
 
@@ -397,7 +397,7 @@ endif
 
 "  Startify {{{2
 if PlugLoaded('startify')
-let g:startify_change_to_dir = 0
+let g:startify_change_to_dir = 1
 let g:startify_session_dir = '~/.vim/sessions'
 let g:startify_bookmarks = ["~/repos/sims/pythia/src",
             \ "~/dot/.vimrc",
@@ -1092,6 +1092,8 @@ cnoremap <C-h> <C-w>v<C-w><C-h>
 " Move to end of line easy
 nnoremap H ^
 nnoremap L $
+xnoremap H ^
+xnoremap L $
 
 " Command Prompt
 noremap ; :<Up>
@@ -1344,3 +1346,28 @@ endfunction
 command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 
 let g:clap_enable_background_shadow = v:false
+let g:UltiSnipsSnippetDirectories=[$DOTFILE_PATH.'/.config/snippets']
+
+lua << EOF
+  require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+
+function! Tusk(input)
+    exe '!'.split(a:input, ',')[0]
+endfunction
+
+command! Tusk call Fzf({'source': '/home/alexrowe/dot/.local/bin/tusk.py', 'options': '--ansi --with-nth=2 -d,', 'sink': function('Tusk')})
+
+onoremap H ^
+onoremap L $
+nnoremap dk mmdaWk$p`mmm
+nnoremap dj mmdaWj$p`mmm
+nnoremap dK mmdaWk0P`mmm
+nnoremap dJ mmdaWj0P`mmm
+
+xnoremap K mmdk$p`mmm
+xnoremap J mmdj$p`mmm

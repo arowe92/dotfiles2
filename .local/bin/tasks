@@ -5,7 +5,12 @@ import subprocess as sp
 import toml
 from pathlib import Path
 
-def upfind(filename='tasks.toml'):
+Checkers = {
+    'rust': 'Cargo.toml',
+    'git': '.git',
+}
+
+def upfind(filename='tusk.toml'):
     paths = []
 
     path = Path().absolute()
@@ -21,10 +26,14 @@ def upfind(filename='tasks.toml'):
 
     return list(reversed(paths))
 
-file_type = sys.argv[1]
+filetypes = set()
+
+if len(sys.argv) > 1:
+    filetypes.add(sys.argv[1])
+
 config = {}
 
-for file in upfind():
+for file in upfind('.tusk.toml'):
     with open(file) as f:
         config = {
             **config,
@@ -34,27 +43,38 @@ for file in upfind():
 tasks = config.get('tasks', {})
 
 def get_task_list(name):
-    ret = []
+    ret = {}
     task_list = tasks.get(name, {})
 
     if type(task_list) is list:
-        ret = [{"name": "cmd", "cmd": v} for v in task_list]
+        ret = {v: {"name": "cmd", "cmd": v} for v in task_list}
 
     if type(task_list) is dict:
-        ret = [{"name": k, "cmd": v} for k,v in task_list.items()]
+        ret = {v: {"name": k, "cmd": v} for k,v in task_list.items()}
 
     return ret
 
-task_list = [
-    *get_task_list(file_type),
-    *get_task_list('all')
-]
+print(Checkers)
+for ft, checker in Checkers.items():
+    if len(upfind(checker)) > 0:
+        filetypes.add(ft)
+
+task_list = {
+    **get_task_list('all')
+}
+
+for ft in filetypes:
+    task_list = {
+        **task_list,
+        **get_task_list(ft),
+    }
+
 
 B='\x1b[33;3m'
 E='\x1b[0m'
 
 task_str = ''
-for obj in task_list:
+for obj in task_list.values():
     name = obj['name']
     cmd = obj['cmd']
     label= f'{B}{name}:{E} {cmd}'

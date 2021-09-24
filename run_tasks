@@ -1,4 +1,0 @@
-#!/bin/sh
-cmd="$(tasks $@ | fzf -d, --with-nth=2 --ansi | awk -F, '{print $1}')"
-bash -c $cmd
-

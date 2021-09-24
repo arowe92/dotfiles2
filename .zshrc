@@ -14,7 +14,7 @@ zplug "zsh-users/zsh-autosuggestions", defer:2
 zplug "zsh-users/zsh-history-substring-search", defer:3
 zplug "zsh-users/zsh-syntax-highlighting", defer:3
 
-zplug "themes/alanpeabody", from:oh-my-zsh, as:theme
+zplug "themes/3den", from:oh-my-zsh, as:theme
 
 zplug load
 
