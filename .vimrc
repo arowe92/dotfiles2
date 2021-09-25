@@ -149,10 +149,6 @@ PlugDef 'nvim-lua/popup.nvim'
 PlugDef 'nvim-lua/plenary.nvim'
 PlugDef 'nvim-telescope/telescope.nvim'
 
-" Frecency
-PlugDef 'tami5/sql.nvim'
-PlugDef 'nvim-telescope/telescope-frecency.nvim'
-
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
 
@@ -196,9 +192,18 @@ endif
 PlugDef 'xolox/vim-notes'
 PlugDef 'rose-pine/neovim'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
+PlugDef 'wellle/targets.vim'
+PlugDef 'folke/trouble.nvim'
+PlugDef 'ray-x/lsp_signature.nvim'
+PlugDef 'liuchengxu/vista.vim'
+
+
+" PlugDef 'ms-jpq/coq_nvim'
+" PlugDef 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+
+" PlugDef 'tami5/sqlite.lua'
 
 call plug#end() "
-
 " =========================
 "  General Settings {{{1
 " ----------------------
@@ -333,6 +338,7 @@ let g:VM_maps['Visual Add']                  = 'v'
 " Increase numbers
 let g:VM_maps['Increase']                  = 'C-g'
 let g:VM_maps['Decrease']                  = 'C-x'
+let g:VM_maps['Toggle Mappings']           = '<space><space>'
 
 let g:VM_theme = 'purplegray'
 endif
@@ -472,14 +478,16 @@ endif
 
 "  Fuzzy Commands {{{2
 command! Fuzzy         Clap
-command! FuzzyFiles    Clap files .
-command! FuzzyFilesR   Clap recent_files
-command! FuzzyCom      Clap command
+command! FuzzyFiles    Files
+command! FuzzyFilesR   History
+command! FuzzyCom      Clap commands
 command! FuzzyComR     Clap command_history
 command! FuzzyQF       Clap quickfix
+command! FuzzyTags     Clap tags
 command! FuzzyFindFile Clap quickfix
-command! FuzzyInc      Clap blines
-command! FuzzyFindAll  Telescope live_grep
+command! FuzzyInc      BLines
+command! FuzzyBuffers  Buffers
+command! FuzzyFindAll  Ag
 
 " Fuzzy Mappings {{{3
 " "Search Word
@@ -490,11 +498,13 @@ nnoremap <leader>xf <cmd>execute('silent grep "'.input('Search For: ').'" \| Fuz
 
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
 nnoremap <M-p> <cmd>FuzzyFilesR<cr>
+nnoremap <M-P> <cmd>FuzzyTags<cr>
 nnoremap <M-r> <cmd>FuzzyComR<cr>
 nnoremap <M-R> <cmd>FuzzyCom<cr>
 nnoremap <M-e> <cmd>Fuzzy<cr>
 nnoremap <M-f> <cmd>FuzzyInc<cr>
 nnoremap <M-F> <cmd>FuzzyFindAll<CR>
+nnoremap <M-b> <cmd>FuzzyBuffers<CR>
 
 " ==== Telescope ========= {{{3
 if PlugLoaded('telescope_nvim')
@@ -522,7 +532,6 @@ nnoremap <leader>pp <cmd>Telescope find_files<cr>
 nnoremap <leader>pc :Telescope commands<CR>
 nnoremap <leader>pC :Telescope command_history<CR>
 nnoremap <leader>ph :Telescope oldfiles<CR>
-nnoremap <leader>pH :Telescope frecency<CR>
 nnoremap <leader>pB :Telescope file_browser<CR>
 nnoremap <leader>pb :Telescope buffers<CR>
 nnoremap <leader>pa :Telescope current_buffer_tags<CR>
@@ -531,9 +540,6 @@ nnoremap <leader>pg :Telescope current_buffer_fuzzy_find<CR>
 nnoremap <leader>py :Telescope filetypes<CR>
 nnoremap <leader>pu :Telescope lsp_document_symbols<CR>
 
-if PlugLoaded('telescope_frecency')
-lua require "telescope".load_extension("frecency")
-endif
 endif
 
 " Fzf {{{3
@@ -571,10 +577,13 @@ if PlugLoaded('clap')
 " let g:clap_layout={ 'width': '80%', 'height': '33%', 'row': '33%', 'col': '0%' }
 let g:clap_layout = { 'relative': 'editor' }
 let g:clap_preview_direction = 'UD'
+let g:clap_theme = 'material_design_dark'
 
 if PlugLoaded('compe')
 autocmd FileType clap_input call compe#setup({ 'enabled': v:false }, 0)
 endif
+
+nnoremap <leader>pa :Clap tags<CR>
 
 lua << EOF
 vim.lsp.handlers['textDocument/codeAction']     = require'clap-lsp.codeAction'.code_action_handler
@@ -627,6 +636,7 @@ require'lspconfig'.clangd.setup{}
 require'lspconfig'.pyright.setup{}
 EOF
 
+" Goto Actions
 nnoremap <silent> gD <Cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <silent> gk <Cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gh <Cmd>lua vim.lsp.buf.hover()<CR>
@@ -638,9 +648,7 @@ nnoremap <silent> gy <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> gY <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
 
-nnoremap <silent> <leader>cwa <cmd>lua vim.lsp.buf.add_workspace_folder()<CR>
-nnoremap <silent> <leader>cwr <cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>
-nnoremap <silent> <leader>cwl <cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
+" LSP Actions
 nnoremap <silent> <leader>cr <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <silent> <leader>ce <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
@@ -651,12 +659,17 @@ nnoremap <silent> ]c <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 
+" Toggle LSP on off
+nmap <leader>7lu <Plug>(toggle-lsp-diag-underline)
+nmap <leader>7ls <Plug>(toggle-lsp-diag-signs)
+nmap <leader>7lv <Plug>(toggle-lsp-diag-vtext)
+nmap <leader>7lp <Plug>(toggle-lsp-diag-update_in_insert)
+nmap <leader>7la <Plug>(toggle-lsp-diag)
 
-nmap <leader>1cu <Plug>(toggle-lsp-diag-underline)
-nmap <leader>1cs <Plug>(toggle-lsp-diag-signs)
-nmap <leader>1cv <Plug>(toggle-lsp-diag-vtext)
-nmap <leader>1cp <Plug>(toggle-lsp-diag-update_in_insert)
-nmap <leader>1ca  <Plug>(toggle-lsp-diag)
+if PlugLoaded('lsp_signature')
+lua require "lsp_signature".setup()
+endif
+
 endif
 
 
@@ -691,9 +704,9 @@ local ModeMap = {}
 if vim.g.NERD_FONT then
 ModeMap = {
   ['n']    = '',
-  ['v']    = '濾',
-  ['V']    = '濾',
-  ['']   = '礪',
+  ['v']    = '',
+  ['V']    = '',
+  ['']   = '',
   ['s']    = 's',
   ['S']    = 'S',
   ['']   = 'S',
@@ -944,9 +957,13 @@ let g:session_autosave='yes'
 let g:session_autosave_periodic=3
 let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
-let g:indentLine_char = '▏'
+if g:NERD_FONT
+let g:indentLine_char = ''
+else
+let g:indentLine_char = '|'
+endif
 let g:autoload_session = 0
-let g:UltiSnipsExpandTrigger="<M-u>"
+        let g:UltiSnipsExpandTrigger="<M-u>"
 
 
 execute 'nnoremap <M-g> :Git '
@@ -991,8 +1008,13 @@ nnoremap <A-K> <cmd>m .-2<CR>
 nnoremap <A-J> <cmd>m .+1<CR>
 inoremap <A-K> <cmd>m .-2<CR>
 inoremap <A-J> <cmd>m .+1<CR>
+
 vnoremap <A-J> :m '>+1<CR>gv
 vnoremap <A-K> :m '<-2<CR>gv
+
+" vnoremap <A-K> :m '<-2<CR>gv
+vnoremap <leader>xe dO<C-r>"<Esc>
+vnoremap <leader>xE do<C-r>"<Esc>
 
 " Split Lines
 nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
@@ -1092,17 +1114,25 @@ cnoremap <C-h> <C-w>v<C-w><C-h>
 " Move to end of line easy
 nnoremap H ^
 nnoremap L $
+xnoremap H ^
+xnoremap L $
+
 
 " Command Prompt
 noremap ; :<Up>
 
 " End visual mode at bottom
 xmap y ygv<Esc>
+xmap Y <cmd>normal! y<CR>
 
 " X Does not go to clipboard
 xnoremap x "_d
 xnoremap X "_D
 xnoremap X "_D
+
+" C does not go to clipboard
+noremap c "_c
+noremap C "_C
 
 " silent search if wrap-around enabled
 map <silent> n n
@@ -1155,6 +1185,8 @@ nnoremap <leader>P "_r<Enter>PkJJ
 nnoremap <leader>F :FormatClang<CR>
 " Easy Semicolon
 nnoremap <silent> <M-;> mmA;<esc>`mmm
+" Dont yank on replace
+vnoremap p "_dP
 
 " ------------------------------------------------------------------
 " ===================
@@ -1344,3 +1376,55 @@ endfunction
 command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 
 let g:clap_enable_background_shadow = v:false
+nnoremap <leader>o mmo<esc>`mmm
+nnoremap <leader>O mmO<esc>`mmm
+nnoremap sj mmo<esc>`mmm
+nnoremap sk mmO<esc>`mmm
+
+" Set recommended to false
+let g:coq_settings = {
+            \ "keymap.recommended": v:true,
+            \ "clients.tabnine.enabled": v:true,
+            \ "autostart": "shutup"
+            \ }
+
+
+lua << EOF
+vim.defer_fn(
+  function()
+    vim.o.completeopt = "menu,preview,noinsert,menuone"
+  end,
+  1000
+)
+EOF
+
+inoremap <M-CR> <Esc>o
+nnoremap <leader>bb <cmd>TroubleToggle<cr>
+nnoremap <leader>bw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
+nnoremap <leader>bd <cmd>TroubleToggle lsp_document_diagnostics<cr>
+nnoremap <leader>bq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>bl <cmd>TroubleToggle loclist<cr>
+nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+
+nnoremap v <C-v>
+nnoremap <C-v> v
+
+lua << EOF
+require "lsp_signature".setup({
+bind = true, -- This is mandatory, otherwise border config won't get registered.
+floating_window = false
+})
+EOF
+
+function! WriteColor()
+    let l:name = trim(execute('colorscheme'))
+    call system('echo colorscheme '.l:name.' > ~/.vim/colorscheme.vim')
+endfunction
+
+source ~/.vim/colorscheme.vim
+
+augroup MyColors
+    au!
+    "Write Colorscheme
+    autocmd ColorScheme * call WriteColor()
+augroup END
