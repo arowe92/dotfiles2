@@ -111,6 +111,7 @@ PlugDef 'rust-lang/rust.vim'
 PlugDef 'MTDL9/vim-log-highlighting'
 PlugDef 'plasticboy/vim-markdown'
 PlugDef 'cespare/vim-toml'
+PlugDef 'manicmaniac/coconut.vim'
 
 " Appearance
 " PlugDef 'Yggdroot/indentLine' {{{3
@@ -149,9 +150,11 @@ PlugDef 'nvim-lua/popup.nvim'
 PlugDef 'nvim-lua/plenary.nvim'
 PlugDef 'nvim-telescope/telescope.nvim'
 
-
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
+PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
+PlugDef 'ray-x/lsp_signature.nvim'
+PlugDef 'folke/trouble.nvim'
 
 " Clap
 PlugDef 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
@@ -192,16 +195,12 @@ endif
 " Sandbox {{{3
 PlugDef 'xolox/vim-notes'
 PlugDef 'rose-pine/neovim'
-PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
-PlugDef 'folke/trouble.nvim'
-PlugDef 'manicmaniac/coconut.vim'
 
 call plug#end() "
-
 " =========================
 "  General Settings {{{1
 " ----------------------
-"
+
 "  Appearance {{{2
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
 let g:sonokai_style = 'andromeda'
@@ -222,10 +221,6 @@ require'nightfox'.setup({
 EOF
 
 colorscheme nightfox
-" colorscheme sonokai
-" colorscheme arcadia
-" colorscheme fahrenheit
-" colorscheme gruvbox
 
 "  Vim Settings {{{2
 "-------------------------
@@ -330,8 +325,9 @@ let g:VM_maps['Visual Cursors']              = '<Tab>'
 let g:VM_maps['Visual Add']                  = 'v'
 
 " Increase numbers
-" let g:VM_maps['Increase']                  = 'C-g'
-" let g:VM_maps['Decrease']                  = 'C-x'
+let g:VM_maps['Increase']                  = 'C-g'
+let g:VM_maps['Decrease']                  = 'C-x'
+let g:VM_maps['Toggle Mappings']           = '<space><space>'
 
 let g:VM_case_setting = 'sensitive'
 let g:VM_theme = 'purplegray'
@@ -370,12 +366,6 @@ endfunction
 
 endif
 
-"  Nvim Tree {{{2
-if PlugLoaded('chadtree')
-noremap <leader>\ :CHADopen<CR>
-noremap <leader>\| :CHADopen %<CR>
-endif
-
 "  Which Key {{{2
 if PlugLoaded('which_key')
 noremap <silent> <leader> :WhichKey ' '<CR>
@@ -399,10 +389,9 @@ endif
 if PlugLoaded('startify')
 let g:startify_change_to_dir = 1
 let g:startify_session_dir = '~/.vim/sessions'
-let g:startify_bookmarks = ["~/repos/sims/pythia/src",
+let g:startify_bookmarks = [
             \ "~/dot/.vimrc",
             \ "~/dot/",
-            \ "~/repos/sims",
             \ "~/.vimrc",
             \ ]
 
@@ -414,17 +403,15 @@ let g:startify_lists = [
             \ { 'type': 'commands',  'header': ['   Commands']       },
             \ ]
 
+" Faster startup
+let g:startify_enable_unsafe = 1
+
 nnoremap <leader>es <cmd>Startify<cr>
 endif
 
 "  Conflict Marker {{{2
 if PlugLoaded('conflict_marker')
 let g:conflict_marker_enable_mappings = 1
-highlight ConflictMarkerBegin guibg=#2f7366
-highlight ConflictMarkerOurs guibg=#2e5049
-highlight ConflictMarkerTheirs guibg=#344f69
-highlight ConflictMarkerEnd guibg=#2f628e
-highlight ConflictMarkerCommonAncestorsHunk guibg=#754a81
 endif
 
 "  Git Gutter {{{2
@@ -472,29 +459,34 @@ endif
 
 "  Fuzzy Commands {{{2
 command! Fuzzy         Clap
-command! FuzzyFiles    Clap files .
-command! FuzzyFilesR   Clap recent_files
-command! FuzzyCom      Clap command
+command! FuzzyFiles    Files
+command! FuzzyFilesR   History
+command! FuzzyCom      Clap commands
 command! FuzzyComR     Clap command_history
 command! FuzzyQF       Clap quickfix
+command! FuzzyTags     Clap tags
 command! FuzzyFindFile Clap quickfix
-command! FuzzyInc      Clap blines
-command! FuzzyFindAll  Telescope live_grep
+command! FuzzyInc      BLines
+command! FuzzyBuffers  Buffers
+command! FuzzyFindAll  Ag
 
-" Fuzzy Mappings {{{3
-" "Search Word
-nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
-xnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
-
-nnoremap <leader>xf <cmd>execute('silent grep "'.input('Search For: ').'" \| FuzzyQF ')<CR>
-
+" Mappings
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
 nnoremap <M-p> <cmd>FuzzyFilesR<cr>
+nnoremap <M-P> <cmd>FuzzyTags<cr>
 nnoremap <M-r> <cmd>FuzzyComR<cr>
 nnoremap <M-R> <cmd>FuzzyCom<cr>
 nnoremap <M-e> <cmd>Fuzzy<cr>
 nnoremap <M-f> <cmd>FuzzyInc<cr>
 nnoremap <M-F> <cmd>FuzzyFindAll<CR>
+nnoremap <M-b> <cmd>FuzzyBuffers<CR>
+
+" Fuzzy Mappings {{{3
+" Search Word
+nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
+xnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
+
+nnoremap <leader>xf <cmd>execute('silent grep "'.input('Search For: ').'" \| FuzzyQF ')<CR>
 
 " ==== Telescope ========= {{{3
 if PlugLoaded('telescope_nvim')
@@ -505,16 +497,9 @@ require('telescope').setup{
     results_title = false,
     preview_title = false,
     prompt_title = false,
-     borderchars = {
-      { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-      prompt = { "─", "│", "─", "│", "╭", "╮", "┘", "└" },
-      results = { "─", "│", "─", "│", "├", "┤", "│", "│" },
-      preview = { "─", "│", "─", "│", "┌", "┐", "╯", "╰" },
-    },
-        layout_strategy = "vertical",
+    layout_strategy = "vertical",
     }
 }
-
 EOF
 
 nnoremap <leader>p  <cmd>Telescope<cr>
@@ -522,7 +507,6 @@ nnoremap <leader>pp <cmd>Telescope find_files<cr>
 nnoremap <leader>pc :Telescope commands<CR>
 nnoremap <leader>pC :Telescope command_history<CR>
 nnoremap <leader>ph :Telescope oldfiles<CR>
-nnoremap <leader>pH :Telescope frecency<CR>
 nnoremap <leader>pB :Telescope file_browser<CR>
 nnoremap <leader>pb :Telescope buffers<CR>
 nnoremap <leader>pa :Telescope current_buffer_tags<CR>
@@ -530,10 +514,6 @@ nnoremap <leader>pt :Telescope tags<CR>
 nnoremap <leader>pg :Telescope current_buffer_fuzzy_find<CR>
 nnoremap <leader>py :Telescope filetypes<CR>
 nnoremap <leader>pu :Telescope lsp_document_symbols<CR>
-
-if PlugLoaded('telescope_frecency')
-lua require "telescope".load_extension("frecency")
-endif
 endif
 
 " Fzf {{{3
@@ -568,13 +548,16 @@ endif
 
 " Clap {{{3
 if PlugLoaded('clap')
-" let g:clap_layout={ 'width': '80%', 'height': '33%', 'row': '33%', 'col': '0%' }
 let g:clap_layout = { 'relative': 'editor' }
 let g:clap_preview_direction = 'UD'
+let g:clap_theme = 'material_design_dark'
+let g:clap_enable_background_shadow = v:false
 
 if PlugLoaded('compe')
 autocmd FileType clap_input call compe#setup({ 'enabled': v:false }, 0)
 endif
+
+nnoremap <leader>pa :Clap tags<CR>
 
 lua << EOF
 vim.lsp.handlers['textDocument/codeAction']     = require'clap-lsp.codeAction'.code_action_handler
@@ -610,7 +593,6 @@ let g:compe.source.nvim_lsp = v:true
 let g:compe.source.ultisnips = v:true
 let g:compe.source.tabnine = v:true
 
-inoremap <silent><expr> <M-CR>    compe#complete()
 inoremap <silent><expr> <Tab>     compe#confirm({'keys': '<Tab>', 'select': 1})
 inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
@@ -627,6 +609,7 @@ require'lspconfig'.clangd.setup{}
 require'lspconfig'.pyright.setup{}
 EOF
 
+" Goto Actions
 nnoremap <silent> gD <Cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <silent> gk <Cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gh <Cmd>lua vim.lsp.buf.hover()<CR>
@@ -638,9 +621,7 @@ nnoremap <silent> gy <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> gY <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
 
-nnoremap <silent> <leader>cwa <cmd>lua vim.lsp.buf.add_workspace_folder()<CR>
-nnoremap <silent> <leader>cwr <cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>
-nnoremap <silent> <leader>cwl <cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
+" LSP Actions
 nnoremap <silent> <leader>cr <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <silent> <leader>ce <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
@@ -651,14 +632,35 @@ nnoremap <silent> ]c <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 
+" Toggle LSP on off
+nmap <leader>7lu <Plug>(toggle-lsp-diag-underline)
+nmap <leader>7ls <Plug>(toggle-lsp-diag-signs)
+nmap <leader>7lv <Plug>(toggle-lsp-diag-vtext)
+nmap <leader>7lp <Plug>(toggle-lsp-diag-update_in_insert)
+nmap <leader>7la <Plug>(toggle-lsp-diag)
 
-nmap <leader>1cu <Plug>(toggle-lsp-diag-underline)
-nmap <leader>1cs <Plug>(toggle-lsp-diag-signs)
-nmap <leader>1cv <Plug>(toggle-lsp-diag-vtext)
-nmap <leader>1cp <Plug>(toggle-lsp-diag-update_in_insert)
-nmap <leader>1ca  <Plug>(toggle-lsp-diag)
+" Trouble
+if PlugLoaded('trouble')
+lua require("trouble").setup({})
+
+nnoremap <leader>bb <cmd>TroubleToggle<cr>
+nnoremap <leader>bw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
+nnoremap <leader>bd <cmd>TroubleToggle lsp_document_diagnostics<cr>
+nnoremap <leader>bq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>bl <cmd>TroubleToggle loclist<cr>
+nnoremap gR <cmd>TroubleToggle lsp_references<cr>
 endif
 
+if PlugLoaded('lsp_signature')
+lua << EOF
+require "lsp_signature".setup({
+bind = true, -- This is mandatory, otherwise border config won't get registered.
+floating_window = false
+})
+EOF
+endif
+
+endif " end LSP
 
 "  Lua Line {{{2
 if PlugLoaded('lualine')
@@ -691,9 +693,9 @@ local ModeMap = {}
 if vim.g.NERD_FONT then
 ModeMap = {
   ['n']    = '',
-  ['v']    = '濾',
-  ['V']    = '濾',
-  ['']   = '礪',
+  ['v']    = '',
+  ['V']    = '',
+  ['']   = '',
   ['s']    = 's',
   ['S']    = 'S',
   ['']   = 'S',
@@ -886,28 +888,6 @@ nnoremap <leader>x<m-H> :call system("tmux popup how2 -l ".&filetype." ".input("
 command! -nargs=+ StackOverflow exe "term how2 -l ".&filetype." ".<q-args>
 endif
 
-" Git Patch {{{3
-if 1
-function! CommitQF()
-    " Get the result of git show in a list
-    let flist = system('git diff --name-only HEAD | tail -n +7')
-    let flist = split(flist, '\n')
-
-    " Create the dictionnaries used to populate the quickfix list
-    let list = []
-    for f in flist
-        let dic = {'filename': f, "lnum": 1}
-        call add(list, dic)
-    endfor
-
-    " Populate the qf list
-    call setqflist(list)
-endfunction
-
-nnoremap <leader>xg <cmd>GitPatch<CR>
-nnoremap <leader>xG <cmd>call CommitQF()<CR>
-endif
-
 " Next Fold {{{3
 if 1
 function! NextClosedFold(dir)
@@ -928,7 +908,21 @@ nnoremap <silent> [Z :call NextClosedFold('k')<cr>
 nnoremap <silent> ]Z :call NextClosedFold('j')<cr>
 endif
 
-" clever-f {{{2
+" Persistent Color Scheme {{{ 3
+if 1
+source ~/.vim/colorscheme.vim
+function! WriteColor()
+    let l:name = trim(execute('colorscheme'))
+    call system('echo colorscheme '.l:name.' > ~/.vim/colorscheme.vim')
+endfunction
+augroup MyColors
+    au!
+    "Write Colorscheme
+    autocmd ColorScheme * call WriteColor()
+augroup END
+endif
+
+" clever-f {{{ 3
 if PlugLoaded('clever_f')
     let g:clever_f_across_no_line = 1
 
@@ -944,9 +938,14 @@ let g:session_autosave='yes'
 let g:session_autosave_periodic=3
 let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
-let g:indentLine_char = '▏'
+if g:NERD_FONT
+let g:indentLine_char = ''
+else
+let g:indentLine_char = '|'
+endif
 let g:autoload_session = 0
 let g:UltiSnipsExpandTrigger="<M-u>"
+let g:UltiSnipsSnippetDirectories = [$DOTFILE_PATH.'/.config/snippets']
 
 
 execute 'nnoremap <M-g> :Git '
@@ -991,8 +990,13 @@ nnoremap <A-K> <cmd>m .-2<CR>
 nnoremap <A-J> <cmd>m .+1<CR>
 inoremap <A-K> <cmd>m .-2<CR>
 inoremap <A-J> <cmd>m .+1<CR>
+
 vnoremap <A-J> :m '>+1<CR>gv
 vnoremap <A-K> :m '<-2<CR>gv
+
+" vnoremap <A-K> :m '<-2<CR>gv
+vnoremap <leader>xe dO<C-r>"<Esc>
+vnoremap <leader>xE do<C-r>"<Esc>
 
 " Split Lines
 nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
@@ -1094,17 +1098,24 @@ nnoremap H ^
 nnoremap L $
 xnoremap H ^
 xnoremap L $
+onoremap H ^
+onoremap L $
 
 " Command Prompt
 noremap ; :<Up>
 
 " End visual mode at bottom
 xmap y ygv<Esc>
+xmap Y <cmd>normal! y<CR>
 
 " X Does not go to clipboard
 xnoremap x "_d
 xnoremap X "_D
 xnoremap X "_D
+
+" C does not go to clipboard
+noremap c "_c
+noremap C "_C
 
 " silent search if wrap-around enabled
 map <silent> n n
@@ -1112,6 +1123,10 @@ map <silent> n n
 " Asterisk is hard
 nnoremap gs *
 xnoremap gs *
+
+" Easier block mode
+nnoremap v <C-v>
+nnoremap <C-v> v
 
 " Easy Macros / Replacing
 xmap <M-Q> gsNqq
@@ -1157,6 +1172,13 @@ nnoremap <leader>P "_r<Enter>PkJJ
 nnoremap <leader>F :FormatClang<CR>
 " Easy Semicolon
 nnoremap <silent> <M-;> mmA;<esc>`mmm
+" Dont yank on replace
+vnoremap p "_dP
+" New line when completion open
+inoremap <M-CR> <Esc>o
+" Easy New lines
+nnoremap sj mmo<esc>`mmm
+nnoremap sk mmO<esc>`mmm
 
 " ------------------------------------------------------------------
 " ===================
@@ -1196,8 +1218,6 @@ endfunction
 command! FasdFile call Fzf({'source': 'fasd -lf', 'sink': 'e'})
 command! FasdDir call Fzf({'source': 'fasd -ld', 'sink': 'cd', 'options': '--preview="exa --tree -L 2 {}"'})
 command! Include call Fzf({'source': 'fd "\.h$"', 'sink': function('Include')}))
-command! FzfCd call FzfCd()
-command! FzfCdIter call FzfCdIter()
 endif
 
 "  Functions {{{1
@@ -1248,126 +1268,32 @@ function! Include(file, ...) abort
     exe "normal! o" . l:include . "\<Esc>"
 endfunction
 
-" Nerd Tree into Folder {{{3
-function! FzfCd() abort
-    let l:options = "../\n".trim(system("fd -t d"))
-    let l:file = trim(system("echo '".l:options."' | fzf-tmux -p --reverse --preview='prev {}'"))
-    if l:file == ""
-        return
-    endif
-
-    let l:root = trim(system("git rev-parse --show-toplevel"))
-    let l:fullpath = trim(system("realpath ".l:file))
-
-    execute "cd ".l:fullpath
-    execute "NvimTreeRefresh"
-endfunction
-
-function! FzfCdIter() abort " {{{3
-    let l:path = './'
-    while 1
-        let l:cmd = "fd --prune --base-directory=".l:path." -t d ."
-
-        let l:choices = ''
-        let l:choices .= '../\n'
-        let l:choices .= '<open>\n'
-        let l:choices .= trim(system(cmd))
-
-        if l:choices == ''
-            break
-        endif
-        let l:result = trim(system("echo '".l:choices."' | fzf-tmux -p --reverse --preview='prev ".l:path."/{}'"))
-
-        if l:result == '<open>'
-            break
-        endif
-
-        if l:result == ''
-            return
-        endif
-
-        let l:path = l:path.l:result.'/'
-    endwhile
-
-    if l:path == './'
-        return
-    endif
-
-    execute "cd ".l:path
-    execute "NvimTreeRefresh"
-endfunction
-
 function! Replace() abort
     let l:text = input("Text to Insert: ")
     let l:text = substitute(l:text, '/','\\/', 'g')
     execute ('%s/'.@".'/'.l:text.'/g')
 endfunction
 
-" ---------------------------------------------------
+" Dump a  command
+function! Dump(cmd) abort
+    vsplit | enew | " open a new split (with 10% height (?))
+    setlocal bufhidden=wipe buftype=nofile nobuflisted nolist noswapfile norelativenumber nonumber
+    put =execute(a:cmd)
+    norm gg2dd
+    setlocal readonly nomodifiable nomodified
+    nnoremap <buffer><silent> <Esc> :bd<CR>
+endfunction
+command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 
+" ---------------------------------------------------
 "  SandBox {{{1
 let g:notes_directories = ['~/.vim/notes']
 
-let g:gitgutter_sign_removed_first_line = ''
-let g:gitgutter_sign_removed_above_and_below = ''
-let g:gitgutter_sign_modified_removed = ''
-
-let g:startify_enable_unsafe = 1
-
-" let g:clever_f_mark_char_color = ""
-
-" capture (dump) the (somewhat long) ouput of the commands like `:digraph`, `:map', `:highlight`, `:scripnames` etc.
-function! Dump(cmd) abort
-
-    " Start a new split or maybe a buffer or a tab
-    " enew | " open a new buffer
-    vsplit | enew | " open a new split (with 10% height (?))
-    " tabnew | " open a new tab
-
-    " Make it a scratch buffer ( `:help special-buffers`)
-    setlocal bufhidden=wipe buftype=nofile nobuflisted nolist noswapfile norelativenumber nonumber
-
-    " Write the cmd output to the buffer
-    put =execute(a:cmd)
-    " There are 2 empty line at the beginning of the buffer before the ouput of
-    " the cmd. Not sure from where they are comning from. Anyhow I will delete
-    " them.
-    norm gg2dd
-
-    " No modifications to this buffer
-    setlocal readonly nomodifiable nomodified
-
-    " Press escape to close when you're done
-    nnoremap <buffer><silent> <Esc> :bd<CR>
-
-endfunction
-
-" Define a command to use the function easier
-command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
-
-let g:clap_enable_background_shadow = v:false
-let g:UltiSnipsSnippetDirectories=[$DOTFILE_PATH.'/.config/snippets']
-
-lua << EOF
-  require("trouble").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
-EOF
-
-function! Tusk(input)
-    exe '!'.split(a:input, ',')[0]
-endfunction
-
-command! Tusk call Fzf({'source': '/home/alexrowe/dot/.local/bin/tusk.py', 'options': '--ansi --with-nth=2 -d,', 'sink': function('Tusk')})
-
-onoremap H ^
-onoremap L $
+" Extract Text Commands
 nnoremap dk mmdaWk$p`mmm
 nnoremap dj mmdaWj$p`mmm
 nnoremap dK mmdaWk0P`mmm
 nnoremap dJ mmdaWj0P`mmm
-
 xnoremap K mmdk$p`mmm
 xnoremap J mmdj$p`mmm
+

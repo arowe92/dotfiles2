@@ -39,11 +39,11 @@ export KEYTIMEOUT=1
 export _FASD_BACKENDS="native spotlight recently-used current"
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+export FZF_DEFAULT_COMMAND='fd --color=always'
+export FZF_DEFAULT_OPTS='--ansi --bind ctrl-e:preview-up,ctrl-y:preview-down,ctrl-u:preview-page-up,ctrl-d:preview-page-down,ctrl-t:toggle-all --keep-right --color=hl:yellow,hl+:green'
 export FZF_TMUX_OPTS="-p70%,70%"
 export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
-export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
-# export FZF_DEFAULT_COMMAND="rg --hidden --follow --color=never"
-export FZF_DEFAULT_OPTS='--bind ctrl-e:preview-up,ctrl-y:preview-down,ctrl-u:preview-page-up,ctrl-d:preview-page-down --keep-right'
+export FZF_CTRL_T_COMMAND="fd --color=always"
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
 export BAT_CONFIG_PATH="$HOME/.bat.conf"
 

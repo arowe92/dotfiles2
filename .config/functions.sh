@@ -97,3 +97,7 @@ pyhelp () {
 
     bash -c "python$version -c 'import $import; help($help)'"
 }
+
+help () {
+    $@ --help | bat -l man
+}
