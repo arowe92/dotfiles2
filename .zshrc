@@ -34,6 +34,7 @@ export PATH
 ## Env Aliases
 export ZSH="$HOME/.oh-my-zsh"
 export TERM='xterm-256color'
+export COLORTERM=truecolor
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export KEYTIMEOUT=1
 export _FASD_BACKENDS="native spotlight recently-used current"
