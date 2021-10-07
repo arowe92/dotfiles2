@@ -7,14 +7,14 @@ ARGS = "+m -p -w 40% -h 30% -x 0% -y 100%"
 
 def fzf(cmd):
     try:
-        return sp.check_output(f"{cmd} {ARGS}".split(' ')).decode()
+        return sp.check_output(f"{cmd} | fzf-tmux --ansi +m -p -w 40% -h 30% -x 0% -y 100%", shell=True).decode()
     except:
         return ""
 
 
 class fzf_select(Command):
     def execute(self):
-        output = fzf("fzf-ls")
+        output = fzf("ls -a --color=always")
 
         if output:
             fzf_file = os.path.abspath(output.rstrip('\n'))
@@ -25,7 +25,7 @@ class fzf_select(Command):
 
 class fzf_find(Command):
     def execute(self):
-        output = fzf("fzf-ls-r")
+        output = fzf("fd -H --color=always")
 
         if output:
             fzf_file = os.path.abspath(output.rstrip('\n'))
@@ -36,14 +36,14 @@ class fzf_find(Command):
 
 class fzf_fasd_cd(Command):
     def execute(self):
-        output = fzf("fzf-fasd-cd")
+        output = fzf("fasd -ld")
         if output:
             fzf_file = os.path.abspath(output.rstrip('\n'))
             self.fm.cd(fzf_file)
 
 class fzf_fasd_file(Command):
     def execute(self):
-        output = fzf("fzf-fasd-file")
+        output = fzf("fasd -lf")
         if output:
             fzf_file = os.path.abspath(output.rstrip('\n'))
             self.fm.select_file(fzf_file)
