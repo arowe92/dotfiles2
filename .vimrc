@@ -96,6 +96,7 @@ PlugDef 'tpope/vim-commentary'
 PlugDef 'tpope/vim-sensible'
 PlugDef 'tpope/vim-eunuch' " Unix Commands
 PlugDef 'meain/vim-printer'
+PlugDef 'wellle/targets.vim'
 
 " Misc {{{3
 PlugDef 'tpope/vim-repeat'
@@ -153,7 +154,7 @@ PlugDef 'nvim-telescope/telescope.nvim'
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
-PlugDef 'ray-x/lsp_signature.nvim'
+" PlugDef 'ray-x/lsp_signature.nvim'
 PlugDef 'folke/trouble.nvim'
 
 " Clap
@@ -195,6 +196,9 @@ endif
 " Sandbox {{{3
 PlugDef 'xolox/vim-notes'
 PlugDef 'rose-pine/neovim'
+PlugDef 'RishabhRD/popfix'
+PlugDef 'RishabhRD/nvim-lsputils'
+PlugDef 'liuchengxu/vista.vim'
 
 call plug#end() "
 " =========================
@@ -354,11 +358,13 @@ noremap <leader>\ :NvimTreeToggle<CR>
 noremap <leader>\| :NvimTreeFindFile<CR>
 noremap <leader>7p :call TogglePicker()<CR>
 
-let g:nvim_tree_hijack_netrw = 1
+
+" let g:nvim_tree_hijack_netrw = 1
 let g:nvim_tree_disable_window_picker = 1
 let g:nvim_tree_highlight_opened_files = 1
 let g:nvim_tree_git_hl = 1
-let g:nvim_tree_update_cwd = 1
+" let g:nvim_tree_update_cwd = 1
+lua require'nvim-tree'.setup()
 
 function TogglePicker()
 let g:nvim_tree_disable_window_picker =  1 - g:nvim_tree_disable_window_picker
@@ -437,6 +443,7 @@ endif
 
 "  EasyMotion {{{2
 if PlugLoaded('easymotion')
+let g:EasyMotion_startofline = 0
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
 map <leader>f <Plug>(easymotion-bd-f)
 map <leader>S <Plug>(easymotion-bd-f2)
@@ -452,23 +459,23 @@ endif
 if PlugLoaded('toggle_terminal')
 noremap <silent> <M-`> :ToggleTerminal<CR>
 tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
-noremap <silent> <M-t> :ToggleTerminal<CR>
-tnoremap <silent> <M-t> <C-\><C-n>:ToggleTerminal<CR>
+noremap <silent> <C-t> :ToggleTerminal<CR>
+tnoremap <silent> <C-t> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 
 "  Fuzzy Commands {{{2
-command! Fuzzy         Clap
+command! Fuzzy         Telescope
 command! FuzzyFiles    Files
 command! FuzzyFilesR   History
-command! FuzzyCom      Clap commands
-command! FuzzyComR     Clap command_history
-command! FuzzyQF       Clap quickfix
+command! FuzzyCom      Telescope command theme=ivy
+command! FuzzyComR     Telescope command_history theme=ivy
+command! FuzzyQF       Telescope quickfix theme=ivy
 command! FuzzyTags     Clap tags
-command! FuzzyFindFile Clap quickfix
+command! FuzzyFindFile Telescope quickfix theme=ivy
 command! FuzzyInc      BLines
 command! FuzzyBuffers  Buffers
-command! FuzzyFindAll  Ag
+command! FuzzyFindAll  Telescope live_grep theme=ivy
 
 " Mappings
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
@@ -480,6 +487,7 @@ nnoremap <M-e> <cmd>Fuzzy<cr>
 nnoremap <M-f> <cmd>FuzzyInc<cr>
 nnoremap <M-F> <cmd>FuzzyFindAll<CR>
 nnoremap <M-b> <cmd>FuzzyBuffers<CR>
+nnoremap <M-t> <cmd>FuzzyTags<CR>
 
 " Fuzzy Mappings {{{3
 " Search Word
@@ -512,7 +520,7 @@ nnoremap <leader>pb :Telescope buffers<CR>
 nnoremap <leader>pa :Telescope current_buffer_tags<CR>
 nnoremap <leader>pt :Telescope tags<CR>
 nnoremap <leader>pg :Telescope current_buffer_fuzzy_find<CR>
-nnoremap <leader>py :Telescope filetypes<CR>
+nnoremap <leader>py :Telescope filetypes theme=ivy<CR>
 nnoremap <leader>pu :Telescope lsp_document_symbols<CR>
 endif
 
@@ -560,11 +568,11 @@ endif
 nnoremap <leader>pa :Clap tags<CR>
 
 lua << EOF
-vim.lsp.handlers['textDocument/codeAction']     = require'clap-lsp.codeAction'.code_action_handler
-vim.lsp.handlers['textDocument/definition']     = require'clap-lsp.locations'.definition_handler
-vim.lsp.handlers['textDocument/documentSymbol'] = require'clap-lsp.symbols'.document_handler
-vim.lsp.handlers['textDocument/references']     = require'clap-lsp.locations'.references_handler
-vim.lsp.handlers['workspace/symbol']            = require'clap-lsp.symbols'.workspace_handler
+-- vim.lsp.handlers['textDocument/codeAction']     = require'clap-lsp.codeAction'.code_action_handler
+-- vim.lsp.handlers['textDocument/definition']     = require'clap-lsp.locations'.definition_handler
+-- vim.lsp.handlers['textDocument/documentSymbol'] = require'clap-lsp.symbols'.document_handler
+-- vim.lsp.handlers['textDocument/references']     = require'clap-lsp.locations'.references_handler
+-- vim.lsp.handlers['workspace/symbol']            = require'clap-lsp.symbols'.workspace_handler
 EOF
 endif
 
@@ -944,8 +952,10 @@ else
 let g:indentLine_char = '|'
 endif
 let g:autoload_session = 0
-let g:UltiSnipsExpandTrigger="<M-u>"
-let g:UltiSnipsSnippetDirectories = [$DOTFILE_PATH.'/.config/snippets']
+let g:UltiSnipsExpandTrigger="<s-tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsSnippetDirectories=['my_snippets', $DOTFILE_PATH.'/.config/snippets', $HOME.'/.vim/plugged/vim-snippets/UltiSnips']
 
 
 execute 'nnoremap <M-g> :Git '
@@ -1268,11 +1278,19 @@ function! Include(file, ...) abort
     exe "normal! o" . l:include . "\<Esc>"
 endfunction
 
-function! Replace() abort
+function! Replace(search) abort
+    if a:search == ''
+        let l:search = input("Text to Replace: ")
+    else
+        let l:search = a:search
+    endif
+
     let l:text = input("Text to Insert: ")
     let l:text = substitute(l:text, '/','\\/', 'g')
-    execute ('%s/'.@".'/'.l:text.'/g')
+    execute ('%s/'.l:search.'/'.l:text.'/g')
 endfunction
+command! Replace call Replace('')
+command! ReplaceReg call Replace(@")
 
 " Dump a  command
 function! Dump(cmd) abort

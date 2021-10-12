@@ -58,6 +58,8 @@ _exists bat && export PAGER='bat -p'
 ## EVALS
 ###################################
 eval "$(fasd --init auto)";
+unalias a && unalias s && unalias sd && unalias sf
+
 eval $(thefuck --alias 2>/dev/null)
 
 ###################################
@@ -80,6 +82,7 @@ bindkey -s '^o' '`fasd_echo`\t'
 bindkey -s '^p' 'nvim `fasd_echo`\n'
 
 bindkey -s '^n' 'nvim\n'
+bindkey -s '^,' 'ranger\n'
 bindkey -M vicmd -s '^n' '^[invim\n'
 bindkey -s '^b' '`git branch | fzf`\t'
 bindkey -s '^g' 'git checkout `git branch | fzf`\t'
@@ -92,3 +95,5 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
 ## SOURCES
 ###################################
 source ~/.fzf.zsh
+
+eval "$(starship init zsh)"
