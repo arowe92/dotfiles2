@@ -32,6 +32,9 @@ alias zz='fasd_fzf -ld cd'
 # FZF Aliases
 alias fb='git checkout `git branch | sed -e "s/\\*//g" | fzf-tmux -p`'
 
+alias cmds='print -rC1 -- ${(ko)commands} | fzf-tmux $FZF_TMUX_OPTS'
+
+
 programs=( \
     "a:nvim" \
     "a:svim" \
@@ -58,3 +61,5 @@ if [[ ! -z "$VIM" ]]; then
 else
     alias nvim='nvim_socket'
 fi
+
+
