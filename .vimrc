@@ -143,8 +143,8 @@ PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 PlugDef 'p00f/nvim-ts-rainbow'
 
 " compe
-PlugDef 'hrsh7th/nvim-compe'
-PlugDef 'tzachar/compe-tabnine', { 'do': './install.sh' }
+" PlugDef 'hrsh7th/nvim-compe'
+" PlugDef 'tzachar/compe-tabnine', { 'do': './install.sh' }
 
 " Telescope
 PlugDef 'nvim-lua/popup.nvim'
@@ -154,7 +154,7 @@ PlugDef 'nvim-telescope/telescope.nvim'
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
-" PlugDef 'ray-x/lsp_signature.nvim'
+PlugDef 'ray-x/lsp_signature.nvim'
 PlugDef 'folke/trouble.nvim'
 
 " Clap
@@ -199,6 +199,10 @@ PlugDef 'rose-pine/neovim'
 PlugDef 'RishabhRD/popfix'
 PlugDef 'RishabhRD/nvim-lsputils'
 PlugDef 'liuchengxu/vista.vim'
+
+PlugDef 'ms-jpq/coq_nvim', {'branch': 'coq'}
+PlugDef 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+PlugDef 'ms-jpq/coq.thirdparty', {'branch': '3p'}
 
 call plug#end() "
 " =========================
@@ -278,7 +282,7 @@ endif
 
 " Use 3.8 if exists
 if executable('python3.8')
-let g:python3_host_prog = 'python3.8'
+let g:python3_host_prog = '/usr/bin/python3.8'
 endif
 
 if exists(':GuiFont')
@@ -464,18 +468,20 @@ tnoremap <silent> <C-t> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 
+command! -nargs=+ Ivy Telescope <args> theme=ivy
+
 "  Fuzzy Commands {{{2
-command! Fuzzy         Telescope
+command! Fuzzy         Ivy builtin
 command! FuzzyFiles    Files
 command! FuzzyFilesR   History
-command! FuzzyCom      Telescope command theme=ivy
-command! FuzzyComR     Telescope command_history theme=ivy
-command! FuzzyQF       Telescope quickfix theme=ivy
+command! FuzzyCom      Ivy commands
+command! FuzzyComR     Ivy command_history
+command! FuzzyQF       Ivy quickfix
 command! FuzzyTags     Clap tags
-command! FuzzyFindFile Telescope quickfix theme=ivy
+command! FuzzyFindFile Ivy quickfix
 command! FuzzyInc      BLines
 command! FuzzyBuffers  Buffers
-command! FuzzyFindAll  Telescope live_grep theme=ivy
+command! FuzzyFindAll  Ivy live_grep
 
 " Mappings
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
@@ -510,18 +516,18 @@ require('telescope').setup{
 }
 EOF
 
-nnoremap <leader>p  <cmd>Telescope<cr>
-nnoremap <leader>pp <cmd>Telescope find_files<cr>
-nnoremap <leader>pc :Telescope commands<CR>
-nnoremap <leader>pC :Telescope command_history<CR>
-nnoremap <leader>ph :Telescope oldfiles<CR>
-nnoremap <leader>pB :Telescope file_browser<CR>
-nnoremap <leader>pb :Telescope buffers<CR>
-nnoremap <leader>pa :Telescope current_buffer_tags<CR>
-nnoremap <leader>pt :Telescope tags<CR>
-nnoremap <leader>pg :Telescope current_buffer_fuzzy_find<CR>
-nnoremap <leader>py :Telescope filetypes theme=ivy<CR>
-nnoremap <leader>pu :Telescope lsp_document_symbols<CR>
+nnoremap <leader>p  <cmd>Ivy<cr>
+nnoremap <leader>pp <cmd>Ivy find_files<cr>
+nnoremap <leader>pc <cmd>Ivy commands<CR>
+nnoremap <leader>pC <cmd>Ivy command_history<CR>
+nnoremap <leader>ph <cmd>Ivy oldfiles<CR>
+nnoremap <leader>pB <cmd>Ivy file_browser<CR>
+nnoremap <leader>pb <cmd>Ivy buffers<CR>
+nnoremap <leader>pa <cmd>Ivy current_buffer_tags<CR>
+nnoremap <leader>pt <cmd>Ivy tags<CR>
+nnoremap <leader>pg <cmd>Ivy current_buffer_fuzzy_find<CR>
+nnoremap <leader>py <cmd>Ivy filetypes theme=ivy<CR>
+nnoremap <leader>pu <cmd>Ivy lsp_document_symbols<CR>
 endif
 
 " Fzf {{{3
@@ -578,7 +584,7 @@ endif
 
 "  Compe {{{2
 if PlugLoaded('compe')
-set completeopt=menuone,noselect
+" set completeopt=menuone,noselect
 let g:compe = {}
 let g:compe.enabled = v:true
 let g:compe.autocomplete = v:true
@@ -612,9 +618,13 @@ endif
 "  Nvim LSP {{{2
 if PlugLoaded('nvim_lspconfig')
 lua << EOF
-require'lspconfig'.rust_analyzer.setup{}
-require'lspconfig'.clangd.setup{}
-require'lspconfig'.pyright.setup{}
+local lsp = require "lspconfig"
+-- local coq = require "coq"
+
+lsp.rust_analyzer.setup{}
+-- lsp.clangd.setup(coq.lsp_ensure_capabilities())
+lsp.clangd.setup{}
+lsp.pyright.setup{}
 EOF
 
 " Goto Actions
@@ -749,7 +759,7 @@ require'lualine'.setup{
     sections = {
         lualine_a = {get_mode},
         lualine_b = {'filename'},
-        lualine_c = {'TSStatus'},
+        lualine_c = {},
 
         lualine_x = {'Cwd'},
         lualine_y = {'branch', 'GetDate'},
@@ -1069,6 +1079,11 @@ nnoremap <silent> <leader>qc <cmd>cclose<CR>
 nnoremap <silent> <leader>qq <cmd>copen<CR>
 nnoremap <silent> <leader>qx <cmd>call setqflist([], 'r')<CR>
 
+" Use Troubles quickfix if
+if PlugLoaded('trouble')
+nnoremap <leader>qq <cmd>TroubleToggle quickfix<cr>
+endif
+
 " Vimrc
 nnoremap <leader>ev :tab split ~/.vimrc<cr>
 nnoremap <leader>ez :tab split ~/.zshrc<cr>
@@ -1142,6 +1157,10 @@ nnoremap <C-v> v
 xmap <M-Q> gsNqq
 nmap <M-Q> viw<M-Q>
 nnoremap <M-q> nzz@q
+
+" Classic jk escape
+inoremap jk <esc>
+inoremap kj <esc>
 
 " === Terminal Maps === {{{2
 if has('nvim')
@@ -1266,7 +1285,6 @@ augroup END
 " Easy way to Include c++ files
 function! Include(file, ...) abort
     let l:file = a:file
-    " let l:file = trim(system("fd '\.h$' | fzf-tmux -p --preview='prev {}'"))
 
     if l:file == ""
         return
@@ -1306,12 +1324,23 @@ command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 " ---------------------------------------------------
 "  SandBox {{{1
 let g:notes_directories = ['~/.vim/notes']
+let g:notes_suffix = '.md'
 
-" Extract Text Commands
-nnoremap dk mmdaWk$p`mmm
-nnoremap dj mmdaWj$p`mmm
-nnoremap dK mmdaWk0P`mmm
-nnoremap dJ mmdaWj0P`mmm
-xnoremap K mmdk$p`mmm
-xnoremap J mmdj$p`mmm
+if PlugLoaded('coq_nvim')
+    let g:coq_settings = {}
+    let g:coq_settings["clients.tabnine.enabled"] = v:true
+    let g:coq_settings["clients.snippets.user_path"] = "~/.vim/my_snippets/"
+    let g:coq_settings["keymap.recommended"] = v:false
+    let g:coq_settings["keymap.jump_to_mark"] = '<S-Tab>'
+    let g:coq_settings["keymap.pre_select"] = v:false
+    let g:coq_settings["auto_start"] = 'shut-up'
 
+    inoremap <expr> <Esc>   pumvisible() ? "\<C-e><Esc>" : "\<Esc>"
+    inoremap <expr> <C-c>   pumvisible() ? "\<C-e><C-c>" : "\<C-c>"
+    inoremap <expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
+    inoremap <expr> <Tab>   pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-y>" : "\<C-y>") : "\<Tab>"
+    " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
+endif
+
+command! FindReplace Farr
+command! Find Farf

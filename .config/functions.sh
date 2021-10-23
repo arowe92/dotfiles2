@@ -99,5 +99,44 @@ pyhelp () {
 }
 
 help () {
-    $@ --help | bat -l man
+    out=$($@ --help 2>/dev/null)
+    result="$?"
+
+    if [ ! $result -eq 0 ]; then
+        out=$($@ -h 2>/dev/null)
+        result="$?"
+    fi
+
+    if [ ! $result -eq 0 ]; then
+        out="$(man $@ 2>/dev/null)"
+        result="$?"
+    fi
+
+    if [ ! $result -eq 0 ]; then
+        echo "Help not found"
+        return
+    fi
+
+    echo $out | bat -l man
 }
+
+# ZLE Widgets
+# Leader
+bindkey -r '^S'
+
+# Search for Help
+help_cmd () {
+    cmd="$(print -rC1 -- ${(ko)commands} | fzf-tmux $FZF_TMUX_OPTS)"
+    help $cmd
+}
+zle -N help_cmd
+bindkey '^Sh' help_cmd
+
+# Insert Command
+insert_cmd () {
+    cmd="$(print -rC1 -- ${(ko)commands} | fzf-tmux $FZF_TMUX_OPTS)"
+    RBUFFER="${RBUFFER}$cmd "
+    zle end-of-line
+}
+zle -N insert_cmd
+bindkey '^Sc' insert_cmd
