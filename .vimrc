@@ -122,7 +122,7 @@ PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
 
 " Colorschemes {{{3
 PlugDef 'EdenEast/nightfox.nvim'
-silent call SourceByLine($DOTFILE_PATH."/colors.vim")
+silent call SourceByLine($DOTFILE_PATH."/.config/nvim/colors.vim")
 
 " ------------------------------------------------------------------
 if g:GUI_TOOLS " {{{3
