@@ -63,11 +63,16 @@ swap () {
 }
 
 nvim_socket () {
-    nvim="`ps aux | grep nvim | awk '{ print $11 }' | grep ^/usr/bin/nvim`"
-    if [[ -z "$nvim" ]]; then
-        rm /tmp/nvimsocket > /dev/null 2>&1;
+    first=1
+    # nvim="`ps aux | grep nvim | awk '{ print $11 }' | grep ^/usr/bin/nvim`"
+    if [[ -f "$NVIM_LISTEN_ADDRESS" ]]; then
+        first=0
     fi
     /usr/bin/nvim $@
+
+    if [[ "$first" == "1" ]]; then
+        rm $NVIM_LISTEN_ADDRESS 2>/dev/null
+    fi
 }
 
 pyhelp () {

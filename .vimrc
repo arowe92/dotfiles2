@@ -40,23 +40,20 @@ endif
 
 call plug#begin()
 " Plugin Helpers {{{3
-function! FormatPlugName(name) abort
+function! s:FormatPlugName(name) abort
     let l:name = a:name
     let l:name = substitute(l:name, "[-.]", '_', 'g')
     let l:name = substitute(l:name, "[',]", '', 'g')
-    let l:name = substitute(l:name, "_nvim$", '', 'g')
-    let l:name = substitute(l:name, "^nvim_", '', 'g')
-    let l:name = substitute(l:name, "_vim$", '', 'g')
-    let l:name = substitute(l:name, "^vim_", '', 'g')
+    let l:name = substitute(l:name, '\(_n\?vim\|n\?vim_\)', '', 'g')
     return l:name
 endfunction
 function! PlugLoaded(name) abort
-    let l:name = FormatPlugName(a:name)
+    let l:name = s:FormatPlugName(a:name)
     return exists('g:plugin_'.l:name)
 endfunction
 function! PlugDef(...) abort
     let l:name = split(a:000[0], '/')[1]
-    let l:name = FormatPlugName(l:name)
+    let l:name = s:FormatPlugName(l:name)
     if l:name =~ 'nvim' && !has('nvim')
         return
     endif
@@ -79,7 +76,6 @@ PlugDef 'bogado/file-line'
 PlugDef 'machakann/vim-sandwich'
 
 " GUI Essentials {{{3
-PlugDef 'kshenoy/vim-signature' " Show Marks in Sidebar
 PlugDef 'dstein64/nvim-scrollview'
 PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
 PlugDef 'junegunn/fzf.vim'
@@ -106,7 +102,6 @@ PlugDef 'xolox/vim-session'
 
 " Language Support {{{3
 PlugDef 'MaxMEllon/vim-jsx-pretty'
-PlugDef 'pangloss/vim-javascript',  { 'for': 'javascript' }
 PlugDef 'elixir-editors/vim-elixir'
 PlugDef 'rust-lang/rust.vim'
 PlugDef 'MTDL9/vim-log-highlighting'
@@ -146,6 +141,11 @@ PlugDef 'p00f/nvim-ts-rainbow'
 " PlugDef 'hrsh7th/nvim-compe'
 " PlugDef 'tzachar/compe-tabnine', { 'do': './install.sh' }
 
+" coq
+PlugDef 'ms-jpq/coq_nvim', {'branch': 'coq'}
+PlugDef 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+PlugDef 'ms-jpq/coq.thirdparty', {'branch': '3p'}
+
 " Telescope
 PlugDef 'nvim-lua/popup.nvim'
 PlugDef 'nvim-lua/plenary.nvim'
@@ -155,11 +155,13 @@ PlugDef 'nvim-telescope/telescope.nvim'
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 PlugDef 'ray-x/lsp_signature.nvim'
+PlugDef 'glepnir/lspsaga.nvim'
 PlugDef 'folke/trouble.nvim'
 
 " Clap
 PlugDef 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
 PlugDef 'goolord/nvim-clap-lsp'
+PlugDef 'liuchengxu/vista.vim'
 endif
 " ------------------------------------------------------------------
 if g:GIT_TOOLS " {{{3
@@ -170,7 +172,7 @@ endif
 " ------------------------------------------------------------------
 " Hardcore C++ tools {{{3
 if g:CPP_TOOLS
-PlugDef 'puremoLheurning/vimspector'
+PlugDef 'puremourning/vimspector'
 PlugDef 'gauteh/vim-cppman'
 endif
 " ------------------------------------------------------------------
@@ -195,14 +197,11 @@ endif
 " ------------------------------------------------------------------
 " Sandbox {{{3
 PlugDef 'xolox/vim-notes'
-PlugDef 'rose-pine/neovim'
-PlugDef 'RishabhRD/popfix'
-PlugDef 'RishabhRD/nvim-lsputils'
-PlugDef 'liuchengxu/vista.vim'
+PlugDef 'freitass/todo.txt-vim'
 
-PlugDef 'ms-jpq/coq_nvim', {'branch': 'coq'}
-PlugDef 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
-PlugDef 'ms-jpq/coq.thirdparty', {'branch': '3p'}
+PlugDef 'kana/vim-textobj-user'
+PlugDef 'sgur/vim-textobj-parameter'
+PlugDef 'AckslD/nvim-revJ.lua'
 
 call plug#end() "
 " =========================
@@ -227,8 +226,6 @@ require'nightfox'.setup({
   },
 })
 EOF
-
-colorscheme nightfox
 
 "  Vim Settings {{{2
 "-------------------------
@@ -485,14 +482,13 @@ command! FuzzyFindAll  Ivy live_grep
 
 " Mappings
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
-nnoremap <M-p> <cmd>FuzzyFilesR<cr>
-nnoremap <M-P> <cmd>FuzzyTags<cr>
+nnoremap <M-P> <cmd>FuzzyFilesR<cr>
 nnoremap <M-r> <cmd>FuzzyComR<cr>
 nnoremap <M-R> <cmd>FuzzyCom<cr>
 nnoremap <M-e> <cmd>Fuzzy<cr>
 nnoremap <M-f> <cmd>FuzzyInc<cr>
 nnoremap <M-F> <cmd>FuzzyFindAll<CR>
-nnoremap <M-b> <cmd>FuzzyBuffers<CR>
+nnoremap <M-p> <cmd>FuzzyBuffers<CR>
 nnoremap <M-t> <cmd>FuzzyTags<CR>
 
 " Fuzzy Mappings {{{3
@@ -572,14 +568,6 @@ autocmd FileType clap_input call compe#setup({ 'enabled': v:false }, 0)
 endif
 
 nnoremap <leader>pa :Clap tags<CR>
-
-lua << EOF
--- vim.lsp.handlers['textDocument/codeAction']     = require'clap-lsp.codeAction'.code_action_handler
--- vim.lsp.handlers['textDocument/definition']     = require'clap-lsp.locations'.definition_handler
--- vim.lsp.handlers['textDocument/documentSymbol'] = require'clap-lsp.symbols'.document_handler
--- vim.lsp.handlers['textDocument/references']     = require'clap-lsp.locations'.references_handler
--- vim.lsp.handlers['workspace/symbol']            = require'clap-lsp.symbols'.workspace_handler
-EOF
 endif
 
 "  Compe {{{2
@@ -611,7 +599,25 @@ inoremap <silent><expr> <Tab>     compe#confirm({'keys': '<Tab>', 'select': 1})
 inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-" inoremap <silent> <M-CR> <CR>
+endif
+
+" Coq
+if PlugLoaded('coq_nvim')
+    let g:coq_settings = {}
+    let g:coq_settings["clients.tabnine.enabled"] = v:true
+    let g:coq_settings["clients.snippets.user_path"] = "~/.vim/my_snippets/"
+    let g:coq_settings["keymap.recommended"] = v:false
+    let g:coq_settings["keymap.jump_to_mark"] = '<S-Tab>'
+    let g:coq_settings["keymap.pre_select"] = v:false
+    let g:coq_settings["display.ghost_text.enabled"] = v:false
+    let g:coq_settings["auto_start"] = 'shut-up'
+
+    inoremap <expr> <Esc>   pumvisible() ? "\<C-e><Esc>" : "\<Esc>"
+    inoremap <expr> <C-c>   pumvisible() ? "\<C-e><C-c>" : "\<C-c>"
+    inoremap <expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
+    inoremap <expr> <CR>    pumvisible() ? "\<CR>"  : "\<CR>"
+    inoremap <expr> <Tab>   pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-y>" : "\<C-y>") : "\<Tab>"
+    " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 endif
 " ------------------------------------------------------------------
 
@@ -619,15 +625,24 @@ endif
 if PlugLoaded('nvim_lspconfig')
 lua << EOF
 local lsp = require "lspconfig"
--- local coq = require "coq"
 
+lsp.html.setup{}
 lsp.rust_analyzer.setup{}
--- lsp.clangd.setup(coq.lsp_ensure_capabilities())
 lsp.clangd.setup{}
 lsp.pyright.setup{}
+lsp.tsserver.setup{}
+lsp.jsonls.setup {
+    commands = {
+      Format = {
+        function()
+          vim.lsp.buf.range_formatting({},{0,0},{vim.fn.line("$"),0})
+        end
+      }
+    }
+}
 EOF
 
-" Goto Actions
+" Goto Actions {{{ 3
 nnoremap <silent> gD <Cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <silent> gk <Cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gh <Cmd>lua vim.lsp.buf.hover()<CR>
@@ -639,16 +654,37 @@ nnoremap <silent> gy <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> gY <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
 
-" LSP Actions
+" LSP Actions {{{ 3
 nnoremap <silent> <leader>cr <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <silent> <leader>ce <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-nnoremap <silent> <leader>c[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
-nnoremap <silent> <leader>c] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> [c <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> ]c <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
+
+" LSP Saga {{{ 3
+if PlugLoaded("lspsaga")
+lua << EOF
+local saga = require 'lspsaga'
+saga.init_lsp_saga()
+EOF
+
+" Lsp Actions
+nnoremap <silent><leader>ca :Lspsaga code_action<CR>
+vnoremap <silent><leader>ca :<C-U>Lspsaga range_code_action<CR>
+nnoremap <silent><leader>cr :Lspsaga rename<CR>
+nnoremap <silent> <leader>ce :Lspsaga show_line_diagnostics<CR>
+
+" Goto
+nnoremap <silent> gi :Lspsaga lsp_finder<CR>
+nnoremap <silent> gh :Lspsaga hover_doc<CR>
+nnoremap <silent> gH :Lspsaga signature_help<CR>
+nnoremap <silent> gd :Lspsaga preview_definition<CR>
+
+nnoremap <silent> [c :Lspsaga diagnostic_jump_next<CR>
+nnoremap <silent> ]c :Lspsaga diagnostic_jump_prev<CR>
+endif
 
 " Toggle LSP on off
 nmap <leader>7lu <Plug>(toggle-lsp-diag-underline)
@@ -1089,6 +1125,11 @@ nnoremap <leader>ev :tab split ~/.vimrc<cr>
 nnoremap <leader>ez :tab split ~/.zshrc<cr>
 nnoremap <leader>et :tab split ~/.tmux.conf<cr>
 
+augroup ec_cmds
+  autocmd!
+  autocmd FileType javascript nnoremap <leader>ec <cmd>e package.json<cr>
+augroup END
+
 " Incrementing
 vnoremap <C-g> g<C-a>
 nnoremap <A-8> <C-a>
@@ -1201,6 +1242,7 @@ nnoremap <leader>P "_r<Enter>PkJJ
 nnoremap <leader>F :FormatClang<CR>
 " Easy Semicolon
 nnoremap <silent> <M-;> mmA;<esc>`mmm
+nnoremap <silent> <M-:> mm$x`mmm
 " Dont yank on replace
 vnoremap p "_dP
 " New line when completion open
@@ -1326,21 +1368,18 @@ command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 let g:notes_directories = ['~/.vim/notes']
 let g:notes_suffix = '.md'
 
-if PlugLoaded('coq_nvim')
-    let g:coq_settings = {}
-    let g:coq_settings["clients.tabnine.enabled"] = v:true
-    let g:coq_settings["clients.snippets.user_path"] = "~/.vim/my_snippets/"
-    let g:coq_settings["keymap.recommended"] = v:false
-    let g:coq_settings["keymap.jump_to_mark"] = '<S-Tab>'
-    let g:coq_settings["keymap.pre_select"] = v:false
-    let g:coq_settings["auto_start"] = 'shut-up'
-
-    inoremap <expr> <Esc>   pumvisible() ? "\<C-e><Esc>" : "\<Esc>"
-    inoremap <expr> <C-c>   pumvisible() ? "\<C-e><C-c>" : "\<C-c>"
-    inoremap <expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
-    inoremap <expr> <Tab>   pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-y>" : "\<C-y>") : "\<Tab>"
-    " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
-endif
-
 command! FindReplace Farr
 command! Find Farf
+
+
+lua << EOF
+require("revj").setup{
+    keymaps = {
+        operator = '<leader>J', -- for operator (+motion)
+        line = '<Leader><M-j>', -- for formatting current line
+        visual = '<Leader><M-j>', -- for formatting visual selection
+    },
+}
+EOF
+
+
