@@ -137,14 +137,15 @@ if g:NVIM_TOOLS " {{{3
 PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 PlugDef 'p00f/nvim-ts-rainbow'
 
-" compe
-" PlugDef 'hrsh7th/nvim-compe'
-" PlugDef 'tzachar/compe-tabnine', { 'do': './install.sh' }
-
-" coq
-PlugDef 'ms-jpq/coq_nvim', {'branch': 'coq'}
-PlugDef 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
-PlugDef 'ms-jpq/coq.thirdparty', {'branch': '3p'}
+" cmp
+PlugDef 'hrsh7th/cmp-nvim-lsp'
+PlugDef 'hrsh7th/cmp-buffer'
+PlugDef 'hrsh7th/cmp-path'
+PlugDef 'hrsh7th/cmp-cmdline'
+PlugDef 'hrsh7th/nvim-cmp'
+PlugDef 'hrsh7th/cmp-vsnip'
+PlugDef 'hrsh7th/vim-vsnip'
+PlugDef 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 
 " Telescope
 PlugDef 'nvim-lua/popup.nvim'
@@ -562,43 +563,80 @@ let g:clap_layout = { 'relative': 'editor' }
 let g:clap_preview_direction = 'UD'
 let g:clap_theme = 'material_design_dark'
 let g:clap_enable_background_shadow = v:false
-
-if PlugLoaded('compe')
-autocmd FileType clap_input call compe#setup({ 'enabled': v:false }, 0)
 endif
 
-nnoremap <leader>pa :Clap tags<CR>
-endif
+"  nvim-cmp {{{2
+if PlugLoaded("nvim_cmp")
+set completeopt=menu,menuone,noselect
+let g:vsnip_snippet_dir = "/home/arowe/.vim/my_snippets/"
 
-"  Compe {{{2
-if PlugLoaded('compe')
-" set completeopt=menuone,noselect
-let g:compe = {}
-let g:compe.enabled = v:true
-let g:compe.autocomplete = v:true
-let g:compe.min_length = 1
-let g:compe.preselect = 'enable'
-let g:compe.throttle_time = 150
-let g:compe.source_timeout = 200
-let g:compe.resolve_timeout = 800
-let g:compe.incomplete_delay = 400
-let g:compe.max_abbr_width = 100
-let g:compe.max_kind_width = 100
-let g:compe.max_menu_width = 100
-let g:compe.documentation = v:true
+lua <<EOF
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
 
-let g:compe.source = {}
-let g:compe.source.path = v:true
-let g:compe.source.buffer = v:true
-let g:compe.source.calc = v:true
-let g:compe.source.nvim_lsp = v:true
-let g:compe.source.ultisnips = v:true
-let g:compe.source.tabnine = v:true
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body)
+      end,
+    },
+    mapping = {
+      ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c' }),
+      ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c' }),
+      ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+      ['<M-Enter>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<C-y>'] = cmp.config.disable,
+      ['<C-e>'] = cmp.mapping({
+        i = cmp.mapping.abort(),
+        c = cmp.mapping.close(),
+      }),
+      ['<Tab>'] = cmp.mapping({
+        i = cmp.mapping.confirm({ select = true }),
+        c = cmp.mapping.select_next_item(),
+      }),
+      ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({ select = false })),
+      ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item()),
+    },
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'cmp_tabnine' },
+      { name = 'vsnip' },
+      { name = 'buffer' },
+      { name = 'path' },
+    })
+  })
 
-inoremap <silent><expr> <Tab>     compe#confirm({'keys': '<Tab>', 'select': 1})
-inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+  cmp.setup.cmdline('/', {
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+  cmp.setup.cmdline('?', {
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+  cmp.setup.cmdline(':', {
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+  -- Setup lspconfig.
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  require('lspconfig')['clangd'].setup {
+    capabilities = capabilities
+  }
+EOF
+
+" Jump forward or backward
+imap <expr> <C-l> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-l>'
+smap <expr> <C-l> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-l>'
+imap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-h>'
+smap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-h>'
 endif
 
 " Coq
@@ -1371,7 +1409,6 @@ let g:notes_suffix = '.md'
 command! FindReplace Farr
 command! Find Farf
 
-
 lua << EOF
 require("revj").setup{
     keymaps = {
@@ -1382,4 +1419,13 @@ require("revj").setup{
 }
 EOF
 
-
+lua << EOF
+local tabnine = require('cmp_tabnine.config')
+tabnine:setup({
+        max_lines = 1000;
+        max_num_results = 20;
+        sort = true;
+	run_on_every_keystroke = true;
+	snippet_placeholder = '..';
+})
+EOF
