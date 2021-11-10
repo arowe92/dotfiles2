@@ -7,7 +7,6 @@ let g:GIT_TOOLS = get(g:, 'GIT_TOOLS', 1)
 let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 0)
 let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
 let g:NVIM_TOOLS = get(g:, 'NVIM_TOOLS', 1)
-let g:SNIPPETS = get(g:, 'SNIPPETS', 1)
 let g:STATUS_LINE = get(g:, 'STATUS_LINE', 1)
 let g:TMUX = get(g:, 'TMUX', 1) && exists("$TMUX")
 let g:NERD_FONT = get(g:, 'NERD_FONT', 1)
@@ -18,7 +17,6 @@ if exists('$VIM_LITE')
     let g:CPP_TOOLS = 0
     let g:GUI_TOOLS = 0
     let g:NVIM_TOOLS = 0
-    let g:SNIPPETS = 1
     let g:STATUS_LINE = 0
 endif
 
@@ -28,7 +26,6 @@ if exists('g:vscode')
     let g:CPP_TOOLS = 0
     let g:GUI_TOOLS = 0
     let g:NVIM_TOOLS = 0
-    let g:SNIPPETS = 0
     let g:STATUS_LINE = 0
 endif
 
@@ -63,9 +60,11 @@ function! PlugDef(...) abort
 endfunction
 command! -nargs=+ PlugDef call PlugDef(<f-args>)
 function SourceByLine(file)
-    for l:line in readfile(a:file)
-        execute l:line
-    endfor
+    if filereadable(a:file)
+        for l:line in readfile(a:file)
+            execute l:line
+        endfor
+    endif
 endfunction
 
 " ------------------------------------------------------------------
@@ -102,12 +101,15 @@ PlugDef 'xolox/vim-session'
 
 " Language Support {{{3
 PlugDef 'MaxMEllon/vim-jsx-pretty'
+PlugDef 'tikhomirov/vim-glsl'
+PlugDef 'pangloss/vim-javascript',  { 'for': 'javascript' }
 PlugDef 'elixir-editors/vim-elixir'
 PlugDef 'rust-lang/rust.vim'
 PlugDef 'MTDL9/vim-log-highlighting'
 PlugDef 'plasticboy/vim-markdown'
 PlugDef 'cespare/vim-toml'
 PlugDef 'manicmaniac/coconut.vim'
+
 
 " Appearance
 " PlugDef 'Yggdroot/indentLine' {{{3
@@ -116,7 +118,6 @@ PlugDef 'ryanoasis/vim-devicons'
 PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
 
 " Colorschemes {{{3
-PlugDef 'EdenEast/nightfox.nvim'
 silent call SourceByLine($DOTFILE_PATH."/.config/nvim/colors.vim")
 
 " ------------------------------------------------------------------
@@ -181,12 +182,6 @@ endif
 if g:TMUX
 PlugDef 'christoomey/vim-tmux-navigator'
 PlugDef 'roxma/vim-tmux-clipboard'
-endif
-" ------------------------------------------------------------------
-" Snippets {{{3
-if g:SNIPPETS
-PlugDef 'SirVer/ultisnips'
-PlugDef 'honza/vim-snippets'
 endif
 " ------------------------------------------------------------------
 " " Status bar {{{3
