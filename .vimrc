@@ -203,28 +203,6 @@ call plug#end() "
 " =========================
 "  General Settings {{{1
 " ----------------------
-
-"  Appearance {{{2
-" Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
-let g:sonokai_style = 'andromeda'
-let g:sonokai_enable_italic = 0
-let g:sonokai_disable_italic_comment = 0
-
-let g:arcadia_Sunset = 1
-let g:arcadia_Pitch = 1
-
-lua <<EOF
-require'nightfox'.setup({
-  fox = "nightfox", -- change the colorscheme to use nordfox
-  styles = {
-    comments = "italic",
-    keywords = "bold",
-  },
-})
-EOF
-
-"  Vim Settings {{{2
-"-------------------------
 set wrap
 set number
 set hlsearch
@@ -390,24 +368,32 @@ endif
 
 "  Startify {{{2
 if PlugLoaded('startify')
+let g:startify_custom_header = startify#center(split(system('figlet nvim'), '\n'))
 let g:startify_change_to_dir = 1
 let g:startify_session_dir = '~/.vim/sessions'
+let g:startify_enable_unsafe = 1 " Faster startup
 let g:startify_bookmarks = [
             \ "~/dot/.vimrc",
             \ "~/dot/",
             \ "~/.vimrc",
             \ ]
 
+function s:git_info()
+    let l:files = split(trim(system('git ls-files -m')))
+    let l:list = []
+    for f in l:files
+        call add(l:list, {'line': f, 'cmd': 'e '.f})
+    endfor
+    return l:list
+endfunction
+
 let g:startify_lists = [
+            \ { 'type': 'dir',       'header': ['   Directory: '. getcwd()] },
+            \ { 'type': function('s:git_info'),  'header': ['   Git: '.trim(system('git branch'))]       },
             \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
             \ { 'type': 'sessions',  'header': ['   Sessions']       },
-            \ { 'type': 'files',     'header': ['   Recent Files']            },
-            \ { 'type': 'dir',       'header': ['   Recent from '. getcwd()] },
             \ { 'type': 'commands',  'header': ['   Commands']       },
             \ ]
-
-" Faster startup
-let g:startify_enable_unsafe = 1
 
 nnoremap <leader>es <cmd>Startify<cr>
 endif
@@ -512,7 +498,7 @@ nnoremap <leader>p  <cmd>Ivy<cr>
 nnoremap <leader>pp <cmd>Ivy find_files<cr>
 nnoremap <leader>pc <cmd>Ivy commands<CR>
 nnoremap <leader>pC <cmd>Ivy command_history<CR>
-nnoremap <leader>ph <cmd>Ivy oldfiles<CR>
+nnoremap <leader>ph <cmd>Ivy help_tags<CR>
 nnoremap <leader>pB <cmd>Ivy file_browser<CR>
 nnoremap <leader>pb <cmd>Ivy buffers<CR>
 nnoremap <leader>pa <cmd>Ivy current_buffer_tags<CR>
@@ -537,6 +523,10 @@ nnoremap <leader>po :FasdFile<CR>
 nnoremap <leader>pO :FasdDir<CR>
 nnoremap <leader>pz :FzfCd<CR>
 nnoremap <leader>pZ :FzfCdIter<CR>
+
+" Search for marks
+nnoremap <leader>pm <cmd>BLines {{{<CR>
+
 
 " FZF QuickFix
 function! s:build_quickfix_list(lines)
@@ -700,7 +690,9 @@ nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 if PlugLoaded("lspsaga")
 lua << EOF
 local saga = require 'lspsaga'
-saga.init_lsp_saga()
+saga.init_lsp_saga {
+    code_action_prompt = { virtual_text = false }
+}
 EOF
 
 " Lsp Actions
@@ -1424,3 +1416,4 @@ tabnine:setup({
 	snippet_placeholder = '..';
 })
 EOF
+
