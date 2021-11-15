@@ -63,3 +63,12 @@ PlugDef 'kvrohit/substrata.nvim'
 PlugDef 'ldelossa/vimdark'
 PlugDef 'mangeshrex/uwu.vim'
 PlugDef 'adisen99/apprentice.nvim'
+
+" Settings
+" Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
+let g:sonokai_style = 'andromeda'
+let g:sonokai_enable_italic = 0
+let g:sonokai_disable_italic_comment = 0
+
+let g:arcadia_Sunset = 1
+let g:arcadia_Pitch = 1

@@ -282,6 +282,7 @@ endfunction
 " Setting Toggles
 noremap <leader>7w <cmd>call Toggle_setting("wrap")<CR>
 noremap <leader>7n <cmd>call Toggle_setting("number")<CR>
+noremap <leader>7m <cmd>call Cycle_setting("mouse")<CR>
 noremap <leader>7f <cmd>call Cycle_setting("foldmethod")<CR>
 noremap <leader>7c <cmd>call Cycle_setting("colorcolumn")<CR>
 " ------------------------------------------------------------------
@@ -472,6 +473,7 @@ nnoremap <M-f> <cmd>FuzzyInc<cr>
 nnoremap <M-F> <cmd>FuzzyFindAll<CR>
 nnoremap <M-p> <cmd>FuzzyBuffers<CR>
 nnoremap <M-t> <cmd>FuzzyTags<CR>
+nnoremap <leader>pm <cmd>execute 'BLines {'.'{{'<CR>
 
 " Fuzzy Mappings {{{3
 " Search Word
