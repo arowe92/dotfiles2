@@ -68,7 +68,7 @@ nvim_socket () {
     if [[ -f "$NVIM_LISTEN_ADDRESS" ]]; then
         first=0
     fi
-    /usr/bin/nvim $@
+    \nvim $@
 
     if [[ "$first" == "1" ]]; then
         rm $NVIM_LISTEN_ADDRESS 2>/dev/null
@@ -145,3 +145,27 @@ insert_cmd () {
 }
 zle -N insert_cmd
 bindkey '^Sc' insert_cmd
+
+# Edit Command
+edit_cmd () {
+    cmd="$(print -rC1 -- ${(ko)commands} | fzf-tmux $FZF_TMUX_OPTS)"
+    nvim `which $cmd`
+    RBUFFER="${RBUFFER}nvim `which $cmd`"
+    zle end-of-line
+}
+zle -N edit_cmd
+bindkey '^SC' edit_cmd
+
+# Select dir from fasd
+fzf-get-dir-widget() {
+    LBUFFER+=$(dx)
+}
+zle -N fzf-get-dir-widget
+bindkey '^Sd' fzf-get-dir-widget
+
+# Select file from fasd
+fzf-get-file-widget() {
+    LBUFFER+=$(fx)
+}
+zle -N fzf-get-file-widget
+bindkey '^Sf' fzf-get-file-widget
