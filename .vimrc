@@ -29,6 +29,14 @@ if exists('g:vscode')
     let g:STATUS_LINE = 0
 endif
 
+" Vim for servers
+let g:VIM_RAW = v:false
+if exists('$VIM_RAW')
+    function! PlugLoaded(name) abort
+        return 0
+    endfunction
+else
+
 "  Vim-Plug {{{2
 " Install vim-plug if it doesnt exist
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -69,7 +77,8 @@ endfunction
 
 " ------------------------------------------------------------------
 " Essentials {{{3
-PlugDef 'easymotion/vim-easymotion'
+" PlugDef 'easymotion/vim-easymotion'
+PlugDef 'phaazon/hop.nvim'
 PlugDef 'rhysd/clever-f.vim'
 PlugDef 'bogado/file-line'
 PlugDef 'machakann/vim-sandwich'
@@ -100,7 +109,7 @@ PlugDef 'xolox/vim-misc'
 PlugDef 'xolox/vim-session'
 
 " Language Support {{{3
-PlugDef 'MaxMEllon/vim-jsx-pretty'
+" PlugDef 'MaxMEllon/vim-jsx-pretty'
 PlugDef 'tikhomirov/vim-glsl'
 PlugDef 'pangloss/vim-javascript',  { 'for': 'javascript' }
 PlugDef 'elixir-editors/vim-elixir'
@@ -139,14 +148,22 @@ PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 PlugDef 'p00f/nvim-ts-rainbow'
 
 " cmp
+PlugDef 'hrsh7th/nvim-cmp'
 PlugDef 'hrsh7th/cmp-nvim-lsp'
 PlugDef 'hrsh7th/cmp-buffer'
 PlugDef 'hrsh7th/cmp-path'
 PlugDef 'hrsh7th/cmp-cmdline'
-PlugDef 'hrsh7th/nvim-cmp'
 PlugDef 'hrsh7th/cmp-vsnip'
 PlugDef 'hrsh7th/vim-vsnip'
-PlugDef 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+PlugDef 'hrsh7th/vim-vsnip-integ'
+PlugDef 'onsails/lspkind-nvim'
+
+
+" PlugDef 'L3MON4D3/LuaSnip'
+" PlugDef 'saadparwaiz1/cmp_luasnip'
+
+
+" PlugDef 'tzachar/cmp-tabnine' ", { 'do': './install.sh' }
 
 " Telescope
 PlugDef 'nvim-lua/popup.nvim'
@@ -156,8 +173,8 @@ PlugDef 'nvim-telescope/telescope.nvim'
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
-PlugDef 'ray-x/lsp_signature.nvim'
-PlugDef 'glepnir/lspsaga.nvim'
+" PlugDef 'ray-x/lsp_signature.nvim'
+PlugDef 'tami5/lspsaga.nvim'
 PlugDef 'folke/trouble.nvim'
 
 " Clap
@@ -169,7 +186,7 @@ endif
 if g:GIT_TOOLS " {{{3
 PlugDef 'tpope/vim-fugitive'
 PlugDef 'airblade/vim-gitgutter'
-PlugDef 'rhysd/conflict-marker.vim'
+PlugDef 'rhys/conflict-marker.vim'
 endif
 " ------------------------------------------------------------------
 " Hardcore C++ tools {{{3
@@ -192,14 +209,18 @@ endif
 
 " ------------------------------------------------------------------
 " Sandbox {{{3
-PlugDef 'xolox/vim-notes'
+" PlugDef 'xolox/vim-notes'
 PlugDef 'freitass/todo.txt-vim'
 
 PlugDef 'kana/vim-textobj-user'
 PlugDef 'sgur/vim-textobj-parameter'
-PlugDef 'AckslD/nvim-revJ.lua'
+PlugDef 'ldelossa/calltree.nvim'
 
 call plug#end() "
+
+" Vim Raw
+endif
+
 " =========================
 "  General Settings {{{1
 " ----------------------
@@ -224,7 +245,9 @@ set iskeyword=@,48-57,_,192-255
 set termguicolors
 set fillchars=vert:\│,eob:\ " Space
 set scrolloff=3 " Keep 3 lines below and above the cursor
-set foldmethod=expr
+set foldmethod=indent
+set shortmess+=A
+set signcolumn=number
 
 " Tabs
 set shiftwidth=4
@@ -260,28 +283,31 @@ if exists(':GuiFont')
 GuiFont FuraMono NF:h11
 endif
 
-"  Toggle Settings {{{2
-function Toggle_setting(name)
-exe "set ".a:name."!"
-exe "echo '".a:name." =' &".a:name." ? 'on' : 'off'"
-endfunction
-
+"  Cycle Settings {{{2
 let setting_cycles = {
             \ "foldmethod": ['manual', 'expr', 'syntax', 'marker'],
             \ "mouse": ['a', ''],
             \ "colorcolumn": ['120', '']
             \ }
 
-function Cycle_setting(name)
-let next = g:setting_cycles[a:name][0]
-let g:setting_cycles[a:name] = g:setting_cycles[a:name][1:] + [l:next]
-exe "set ".a:name."=".l:next
-echo a:name.' = '.l:next
+function! Cycle_setting(name)
+    let l:cycle = get(g:setting_cycles, a:name, [])
+    if len(l:cycle) == 0
+        exe "set ".a:name."!"
+        exe "echo '".a:name." =' &".a:name." ? 'on' : 'off'"
+        return
+    endif
+
+    let next = g:setting_cycles[a:name][0]
+    let g:setting_cycles[a:name] = g:setting_cycles[a:name][1:] + [l:next]
+    exe "set ".a:name."=".l:next
+    echo a:name.' = '.l:next
 endfunction
 
 " Setting Toggles
-noremap <leader>7w <cmd>call Toggle_setting("wrap")<CR>
-noremap <leader>7n <cmd>call Toggle_setting("number")<CR>
+noremap <leader>7w <cmd>call Cycle_setting("wrap")<CR>
+noremap <leader>7n <cmd>call Cycle_setting("number")<CR>
+noremap <leader>7N <cmd>call Cycle_setting("relativenumber")<CR>
 noremap <leader>7m <cmd>call Cycle_setting("mouse")<CR>
 noremap <leader>7f <cmd>call Cycle_setting("foldmethod")<CR>
 noremap <leader>7c <cmd>call Cycle_setting("colorcolumn")<CR>
@@ -308,6 +334,7 @@ let g:VM_maps['Visual Add']                  = 'v'
 let g:VM_maps['Increase']                  = 'C-g'
 let g:VM_maps['Decrease']                  = 'C-x'
 let g:VM_maps['Toggle Mappings']           = '<space><space>'
+let g:VM_maps['Reselect Last']             = '\\gv'
 
 let g:VM_case_setting = 'sensitive'
 let g:VM_theme = 'purplegray'
@@ -316,6 +343,9 @@ endif
 "  Far {{{2
 if PlugLoaded('far')
 let g:far#source='rgnvim'
+
+command! FindReplace Farr
+command! Find Farf
 endif
 
 "  Vim Printer {{{2
@@ -381,6 +411,10 @@ let g:startify_bookmarks = [
 
 function s:git_info()
     let l:files = split(trim(system('git ls-files -m')))
+    if v:shell_error != 0
+        return []
+    endif
+
     let l:list = []
     for f in l:files
         call add(l:list, {'line': f, 'cmd': 'e '.f})
@@ -390,7 +424,7 @@ endfunction
 
 let g:startify_lists = [
             \ { 'type': 'dir',       'header': ['   Directory: '. getcwd()] },
-            \ { 'type': function('s:git_info'),  'header': ['   Git: '.trim(system('git branch'))]       },
+            \ { 'type': function('s:git_info'),  'header': ['   Git: '.trim(system('git rev-parse --abbrev-ref HEAD'))]},
             \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
             \ { 'type': 'sessions',  'header': ['   Sessions']       },
             \ { 'type': 'commands',  'header': ['   Commands']       },
@@ -399,9 +433,18 @@ let g:startify_lists = [
 nnoremap <leader>es <cmd>Startify<cr>
 endif
 
-"  Conflict Marker {{{2
 if PlugLoaded('conflict_marker')
+"  Conflict Marker {{{2
 let g:conflict_marker_enable_mappings = 1
+
+function! HighlightConflictMarker() abort
+    highlight ConflictMarkerBegin guibg=#2f7366
+    highlight ConflictMarkerOurs guibg=#2e5049
+    highlight ConflictMarkerTheirs guibg=#344f69
+    highlight ConflictMarkerEnd guibg=#2f628e
+    highlight ConflictMarkerCommonAncestorsHunk guibg=#754a81
+endfunction
+autocmd VimEnter * call HighlightConflictMarker()
 endif
 
 "  Git Gutter {{{2
@@ -437,6 +480,21 @@ map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 map <Leader>h <Plug>(easymotion-linebackward)
+
+endif
+
+if PlugLoaded('hop')
+lua require'hop'.setup()
+
+map <leader>f <cmd>HopChar1<CR>
+map <leader>s <cmd>HopWord<CR>
+map <leader>S <cmd>HopChar2<CR>
+map <leader>A <cmd>HopPattern<CR>
+
+map <leader>j <cmd>HopLineStartAC<CR>
+map <leader>k <cmd>HopLineStartBC<CR>
+map <leader>l <cmd>HopWordCurrentLineAC<CR>
+map <leader>h <cmd>HopWordCurrentLineBC<CR>
 endif
 
 "  Terminal Toggle {{{2
@@ -527,7 +585,7 @@ nnoremap <leader>pz :FzfCd<CR>
 nnoremap <leader>pZ :FzfCdIter<CR>
 
 " Search for marks
-nnoremap <leader>pm <cmd>BLines {{{<CR>
+nnoremap <leader>pm <cmd>execute('BLines {'.'{{')<CR>
 
 
 " FZF QuickFix
@@ -558,65 +616,69 @@ set completeopt=menu,menuone,noselect
 let g:vsnip_snippet_dir = "/home/arowe/.vim/my_snippets/"
 
 lua <<EOF
-  -- Setup nvim-cmp.
-  local cmp = require'cmp'
+-- Setup nvim-cmp.
+local cmp = require'cmp'
+local lspkind = require('lspkind')
 
-  cmp.setup({
+cmp.setup({
     snippet = {
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body)
-      end,
+        expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body)
+        end,
     },
     mapping = {
-      ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c' }),
-      ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c' }),
-      ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-      ['<M-Enter>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-      ['<C-y>'] = cmp.config.disable,
-      ['<C-e>'] = cmp.mapping({
-        i = cmp.mapping.abort(),
-        c = cmp.mapping.close(),
-      }),
-      ['<Tab>'] = cmp.mapping({
-        i = cmp.mapping.confirm({ select = true }),
-        c = cmp.mapping.select_next_item(),
-      }),
-      ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({ select = false })),
-      ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item()),
+        ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c' }),
+        ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c' }),
+        ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+        ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+        ['<M-Enter>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+        ['<C-y>'] = cmp.config.disable,
+        ['<C-e>'] = cmp.mapping({
+            i = cmp.mapping.abort(),
+            c = cmp.mapping.close(),
+        }),
+        ['<Tab>'] = cmp.mapping({
+            i = cmp.mapping.confirm({ select = true }),
+            c = cmp.mapping.select_next_item(),
+        }),
+        ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({ select = false })),
+        ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item()),
     },
     sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'cmp_tabnine' },
-      { name = 'vsnip' },
-      { name = 'buffer' },
-      { name = 'path' },
-    })
-  })
+        { name = 'vsnip' },
+        { name = 'nvim_lsp' },
+        { name = 'cmp_tabnine' },
+        { name = 'buffer' },
+        { name = 'path' },
+    }),
+    formatting = {
+        format = lspkind.cmp_format(),
+    }
+})
 
-  cmp.setup.cmdline('/', {
+cmp.setup.cmdline('/', {
     sources = {
-      { name = 'buffer' }
+        { name = 'buffer' }
     }
-  })
-  cmp.setup.cmdline('?', {
+})
+cmp.setup.cmdline('?', {
     sources = {
-      { name = 'buffer' }
+        { name = 'buffer' }
     }
-  })
-  cmp.setup.cmdline(':', {
+})
+cmp.setup.cmdline(':', {
     sources = cmp.config.sources({
-      { name = 'path' }
+        { name = 'path' }
     }, {
-      { name = 'cmdline' }
+        { name = 'cmdline' }
     })
-  })
+})
 
-  -- Setup lspconfig.
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  require('lspconfig')['clangd'].setup {
+-- Setup lspconfig.
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+require('lspconfig')['clangd'].setup {
     capabilities = capabilities
-  }
+}
 EOF
 
 " Jump forward or backward
@@ -624,6 +686,20 @@ imap <expr> <C-l> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-l>'
 smap <expr> <C-l> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-l>'
 imap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-h>'
 smap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-h>'
+
+" Cmp Extensions
+if PlugLoaded('cmp-tabnine')
+lua << EOF
+local tabnine = require('cmp_tabnine.config')
+tabnine:setup({
+        max_lines = 1000;
+        max_num_results = 20;
+        sort = true;
+    run_on_every_keystroke = true;
+    snippet_placeholder = '..';
+})
+EOF
+endif
 endif
 
 " Coq
@@ -652,20 +728,21 @@ lua << EOF
 local lsp = require "lspconfig"
 
 lsp.html.setup{}
+lsp.cssls.setup{}
 lsp.rust_analyzer.setup{}
 lsp.clangd.setup{}
 lsp.pyright.setup{}
 lsp.tsserver.setup{}
-lsp.jsonls.setup {
-    commands = {
-      Format = {
-        function()
-          vim.lsp.buf.range_formatting({},{0,0},{vim.fn.line("$"),0})
-        end
-      }
-    }
-}
 EOF
+" lsp.jsonls.setup {
+"     commands = {
+"       Format = {
+"         function()
+"           vim.lsp.buf.range_formatting({},{0,0},{vim.fn.line("$"),0})
+"         end
+"       }
+"     }
+" }
 
 " Goto Actions {{{ 3
 nnoremap <silent> gD <Cmd>lua vim.lsp.buf.declaration()<CR>
@@ -693,7 +770,12 @@ if PlugLoaded("lspsaga")
 lua << EOF
 local saga = require 'lspsaga'
 saga.init_lsp_saga {
-    code_action_prompt = { virtual_text = false }
+    code_action_prompt = { virtual_text = false },
+    rename_prompt_populate = true,
+    error_sign = "",
+    warn_sign = "",
+    hint_sign = "",
+    infor_sign = "",
 }
 EOF
 
@@ -725,9 +807,9 @@ if PlugLoaded('trouble')
 lua require("trouble").setup({})
 
 nnoremap <leader>bb <cmd>TroubleToggle<cr>
-nnoremap <leader>bw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
-nnoremap <leader>bd <cmd>TroubleToggle lsp_document_diagnostics<cr>
-nnoremap <leader>bq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>bw <cmd>TroubleToggle workspace_diagnostics<cr>
+nnoremap <leader>bd <cmd>TroubleToggle document_diagnostics<cr>
+nnoremap <leader>bq <cmd>cclose \| TroubleToggle quickfix<cr>
 nnoremap <leader>bl <cmd>TroubleToggle loclist<cr>
 nnoremap gR <cmd>TroubleToggle lsp_references<cr>
 endif
@@ -817,7 +899,8 @@ end
 
 require'lualine'.setup{
     options = {
-        theme = 'nightfox',
+        theme = 'auto',
+        symbols = {modified = ' ', readonly = ' '}
     },
     sections = {
         lualine_a = {get_mode},
@@ -827,7 +910,7 @@ require'lualine'.setup{
         lualine_x = {'Cwd'},
         lualine_y = {'branch', 'GetDate'},
         lualine_z = {'GetTime', 'NumL', 'diagnostics'},
-    }
+    },
 }
 EOF
 endif
@@ -837,11 +920,10 @@ endif
 if PlugLoaded('nvim_treesitter')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "cpp", "jsonc", "javascript", "python" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-    ignore_install = { }, -- List of parsers to ignore installing
+    ensure_installed = { "cpp", "javascript", "python", "scss" },
+    ignore_install = { "json" }, -- List of parsers to ignore installing
     highlight = {
         enable = true,              -- false will disable the whole extension
-        disable = { },  -- list of language that will be disabled
     },
     indent = {
         enable = false
@@ -989,8 +1071,15 @@ nnoremap <silent> [Z :call NextClosedFold('k')<cr>
 nnoremap <silent> ]Z :call NextClosedFold('j')<cr>
 endif
 
-" Persistent Color Scheme {{{ 3
+" Go up level and history
 if 1
+let s:_hist = []
+nnoremap <leader>c= <cmd>call add(s:_hist, getcwd()) \| cd ..<CR>
+nnoremap <leader>c- <cmd>exe "cd ".remove(s:_hist, -1)<CR>
+endif
+
+" Persistent Color Scheme {{{ 3
+if !$VIM_RAW
 source ~/.vim/colorscheme.vim
 function! WriteColor()
     let l:name = trim(execute('colorscheme'))
@@ -1019,11 +1108,7 @@ let g:session_autosave='yes'
 let g:session_autosave_periodic=3
 let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
-if g:NERD_FONT
-let g:indentLine_char = ''
-else
-let g:indentLine_char = '|'
-endif
+let g:indentLine_char = '⎸'
 let g:autoload_session = 0
 let g:UltiSnipsExpandTrigger="<s-tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -1144,7 +1229,7 @@ nnoremap <silent> <leader>qx <cmd>call setqflist([], 'r')<CR>
 
 " Use Troubles quickfix if
 if PlugLoaded('trouble')
-nnoremap <leader>qq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>qq <cmd>cclose \| TroubleToggle quickfix<cr>
 endif
 
 " Vimrc
@@ -1270,6 +1355,7 @@ nnoremap <leader>F :FormatClang<CR>
 " Easy Semicolon
 nnoremap <silent> <M-;> mmA;<esc>`mmm
 nnoremap <silent> <M-:> mm$x`mmm
+nnoremap <silent> <M-,> mmA,<esc>`mmm
 " Dont yank on replace
 vnoremap p "_dP
 " New line when completion open
@@ -1395,27 +1481,6 @@ command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 let g:notes_directories = ['~/.vim/notes']
 let g:notes_suffix = '.md'
 
-command! FindReplace Farr
-command! Find Farf
-
-lua << EOF
-require("revj").setup{
-    keymaps = {
-        operator = '<leader>J', -- for operator (+motion)
-        line = '<Leader><M-j>', -- for formatting current line
-        visual = '<Leader><M-j>', -- for formatting visual selection
-    },
-}
-EOF
-
-lua << EOF
-local tabnine = require('cmp_tabnine.config')
-tabnine:setup({
-        max_lines = 1000;
-        max_num_results = 20;
-        sort = true;
-	run_on_every_keystroke = true;
-	snippet_placeholder = '..';
-})
-EOF
+cnoremap jk <CR>
+cnoremap jh <CR>
 

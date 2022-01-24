@@ -63,3 +63,5 @@ else
 fi
 
 
+alias ipy="ipython"
+alias gb="git br | grep \* | awk '{print \$2}'"
