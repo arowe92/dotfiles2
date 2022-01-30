@@ -79,7 +79,6 @@ endfunction
 " Essentials {{{3
 " PlugDef 'easymotion/vim-easymotion'
 PlugDef 'phaazon/hop.nvim'
-" PlugDef 'rhysd/clever-f.vim'
 PlugDef 'ggandor/lightspeed.nvim'
 PlugDef 'bogado/file-line'
 PlugDef 'machakann/vim-sandwich'
@@ -157,16 +156,15 @@ PlugDef 'hrsh7th/cmp-path'
 PlugDef 'hrsh7th/cmp-cmdline'
 PlugDef 'hrsh7th/cmp-vsnip'
 PlugDef 'hrsh7th/cmp-calc'
+PlugDef 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+
 PlugDef 'hrsh7th/vim-vsnip'
 PlugDef 'hrsh7th/vim-vsnip-integ'
+" Pictograms for cmp
 PlugDef 'onsails/lspkind-nvim'
-
 
 " PlugDef 'L3MON4D3/LuaSnip'
 " PlugDef 'saadparwaiz1/cmp_luasnip'
-
-
-" PlugDef 'tzachar/cmp-tabnine' ", { 'do': './install.sh' }
 
 " Telescope
 PlugDef 'nvim-lua/popup.nvim'
@@ -621,11 +619,13 @@ endif
 
 " Fzf {{{3
 if PlugLoaded('fzf')
+command! FindReplace Farr
+command! Find Farf
 " Use tmux FZF if tmux exists
 if g:TMUX
     let g:fzf_layout = { 'tmux': '-p80%,60%' }
 else
-    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+    let g:fzf_layout = { 'window': { 'width': '100%', 'height': 0.6, 'border': 'horizontal', 'relative':  v:true, 'yoffset': 0 } }
 endif
 
 " FZF Custom Scripts
@@ -664,7 +664,7 @@ endif
 "  nvim-cmp {{{2
 if PlugLoaded("nvim_cmp")
 set completeopt=menu,menuone,noselect
-let g:vsnip_snippet_dir = "/home/arowe/.vim/my_snippets/"
+let g:vsnip_snippet_dir = $HOME."/.vim/my_snippets/"
 
 lua <<EOF
 -- Setup nvim-cmp.
@@ -704,7 +704,7 @@ cmp.setup({
         { name = 'path' },
     }),
     formatting = {
-        format = lspkind.cmp_format(),
+        format = lspkind.cmp_format({with_text = false, maxwidth = 50})
     }
 })
 
@@ -1433,6 +1433,14 @@ command! -nargs=+ Find silent grep <q-args> | copen
 " Format Commands file
 command! FormatClang silent execute '%!clang-format %'
 command! FormatJson silent execute '%!python -m json.tool'
+
+" Find Replace Commands
+command! FindReplace Farr
+command! Find Farf
+
+" Substitute
+nnoremap gR :%s//<Left>
+nnoremap gS <cmd>execute ':%s/'.<cword>.'//\\<Left>'<cr>
 
 " FZF / Fasd Commands
 if PlugLoaded('fzf')
