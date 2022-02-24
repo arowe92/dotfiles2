@@ -78,9 +78,6 @@ bindkey '^w' backward-kill-word
 bindkey '^ ' autosuggest-execute
 bindkey -M vicmd v edit-command-line
 
-bindkey -s '^o' '`fasd_echo`\t'
-bindkey -s '^p' 'nvim `fasd_echo`\n'
-
 bindkey -s '^n' 'nvim\n'
 bindkey -s '^,' 'ranger\n'
 bindkey -M vicmd -s '^n' '^[invim\n'

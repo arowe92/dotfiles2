@@ -14,6 +14,7 @@ alias add='git add --patch'
 alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw; rm $HOME/.local/share/nvim/swap/*"
 alias qvim="VIM_LITE=1 nvim"
 alias cap="tmux capture-pane -p -S -"
+alias ezsync="rsync -azvpH"
 
 alias ls='/bin/ls --color=tty'
 _exists exa && alias ls='exa'
