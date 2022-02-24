@@ -79,7 +79,8 @@ endfunction
 " Essentials {{{3
 " PlugDef 'easymotion/vim-easymotion'
 PlugDef 'phaazon/hop.nvim'
-PlugDef 'rhysd/clever-f.vim'
+" PlugDef 'rhysd/clever-f.vim'
+PlugDef 'ggandor/lightspeed.nvim'
 PlugDef 'bogado/file-line'
 PlugDef 'machakann/vim-sandwich'
 
@@ -154,6 +155,7 @@ PlugDef 'hrsh7th/cmp-buffer'
 PlugDef 'hrsh7th/cmp-path'
 PlugDef 'hrsh7th/cmp-cmdline'
 PlugDef 'hrsh7th/cmp-vsnip'
+PlugDef 'hrsh7th/cmp-calc'
 PlugDef 'hrsh7th/vim-vsnip'
 PlugDef 'hrsh7th/vim-vsnip-integ'
 PlugDef 'onsails/lspkind-nvim'
@@ -169,6 +171,8 @@ PlugDef 'onsails/lspkind-nvim'
 PlugDef 'nvim-lua/popup.nvim'
 PlugDef 'nvim-lua/plenary.nvim'
 PlugDef 'nvim-telescope/telescope.nvim'
+PlugDef 'nvim-telescope/telescope-file-browser.nvim'
+
 
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
@@ -186,7 +190,7 @@ endif
 if g:GIT_TOOLS " {{{3
 PlugDef 'tpope/vim-fugitive'
 PlugDef 'airblade/vim-gitgutter'
-PlugDef 'rhys/conflict-marker.vim'
+PlugDef 'rhysd/conflict-marker.vim'
 endif
 " ------------------------------------------------------------------
 " Hardcore C++ tools {{{3
@@ -215,6 +219,7 @@ PlugDef 'freitass/todo.txt-vim'
 PlugDef 'kana/vim-textobj-user'
 PlugDef 'sgur/vim-textobj-parameter'
 PlugDef 'ldelossa/calltree.nvim'
+PlugDef 'chentau/marks.nvim'
 
 call plug#end() "
 
@@ -483,18 +488,57 @@ map <Leader>h <Plug>(easymotion-linebackward)
 
 endif
 
+"  Hop {{{2
 if PlugLoaded('hop')
 lua require'hop'.setup()
 
-map <leader>f <cmd>HopChar1<CR>
-map <leader>s <cmd>HopWord<CR>
-map <leader>S <cmd>HopChar2<CR>
-map <leader>A <cmd>HopPattern<CR>
+" map <leader>f <cmd>HopChar1<CR>
+" map <leader>s <cmd>HopWord<CR>
+" map <leader>S <cmd>HopChar2<CR>
+" map <leader>A <cmd>HopPattern<CR>
 
 map <leader>j <cmd>HopLineStartAC<CR>
 map <leader>k <cmd>HopLineStartBC<CR>
 map <leader>l <cmd>HopWordCurrentLineAC<CR>
 map <leader>h <cmd>HopWordCurrentLineBC<CR>
+endif
+
+"  Lightspeed {{{2
+if PlugLoaded('lightspeed')
+lua << EOF
+require'lightspeed'.setup {
+  -- These keys are captured directly by the plugin at runtime.
+  special_keys = {
+    next_match_group = '<Space>',
+    prev_match_group = '<Tab>',
+  },
+}
+EOF
+endif
+
+"  Marks {{{2
+if PlugLoaded('marks')
+lua << EOF
+require'marks'.setup {
+  bookmark_0 = {
+    sign = "⚑",
+    virt_text = "Bookmark"
+  },
+  bookmark_1 = {
+    sign = "⚑",
+    virt_text = "Bookmark"
+  },
+  mappings = {
+      set_bookmark0 = "ma",
+      set_bookmark1 = "ms",
+      delete_bookmark = "md",
+      delete_bookmark0 = "mda",
+      delete_bookmark1 = "mds",
+      next_bookmark = "mm",
+      prev_bookmark = "mM",
+  }
+}
+EOF
 endif
 
 "  Terminal Toggle {{{2
@@ -505,7 +549,6 @@ noremap <silent> <C-t> :ToggleTerminal<CR>
 tnoremap <silent> <C-t> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
-
 command! -nargs=+ Ivy Telescope <args> theme=ivy
 
 "  Fuzzy Commands {{{2
@@ -515,11 +558,13 @@ command! FuzzyFilesR   History
 command! FuzzyCom      Ivy commands
 command! FuzzyComR     Ivy command_history
 command! FuzzyQF       Ivy quickfix
+" command! FuzzyTags     Clap lsp_document_symbols
 command! FuzzyTags     Clap tags
 command! FuzzyFindFile Ivy quickfix
-command! FuzzyInc      BLines
+command! FuzzyInc      Ivy current_buffer_fuzzy_find
 command! FuzzyBuffers  Buffers
 command! FuzzyFindAll  Ivy live_grep
+command! FuzzyResume   Ivy resume
 
 " Mappings
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
@@ -531,6 +576,7 @@ nnoremap <M-f> <cmd>FuzzyInc<cr>
 nnoremap <M-F> <cmd>FuzzyFindAll<CR>
 nnoremap <M-p> <cmd>FuzzyBuffers<CR>
 nnoremap <M-t> <cmd>FuzzyTags<CR>
+nnoremap <M-T> <cmd>FuzzyResume<CR>
 nnoremap <leader>pm <cmd>execute 'BLines {'.'{{'<CR>
 
 " Fuzzy Mappings {{{3
@@ -552,6 +598,7 @@ require('telescope').setup{
     layout_strategy = "vertical",
     }
 }
+require("telescope").load_extension "file_browser"
 EOF
 
 nnoremap <leader>p  <cmd>Ivy<cr>
@@ -566,6 +613,8 @@ nnoremap <leader>pt <cmd>Ivy tags<CR>
 nnoremap <leader>pg <cmd>Ivy current_buffer_fuzzy_find<CR>
 nnoremap <leader>py <cmd>Ivy filetypes theme=ivy<CR>
 nnoremap <leader>pu <cmd>Ivy lsp_document_symbols<CR>
+
+noremap <leader><M-\> :Ivy file_browser cwd=%:h<CR>
 endif
 
 " Fzf {{{3
@@ -645,6 +694,7 @@ cmp.setup({
         ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item()),
     },
     sources = cmp.config.sources({
+        { name = 'calc' },
         { name = 'vsnip' },
         { name = 'nvim_lsp' },
         { name = 'cmp_tabnine' },
@@ -828,13 +878,6 @@ endif " end LSP
 "  Lua Line {{{2
 if PlugLoaded('lualine')
 
-function! NumL ()
-    return system:"('$')
-endfunction
-function! GetTime ()
-    return trim(system('date +"%I:%m"'))
-endfunction
-
 function! GetDate ()
     if exists("$TMUX")
         return ''
@@ -909,7 +952,7 @@ require'lualine'.setup{
 
         lualine_x = {'Cwd'},
         lualine_y = {'branch', 'GetDate'},
-        lualine_z = {'GetTime', 'NumL', 'diagnostics'},
+        lualine_z = {'diagnostics'},
     },
 }
 EOF
@@ -977,21 +1020,24 @@ nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 
 "  Sandwich {{{2
 if PlugLoaded('vim_sandwich')
-nnoremap ssf :normal saiwf<CR>
-nnoremap ssF :normal saiWf<CR>
-nnoremap ss' :normal saiw'<CR>
-nnoremap ss" :normal saiw"<CR>
-nnoremap ss( :normal saiw(<CR>
-nnoremap ss< :normal saiw<<CR>
-nnoremap ss[ :normal saiw[<CR>
-nnoremap ss{ :normal saiw{<CR>
-
+let g:sandwich_no_default_key_mappings = 1
 let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
 
-nnoremap sdc :normal srb(sdf<CR>
-nnoremap src :normal srb(srff<CR>:normal srb<<CR>
-nnoremap sac :normal saiwf<CR>:normal srb<<CR>
-nnoremap saC :normal saiWf<CR>:normal srb<<CR>
+" add
+nmap <unique> <leader>sa <Plug>(sandwich-add)
+xmap <unique> <leader>sa <Plug>(sandwich-add)
+omap <unique> <leader>sa <Plug>(sandwich-add)
+
+" delete
+nmap <unique> <leader>sd <Plug>(sandwich-delete)
+xmap <unique> <leader>sd <Plug>(sandwich-delete)
+nmap <unique> <leader>sdb <Plug>(sandwich-delete-auto)
+
+" replace
+nmap <unique> <leader>sr <Plug>(sandwich-replace)
+xmap <unique> <leader>sr <Plug>(sandwich-replace)
+nmap <unique> <leader>srb <Plug>(sandwich-replace-auto)
+
 endif
 
 "  VimSpector {{{2
@@ -1073,9 +1119,9 @@ endif
 
 " Go up level and history
 if 1
-let s:_hist = []
-nnoremap <leader>c= <cmd>call add(s:_hist, getcwd()) \| cd ..<CR>
-nnoremap <leader>c- <cmd>exe "cd ".remove(s:_hist, -1)<CR>
+let g:_hist = []
+nnoremap <leader>c- <cmd>call add(g:_hist, getcwd()) \| cd ..<CR>
+nnoremap <leader>c= <cmd>exe "cd ".remove(g:_hist, -1)<CR>
 endif
 
 " Persistent Color Scheme {{{ 3
@@ -1166,10 +1212,6 @@ vnoremap <A-K> :m '<-2<CR>gv
 vnoremap <leader>xe dO<C-r>"<Esc>
 vnoremap <leader>xE do<C-r>"<Esc>
 
-" Split Lines
-nnoremap S :execute 's/\('.nr2char(getchar()).'\)\ */\1\r/g' \| :nohl<CR>
-nnoremap S/ :execute 's/\/\ */\/\r/g' \| :nohl<CR>
-nnoremap SS :execute 's/\('.input("String to Split on").'\)\ */\1\r/g' \| :nohl<CR>
 
 " ==== Windows and Panes ==== {{{2
 " Remap window prefix
@@ -1361,8 +1403,8 @@ vnoremap p "_dP
 " New line when completion open
 inoremap <M-CR> <Esc>o
 " Easy New lines
-nnoremap sj mmo<esc>`mmm
-nnoremap sk mmO<esc>`mmm
+" nnoremap sj mmo<esc>`mmm
+" nnoremap sk mmO<esc>`mmm
 
 " ------------------------------------------------------------------
 " ===================
@@ -1372,6 +1414,7 @@ nnoremap sk mmO<esc>`mmm
 command! CP :let @" = expand('%')
 command! CdFile cd %:p:h
 command! CdGit exe 'cd '.finddir('.git', '.;').'/../'
+command! Install source ~/.vimrc | PlugInstall
 
 nnoremap <leader>ef <cmd>CdFile<CR>
 nnoremap <leader>eg <cmd>CdGit<CR>
@@ -1482,5 +1525,8 @@ let g:notes_directories = ['~/.vim/notes']
 let g:notes_suffix = '.md'
 
 cnoremap jk <CR>
+
 cnoremap jh <CR>
 
+nnoremap <leader>sk mpO<esc>`pdmp
+nnoremap <leader>sj mpo<esc>`pdmp

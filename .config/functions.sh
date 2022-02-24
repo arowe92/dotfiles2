@@ -169,3 +169,30 @@ fzf-get-file-widget() {
 }
 zle -N fzf-get-file-widget
 bindkey '^Sf' fzf-get-file-widget
+
+# CD into folder
+fzf_cd() {
+    cd `fd -t d | fzf-down`
+}
+bindkey -s '^p' 'fzf_cd\n'
+
+# CD Up
+fzf_cd_up() {
+    i=0
+    dirs=""
+    while true; do
+        i=$((i+1))
+        dir="`pwd | cut -d/ -f -$i`"
+        dirs="$dir\n$dirs"
+        if [[ "$((i - 1))" == "`pwd | grep -o '/' | wc -l`" ]] then
+            break;
+        fi
+    done
+
+    cd `echo $dirs | grep . | fzf-down`
+}
+bindkey -s '^u' 'fzf_cd_up\n'
+
+# Print File and Open in NVIM
+bindkey -s '^So' '`fasd_echo`\t'
+bindkey -s '^Sp' 'nvim `fasd_echo`\n'
