@@ -1,14 +1,28 @@
+# aliases.sh
+# Various Aliases
+
+# Add an alias to alias file
 mkalias () {
-  echo alias $1="\"${@:2}\"" >> ~/.config/aliases.sh
+  echo alias $1="\"${@:2}\"" >> $DOTFILE_PATH/.config/aliases.sh
   echo alias $1="\"${@:2}\""
-  source ~/.config/aliases.sh
+  source $DOTFILE_PATH/.config/aliases.sh
 }
 
+# Add an alias to zshrc file
+mkalias_rc () {
+  echo alias $1="\"${@:2}\"" >> ~/.zshrc
+  echo alias $1="\"${@:2}\""
+  alias $1="\"${@:2}\""
+}
+
+# Check if sonething exists
 _exists () {
     command -v $1 > /dev/null
 }
 
-## Aliases
+########################
+# General Aliases
+########################
 alias s='git status 2>/dev/null || (pwd && ls -lF)'
 alias add='git add --patch'
 alias rmswap="rm /tmp/*.swp; rm /tmp/*.sw; rm $HOME/.local/share/nvim/swap/*"
@@ -35,7 +49,11 @@ alias fb='git checkout `git branch | sed -e "s/\\*//g" | fzf-tmux -p`'
 
 alias cmds='print -rC1 -- ${(ko)commands} | fzf-tmux $FZF_TMUX_OPTS'
 
-
+########################
+# Create fasd aliases
+# <flag>:executable
+# a,f,d: files directory or both
+########################
 programs=( \
     "a:nvim" \
     "a:svim" \
@@ -63,6 +81,8 @@ else
     alias nvim='nvim_socket'
 fi
 
-
+########################
+# NEW ALIASES
+########################
 alias ipy="ipython"
 alias gb="git br | grep \* | awk '{print \$2}'"

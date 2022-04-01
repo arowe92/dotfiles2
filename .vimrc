@@ -119,6 +119,7 @@ PlugDef 'MTDL9/vim-log-highlighting'
 PlugDef 'plasticboy/vim-markdown'
 PlugDef 'cespare/vim-toml'
 PlugDef 'manicmaniac/coconut.vim'
+PlugDef 'google/vim-jsonnet'
 
 
 " Appearance
@@ -215,6 +216,7 @@ endif
 " Sandbox {{{3
 " PlugDef 'xolox/vim-notes'
 PlugDef 'freitass/todo.txt-vim'
+PlugDef 'mechatroner/rainbow_csv'
 
 PlugDef 'kana/vim-textobj-user'
 PlugDef 'sgur/vim-textobj-parameter'
@@ -336,8 +338,8 @@ let g:VM_maps['Visual Cursors']              = '<Tab>'
 let g:VM_maps['Visual Add']                  = 'v'
 
 " Increase numbers
-let g:VM_maps['Increase']                  = 'C-g'
-let g:VM_maps['Decrease']                  = 'C-x'
+let g:VM_maps['Increase']                  = '+'
+let g:VM_maps['Decrease']                  = '-'
 let g:VM_maps['Toggle Mappings']           = '<space><space>'
 let g:VM_maps['Reselect Last']             = '\\gv'
 
@@ -347,7 +349,7 @@ endif
 
 "  Far {{{2
 if PlugLoaded('far')
-let g:far#source='rgnvim'
+let g:far#source='rg'
 
 command! FindReplace Farr
 command! Find Farf
@@ -375,7 +377,7 @@ let g:nvim_tree_disable_window_picker = 1
 let g:nvim_tree_highlight_opened_files = 1
 let g:nvim_tree_git_hl = 1
 " let g:nvim_tree_update_cwd = 1
-lua require'nvim-tree'.setup()
+lua require'nvim-tree'.setup {}
 
 function TogglePicker()
 let g:nvim_tree_disable_window_picker =  1 - g:nvim_tree_disable_window_picker
@@ -808,6 +810,7 @@ nnoremap <silent> gY <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
 " LSP Actions {{{ 3
 nnoremap <silent> <leader>cr <cmd>lua vim.lsp.buf.rename()<CR>
+nnoremap <silent> <leader>cR <cmd>LspRestart<CR>
 nnoremap <silent> <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <silent> <leader>ce <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 nnoremap <silent> [c <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
@@ -1156,10 +1159,6 @@ let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
 let g:indentLine_char = '⎸'
 let g:autoload_session = 0
-let g:UltiSnipsExpandTrigger="<s-tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetDirectories=['my_snippets', $DOTFILE_PATH.'/.config/snippets', $HOME.'/.vim/plugged/vim-snippets/UltiSnips']
 
 
 execute 'nnoremap <M-g> :Git '
@@ -1438,7 +1437,7 @@ if PlugLoaded('fzf')
 function! Fzf(dict)
 call fzf#run(extend(copy({
             \ 'tmux': '-p80%,80%',
-            \ 'options': '--preview="bat -p --color=always {}"'
+            \ 'options': '--preview="prev {}"'
             \ }), a:dict))
 endfunction
 
@@ -1476,6 +1475,11 @@ augroup Cmds
     autocmd BufRead * if &filetype == 'vim' |
                 \ nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> |
                 \ set foldmethod=marker |
+                \ endif
+
+    " Vim
+    autocmd BufRead * if &filetype == 'typescript' |
+                \ nmap <buffer> <leader>dd :normal! odebugger;<ESC><CR> |
                 \ endif
 augroup END
 
@@ -1525,8 +1529,8 @@ let g:notes_directories = ['~/.vim/notes']
 let g:notes_suffix = '.md'
 
 cnoremap jk <CR>
-
 cnoremap jh <CR>
 
 nnoremap <leader>sk mpO<esc>`pdmp
 nnoremap <leader>sj mpo<esc>`pdmp
+
