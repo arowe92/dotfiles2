@@ -568,7 +568,7 @@ command! FuzzyResume   Ivy resume
 
 " Mappings
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
-nnoremap <M-P> <cmd>FuzzyFilesR<cr>
+nnoremap <M-P> <cmd>FuzzyCom<cr>
 nnoremap <M-r> <cmd>FuzzyComR<cr>
 nnoremap <M-R> <cmd>FuzzyCom<cr>
 nnoremap <M-e> <cmd>Fuzzy<cr>
@@ -945,7 +945,7 @@ end
 
 require'lualine'.setup{
     options = {
-        theme = 'auto',
+        theme = 'catppuccin',
         symbols = {modified = ' ', readonly = ' '}
     },
     sections = {
@@ -966,7 +966,7 @@ endif
 if PlugLoaded('nvim_treesitter')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "cpp", "javascript", "python", "scss" },
+    ensure_installed = { "cpp", "javascript", "python", "scss", "typescript" },
     ignore_install = { "json" }, -- List of parsers to ignore installing
     highlight = {
         enable = true,
@@ -1456,6 +1456,7 @@ endfunction
 command! FasdFile call Fzf({'source': 'fasd -lf', 'sink': 'e'})
 command! FasdDir call Fzf({'source': 'fasd -ld', 'sink': 'cd', 'options': '--preview="exa --tree -L 2 {}"'})
 command! Include call Fzf({'source': 'fd "\.h$"', 'sink': function('Include')}))
+command! Include call Fzf({'source': 'fd', 'sink': function('InsertInclude')}))
 endif
 
 "  Functions {{{1
@@ -1510,6 +1511,20 @@ function! Include(file, ...) abort
     exe "normal! o" . l:include . "\<Esc>"
 endfunction
 
+function! InsertInclude(file, ...) abort
+    let l:file = a:file
+
+    if l:file == ""
+        return
+    endif
+
+    let l:root = trim(system("git rev-parse --show-toplevel"))
+    let l:fullpath = trim(system("realpath --relative-to=".expand('%:h')." ".l:file))
+
+    let l:include = "'./".l:fullpath."'"
+    exe "normal! i" . l:include. "\<Esc>"
+endfunction
+
 function! Replace(search) abort
     if a:search == ''
         let l:search = input("Text to Replace: ")
@@ -1546,3 +1561,16 @@ cnoremap jh <CR>
 nnoremap <leader>sk mpO<esc>`pdmp
 nnoremap <leader>sj mpo<esc>`pdmp
 
+inoremap <c-f> <cmd>Include<CR>
+
+lua << EOF
+require "catppuccin".setup {
+    styles = {
+        comments = "italic",
+        functions = "NONE",
+        keywords = "NONE",
+        strings = "NONE",
+        variables = "NONE",
+        }
+    }
+EOF

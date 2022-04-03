@@ -62,6 +62,9 @@ PlugDef 'kvrohit/substrata.nvim'
 PlugDef 'ldelossa/vimdark'
 PlugDef 'mangeshrex/uwu.vim'
 PlugDef 'adisen99/apprentice.nvim'
+PlugDef 'sainnhe/everforest'
+PlugDef 'catppuccin/nvim', {'as': 'catppuccin'}
+
 
 " Settings
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
