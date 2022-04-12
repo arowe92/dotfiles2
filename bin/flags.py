@@ -6,15 +6,20 @@ BLUE = "\033[94m"
 GREEN = "\033[92m"
 RED = "\033[91m"
 ENDC = "\033[0m"
+YELLOW = "\033[93m"
 
 from pathlib import Path
+from collections import defaultdict
 
 path = Path.home() / '.zsh_history'
 print(path)
 lines = set()
+counts = defaultdict(lambda: 0)
+flags = set()
 
 blacklist = {
     '--',
+    '-',
     '--help',
 }
 
@@ -25,17 +30,24 @@ with open(Path.home() / '.zsh_history', 'rb') as f:
             line = ';'.join(line.split(';')[1:])
             line = line.replace('\n', '')
             line = line.replace('\t', ' ')
-            parts = [p for p in line.split(' ') if p.startswith('--') and p not in blacklist]
+            parts = [p for p in line.split(' ') if p.startswith('-') and p not in blacklist]
 
             if len(parts) == 0:
                 continue
 
-            all = (line, tuple(parts))
+            cmd = line.split(' ')[0]
+            all = (line, cmd, tuple(parts))
             lines.add(all)
+
+            for p in parts:
+                counts[(p, cmd)] += 1
+
         except Exception:
             continue
 
-for cmd, parts in lines:
+for line, cmd, parts in lines:
     for p in parts:
-        print(f'{GREEN}{str(p)}\t{BLUE}{cmd}{ENDC}')
+        if (p, cmd) not in flags:
+            print(f'{YELLOW}{counts[(p, cmd)]}\t{GREEN}{str(p)}\t{BLUE}{line}{ENDC}')
+            flags.add((p, cmd))
 

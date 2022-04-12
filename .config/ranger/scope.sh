@@ -115,6 +115,10 @@ handle_extension() {
             mediainfo "${FILE_PATH}" && exit 5
             exiftool "${FILE_PATH}" && exit 5
             ;; # Continue with next handler on failure
+
+        md)
+            glow -w ${PV_WIDTH} -s dark "${FILE_PATH}" && exit 5
+            ;;
     esac
 }
 
