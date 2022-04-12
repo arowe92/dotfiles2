@@ -220,6 +220,7 @@ PlugDef 'kana/vim-textobj-user'
 PlugDef 'sgur/vim-textobj-parameter'
 PlugDef 'ldelossa/calltree.nvim'
 PlugDef 'chentau/marks.nvim'
+PlugDef 'arkav/lualine-lsp-progress'
 
 call plug#end() "
 
@@ -951,7 +952,7 @@ require'lualine'.setup{
     sections = {
         lualine_a = {get_mode},
         lualine_b = {'filename'},
-        lualine_c = {},
+        lualine_c = {'lsp_progress'},
 
         lualine_x = {'Cwd'},
         lualine_y = {'branch', 'GetDate'},
