@@ -969,10 +969,13 @@ require'nvim-treesitter.configs'.setup {
     ensure_installed = { "cpp", "javascript", "python", "scss" },
     ignore_install = { "json" }, -- List of parsers to ignore installing
     highlight = {
-        enable = true,              -- false will disable the whole extension
+        enable = true,
+        disable = function(lang, bufnr)
+            return vim.api.nvim_buf_line_count(bufnr) > 10000
+        end
     },
     indent = {
-        enable = false
+        enable = { "typescript" }
     },
     incremental_selection = {
         enable = true,
@@ -993,7 +996,7 @@ require'nvim-treesitter.configs'.setup {
             "#689d6a",
             "#d65d0e",
             "#458588",
-            }, -- table of hex strings
+        }, -- table of hex strings
         termcolors = {
             'Red',
             'Green',
@@ -1002,9 +1005,9 @@ require'nvim-treesitter.configs'.setup {
             'Magenta',
             'Cyan',
             'White',
-            } -- table of colour name strings
-        }
-    }
+        } -- table of colour name strings
+    },
+}
 EOF
 set foldexpr=nvim_treesitter#foldexpr()
 
@@ -1277,6 +1280,7 @@ endif
 nnoremap <leader>ev :tab split ~/.vimrc<cr>
 nnoremap <leader>ez :tab split ~/.zshrc<cr>
 nnoremap <leader>et :tab split ~/.tmux.conf<cr>
+nnoremap <leader>en :tab split ~/.vim/notes.md<cr>
 
 augroup ec_cmds
   autocmd!

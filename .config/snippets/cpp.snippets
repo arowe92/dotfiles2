@@ -1,0 +1,17 @@
+snippet class
+#pragma once
+
+namespace Pythia
+{
+	class ${1:ClassName};
+}
+
+class Pythia::$1
+{
+protected:
+public:
+	$1() = default;
+	~$1() = default;
+};
+
+endsnippet
