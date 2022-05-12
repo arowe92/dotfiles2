@@ -77,7 +77,6 @@ endfunction
 
 " ------------------------------------------------------------------
 " Essentials {{{3
-" PlugDef 'easymotion/vim-easymotion'
 PlugDef 'phaazon/hop.nvim'
 PlugDef 'ggandor/lightspeed.nvim'
 PlugDef 'bogado/file-line'
@@ -109,7 +108,6 @@ PlugDef 'xolox/vim-misc'
 PlugDef 'xolox/vim-session'
 
 " Language Support {{{3
-" PlugDef 'MaxMEllon/vim-jsx-pretty'
 PlugDef 'tikhomirov/vim-glsl'
 PlugDef 'pangloss/vim-javascript',  { 'for': 'javascript' }
 PlugDef 'elixir-editors/vim-elixir'
@@ -119,10 +117,9 @@ PlugDef 'plasticboy/vim-markdown'
 PlugDef 'cespare/vim-toml'
 PlugDef 'manicmaniac/coconut.vim'
 PlugDef 'google/vim-jsonnet'
+PlugDef 'mechatroner/rainbow_csv'
 
-
-" Appearance
-" PlugDef 'Yggdroot/indentLine' {{{3
+" Appearance {{{3
 PlugDef 'lukas-reineke/indent-blankline.nvim'
 PlugDef 'ryanoasis/vim-devicons'
 PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
@@ -212,17 +209,10 @@ endif
 
 " ------------------------------------------------------------------
 " Sandbox {{{3
-" PlugDef 'xolox/vim-notes'
-PlugDef 'freitass/todo.txt-vim'
-PlugDef 'mechatroner/rainbow_csv'
-
-PlugDef 'kana/vim-textobj-user'
-PlugDef 'sgur/vim-textobj-parameter'
-PlugDef 'ldelossa/calltree.nvim'
 PlugDef 'chentau/marks.nvim'
 PlugDef 'arkav/lualine-lsp-progress'
 
-call plug#end() "
+call plug#end()
 
 " Vim Raw
 endif
@@ -275,7 +265,7 @@ let mapleader=" "
 " Use ag if it exists
 if executable('rg')
     " Use rg over grep
-    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --ignore-vcs
 elseif executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
 endif
@@ -474,6 +464,18 @@ if g:NERD_FONT
 endif
 endif
 
+"  Indent Blankline {{{2
+if PlugLoaded('indent_blankline')
+lua << EOF
+require("indent_blankline").setup {
+    space_char_blankline = " ",
+    show_current_context = true,
+    show_current_context_start = true,
+}
+EOF
+let g:indent_blankline_char = '▏'
+endif
+
 "  EasyMotion {{{2
 if PlugLoaded('easymotion')
 let g:EasyMotion_startofline = 0
@@ -486,17 +488,11 @@ map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 map <Leader>h <Plug>(easymotion-linebackward)
-
 endif
 
 "  Hop {{{2
 if PlugLoaded('hop')
 lua require'hop'.setup()
-
-" map <leader>f <cmd>HopChar1<CR>
-" map <leader>s <cmd>HopWord<CR>
-" map <leader>S <cmd>HopChar2<CR>
-" map <leader>A <cmd>HopPattern<CR>
 
 map <leader>j <cmd>HopLineStartAC<CR>
 map <leader>k <cmd>HopLineStartBC<CR>
@@ -523,18 +519,18 @@ lua << EOF
 require'marks'.setup {
   bookmark_0 = {
     sign = "⚑",
-    virt_text = "Bookmark"
+    virt_text = "Bookmark1"
   },
   bookmark_1 = {
     sign = "⚑",
-    virt_text = "Bookmark"
+    virt_text = "Bookmark2"
   },
   mappings = {
-      set_bookmark0 = "ma",
-      set_bookmark1 = "ms",
-      delete_bookmark = "md",
-      delete_bookmark0 = "mda",
-      delete_bookmark1 = "mds",
+      set_bookmark0 = "mA",
+      set_bookmark1 = "mS",
+      delete_bookmark = "mD",
+      delete_bookmark0 = "mdA",
+      delete_bookmark1 = "mdS",
       next_bookmark = "mm",
       prev_bookmark = "mM",
   }
@@ -559,11 +555,10 @@ command! FuzzyFilesR   History
 command! FuzzyCom      Ivy commands
 command! FuzzyComR     Ivy command_history
 command! FuzzyQF       Ivy quickfix
-" command! FuzzyTags     Clap lsp_document_symbols
 command! FuzzyTags     Clap tags
 command! FuzzyFindFile Ivy quickfix
 command! FuzzyInc      Ivy current_buffer_fuzzy_find
-command! FuzzyBuffers  Buffers
+command! FuzzyBuffers  Ivy buffers
 command! FuzzyFindAll  Ivy live_grep
 command! FuzzyResume   Ivy resume
 
@@ -592,20 +587,37 @@ if PlugLoaded('telescope_nvim')
 
 lua << EOF
 require('telescope').setup{
-    defaults = {
+defaults = {
     results_title = false,
     preview_title = false,
     prompt_title = false,
     layout_strategy = "vertical",
+    mappings = {
+        n = {
+            ['<c-d>'] = require('telescope.actions').delete_buffer
+            }, -- n
+        i = {
+            ['<c-d>'] = require('telescope.actions').delete_buffer
+            } -- i
+        }
     }
 }
 require("telescope").load_extension "file_browser"
 EOF
 
+if PlugLoaded('project_nvim')
+lua << EOF
+  require("project_nvim").setup {}
+  require('telescope').load_extension('projects')
+EOF
+nnoremap <leader>pr <cmd>Ivy projects<CR>
+endif
+
 nnoremap <leader>p  <cmd>Ivy<cr>
 nnoremap <leader>pp <cmd>Ivy find_files<cr>
 nnoremap <leader>pc <cmd>Ivy commands<CR>
 nnoremap <leader>pC <cmd>Ivy command_history<CR>
+nnoremap <leader>p<M-c> <cmd>Clap colors<CR>
 nnoremap <leader>ph <cmd>Ivy help_tags<CR>
 nnoremap <leader>pB <cmd>Ivy file_browser<CR>
 nnoremap <leader>pb <cmd>Ivy buffers<CR>
@@ -679,8 +691,8 @@ cmp.setup({
         end,
     },
     mapping = {
-        ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c' }),
-        ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c' }),
+        ['<M-k>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c', 'i' }),
+        ['<M-j>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c', 'i' }),
         ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
         ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
         ['<M-Enter>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -952,7 +964,7 @@ require'lualine'.setup{
     sections = {
         lualine_a = {get_mode},
         lualine_b = {'filename'},
-        lualine_c = {'lsp_progress'},
+        lualine_c = {'progress'},
 
         lualine_x = {'Cwd'},
         lualine_y = {'branch', 'GetDate'},
@@ -1161,7 +1173,6 @@ let g:session_autosave='yes'
 let g:session_autosave_periodic=3
 let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
-let g:indentLine_char = '⎸'
 let g:autoload_session = 0
 
 
@@ -1361,6 +1372,15 @@ nnoremap <M-q> nzz@q
 inoremap jk <esc>
 inoremap kj <esc>
 
+cnoremap jk <esc>
+cnoremap kj <esc>
+cnoremap jh <CR>
+cnoremap hj <CR>
+
+" Inser line above / below
+nnoremap <leader>sk mpO<esc>`pdmp
+nnoremap <leader>sj mpo<esc>`pdmp
+
 " === Terminal Maps === {{{2
 if has('nvim')
 tnoremap <C-e> <C-\><C-n>
@@ -1420,16 +1440,9 @@ command! CdFile cd %:p:h
 command! CdGit exe 'cd '.finddir('.git', '.;').'/../'
 command! Install source ~/.vimrc | PlugInstall
 
-nnoremap <leader>ef <cmd>CdFile<CR>
-nnoremap <leader>eg <cmd>CdGit<CR>
-
 " Change Dir
 nnoremap <leader>Cf <cmd>CdFile<CR>
 nnoremap <leader>Cg <cmd>CdGit<CR>
-
-" Grep
-command! -nargs=1 Grep silent grep <q-args> | copen
-command! -nargs=+ Find silent grep <q-args> | copen
 
 " Format Commands file
 command! FormatClang silent execute '%!clang-format %'
@@ -1512,6 +1525,7 @@ function! Include(file, ...) abort
     exe "normal! o" . l:include . "\<Esc>"
 endfunction
 
+<<<<<<< f48035950ef66e02106ebf68cb534bab805d7704
 function! InsertInclude(file, ...) abort
     let l:file = a:file
 
@@ -1526,19 +1540,48 @@ function! InsertInclude(file, ...) abort
     exe "normal! i" . l:include. "\<Esc>"
 endfunction
 
-function! Replace(search) abort
+function! Replace(search, replace, qf) abort
     if a:search == ''
         let l:search = input("Text to Replace: ")
     else
         let l:search = a:search
     endif
 
-    let l:text = input("Text to Insert: ")
+    if a:replace == ''
+        let l:text = input("Text to Insert: ")
+    else
+        let l:text = a:replace
+    endif
+
+    if a:search == ''
+        return
+    endif
+
+    if a:replace == ''
+        return
+    endif
+
     let l:text = substitute(l:text, '/','\\/', 'g')
-    execute ('%s/'.l:search.'/'.l:text.'/g')
+
+    let l:cmd = '%s/'.l:search.'/'.l:text.'/g'
+    if a:qf
+        let l:cmd = 'cfdo '.l:cmd
+    endif
+    echo l:cmd
+    execute (l:cmd)
+
 endfunction
-command! Replace call Replace('')
-command! ReplaceReg call Replace(@")
+command! -nargs=? Replace call Replace('', <q-args>, v:false)
+command! ReplaceReg call Replace(@", '', v:false)
+command! -nargs=? ReplaceAll call Replace(g:_last_grep, <q-args>, v:true)
+
+" Grep
+command! -nargs=1 Grep silent grep <q-args> | copen
+command! -nargs=+ Find let g:_last_grep = <q-args> | silent grep <q-args> | copen
+
+nnoremap <leader>xf :Find
+nnoremap <leader>xr :Replace<CR>
+nnoremap <leader>xR :ReplaceAll<CR>
 
 " Dump a  command
 function! Dump(cmd) abort
@@ -1553,6 +1596,7 @@ command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 
 " ---------------------------------------------------
 "  SandBox {{{1
+
 let g:notes_directories = ['~/.vim/notes']
 let g:notes_suffix = '.md'
 
@@ -1575,3 +1619,6 @@ require "catppuccin".setup {
         }
     }
 EOF
+
+nnoremap <leader>ej <cmd>execute "e ~/.vim/notes/".system("date +'%m-%d-%y.md'")<CR>
+nnoremap <leader>eJ <cmd>call system("bash ~/.vim/notes/gen_index.sh") \| e ~/.vim/notes/Index.md<CR>
