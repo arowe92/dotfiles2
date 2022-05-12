@@ -11,6 +11,7 @@ zplug "plugins/vi-mode", from:oh-my-zsh
 zplug "plugins/fzf", from:oh-my-zsh
 
 zplug "clvv/fasd"
+zplug "lincheney/fzf-tab-completion", use:"zsh/*"
 zplug "zsh-users/zsh-autosuggestions", defer:2
 zplug "zsh-users/zsh-history-substring-search", defer:3
 zplug "zsh-users/zsh-syntax-highlighting", defer:3
@@ -85,6 +86,7 @@ bindkey -s '^,' 'ranger\n'
 bindkey -M vicmd -s '^n' '^[invim\n'
 bindkey -s '^b' '`git branch | fzf`\t'
 bindkey -s '^g' 'git checkout `git branch | fzf`\t'
+bindkey -s '^sr' 'ranger\n'
 
 # Searching
 bindkey "$terminfo[kcuu1]" history-substring-search-up

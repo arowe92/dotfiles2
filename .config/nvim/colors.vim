@@ -33,9 +33,7 @@ PlugDef 'yonlu/omni.vim'
 PlugDef 'ray-x/aurora'
 PlugDef 'novakne/kosmikoa.nvim'
 PlugDef 'tanvirtin/monokai.nvim'
-PlugDef 'nekonako/xresources-nvim'
 PlugDef 'savq/melange'
-PlugDef 'RRethy/nvim-base16'
 PlugDef 'fenetikm/falcon'
 PlugDef 'shaunsingh/nord.nvim'
 PlugDef 'MordechaiHadad/nvim-papadark'
@@ -60,7 +58,9 @@ PlugDef 'mangeshrex/uwu.vim'
 PlugDef 'adisen99/apprentice.nvim'
 PlugDef 'sainnhe/everforest'
 PlugDef 'catppuccin/nvim', {'as': 'catppuccin'}
-
+PlugDef 'Th3Whit3Wolf/space-nvim'
+PlugDef 'savq/melange'
+PlugDef 'mangeshrex/uwu.vim'
 
 " Settings
 " Available values: `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`

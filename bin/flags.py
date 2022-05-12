@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+import sys
 import os
 os.system("")  # enables ansi escape characters in terminal
+
 
 BLUE = "\033[94m"
 GREEN = "\033[92m"
@@ -23,6 +25,8 @@ blacklist = {
     '--help',
 }
 
+command = sys.argv[1] if len(sys.argv) > 1 else None
+
 with open(Path.home() / '.zsh_history', 'rb') as f:
     for line in f.readlines():
         try:
@@ -36,6 +40,10 @@ with open(Path.home() / '.zsh_history', 'rb') as f:
                 continue
 
             cmd = line.split(' ')[0]
+
+            if command is not None and cmd != command:
+                continue
+
             all = (line, cmd, tuple(parts))
             lines.add(all)
 

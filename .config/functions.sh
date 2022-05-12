@@ -11,7 +11,7 @@
 fasd_fzf () {
     local _cmd=$2
     local _args=${@:4}
-    local _fasd_ret="$(fasd $1 $3 | fzf-tmux $FZF_TMUX_OPTS --layout=reverse --preview="$HOME/.local/bin/prev {}")"
+    local _fasd_ret="$(fasd $1 $3 | tac | fzf-tmux $FZF_TMUX_OPTS --layout=reverse --preview="$HOME/.local/bin/prev {}")"
     [ -z "$_fasd_ret" ] && return
     $_cmd $(echo $_args | xargs) "$_fasd_ret"
 }
@@ -21,7 +21,7 @@ fasd_fzf () {
 # fasd_fzf_inline <fasd flags> [<fasd query>]
 ##
 fasd_fzf_inline () {
-    local _fasd_ret="$(fasd $1 ${@:2} | fzf-tmux $FZF_TMUX_OPTS --layout=reverse --preview="$HOME/.local/bin/prev {}")"
+    local _fasd_ret="$(fasd $1 ${@:2} | tac | fzf-tmux $FZF_TMUX_OPTS --layout=reverse --preview="$HOME/.local/bin/prev {}")"
     [ -z "$_fasd_ret" ] && return
     echo "$_fasd_ret"
 }
@@ -44,6 +44,30 @@ fasd_fn () {
 fasd_echo () {
     fasd_fzf -la echo -n
 }
+
+#############################################################
+#  Docker Functions
+#############################################################
+function dock () {
+    folder="${PWD##*/}"
+    tag="latest"
+    case "$1" in
+
+    b)
+        docker build . -t "$folder:$tag"
+        ;;
+
+    r)
+        docker run -it --rm "$folder:$tag" $2
+        ;;
+
+    *)
+        echo "Options: [r]un, [b]uild"
+        ;;
+esac
+}
+
+
 
 #############################################################
 #  General Functions
@@ -247,7 +271,10 @@ fzf_cd_up() {
         fi
     done
 
-    cd `echo $dirs | grep . | fzf-down`
+    choice="`echo $dirs | grep . | fzf-down`"
+
+    [[ -n "$choice" ]] && cd $choice
+
 }
 bindkey -s '^u' 'fzf_cd_up\n'
 
@@ -270,12 +297,11 @@ bindkey -s '^Sp' 'nvim `fasd_echo`\n'
 fzf-flags-widget() {
     local result=$(flags.py \
         | fzf-tmux $FZF_TMUX_OPTS \
-        | awk '{print $1}')
+        | awk '{print $2}')
     LBUFFER+=$result
 }
 zle -N fzf-flags-widget
 bindkey '^sF' fzf-flags-widget
-
 
 ## Sandbox
 cheatsheet-widget() {
