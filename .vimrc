@@ -643,6 +643,7 @@ endif
 
 " FZF Custom Scripts
 nnoremap <leader>pi :Include<CR>
+nnoremap <leader>pI :InsertInclude<CR>
 nnoremap <leader>po :FasdFile<CR>
 nnoremap <leader>pO :FasdDir<CR>
 nnoremap <leader>pz :FzfCd<CR>
@@ -1453,8 +1454,7 @@ command! FindReplace Farr
 command! Find Farf
 
 " Substitute
-nnoremap gR :%s//<Left>
-nnoremap gS <cmd>execute ':%s/'.<cword>.'//\\<Left>'<cr>
+nnoremap gR :%s//
 
 " FZF / Fasd Commands
 if PlugLoaded('fzf')
@@ -1470,7 +1470,7 @@ endfunction
 command! FasdFile call Fzf({'source': 'fasd -lf', 'sink': 'e'})
 command! FasdDir call Fzf({'source': 'fasd -ld', 'sink': 'cd', 'options': '--preview="exa --tree -L 2 {}"'})
 command! Include call Fzf({'source': 'fd "\.h$"', 'sink': function('Include')}))
-command! Include call Fzf({'source': 'fd', 'sink': function('InsertInclude')}))
+command! InsertInclude call Fzf({'source': 'fd', 'sink': function('InsertInclude')}))
 endif
 
 "  Functions {{{1
@@ -1525,7 +1525,6 @@ function! Include(file, ...) abort
     exe "normal! o" . l:include . "\<Esc>"
 endfunction
 
-<<<<<<< f48035950ef66e02106ebf68cb534bab805d7704
 function! InsertInclude(file, ...) abort
     let l:file = a:file
 
@@ -1548,29 +1547,29 @@ function! Replace(search, replace, qf) abort
     endif
 
     if a:replace == ''
-        let l:text = input("Text to Insert: ")
+        let l:replace = input("Text to Insert: ")
     else
-        let l:text = a:replace
+        let l:replace = a:replace
     endif
 
-    if a:search == ''
+    if l:search == ''
         return
     endif
 
-    if a:replace == ''
+    if l:replace == ''
         return
     endif
 
-    let l:text = substitute(l:text, '/','\\/', 'g')
+    let l:text = substitute(l:replace, '/','\\/', 'g')
 
     let l:cmd = '%s/'.l:search.'/'.l:text.'/g'
-    if a:qf
+    if a:qf == v:true
         let l:cmd = 'cfdo '.l:cmd
     endif
     echo l:cmd
     execute (l:cmd)
-
 endfunction
+
 command! -nargs=? Replace call Replace('', <q-args>, v:false)
 command! ReplaceReg call Replace(@", '', v:false)
 command! -nargs=? ReplaceAll call Replace(g:_last_grep, <q-args>, v:true)
