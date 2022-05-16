@@ -70,3 +70,5 @@ let g:sonokai_disable_italic_comment = 0
 
 let g:arcadia_Sunset = 1
 let g:arcadia_Pitch = 1
+
+silent! lua require "catppuccin".setup { styles = { comments = "italic", functions = "NONE", keywords = "NONE", strings = "NONE", variables = "NONE", } }
