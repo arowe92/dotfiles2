@@ -135,7 +135,7 @@ PlugDef 'brooth/far.vim' " Find & Replace
 PlugDef 'skywind3000/vim-quickui'
 PlugDef 'liuchengxu/vim-which-key'
 PlugDef 'kyazdani42/nvim-tree.lua'
-PlugDef 'simrat39/symbols-outline.nvim'
+" PlugDef 'simrat39/symbols-outline.nvim'
 PlugDef 'mhinz/vim-startify'
 endif
 
@@ -205,12 +205,13 @@ endif
 if g:STATUS_LINE
 PlugDef 'hoob3rt/lualine.nvim'
 PlugDef 'pacha/vem-tabline'
+PlugDef 'arkav/lualine-lsp-progress'
 endif
 
 " ------------------------------------------------------------------
 " Sandbox {{{3
-PlugDef 'chentau/marks.nvim'
-PlugDef 'arkav/lualine-lsp-progress'
+PlugDef 'mechatroner/rainbow_csv'
+PlugDef 'chentoast/marks.nvim'
 
 call plug#end()
 
@@ -361,12 +362,21 @@ noremap <leader>\| :NvimTreeFindFile<CR>
 noremap <leader>7p :call TogglePicker()<CR>
 
 
-" let g:nvim_tree_hijack_netrw = 1
-let g:nvim_tree_disable_window_picker = 1
 let g:nvim_tree_highlight_opened_files = 1
 let g:nvim_tree_git_hl = 1
-" let g:nvim_tree_update_cwd = 1
-lua require'nvim-tree'.setup {}
+
+lua << EOF
+require'nvim-tree'.setup {
+    disable_netrw = true,
+    actions = {
+        open_file = {
+            window_picker = {
+                enable = false
+            }
+        }
+    }
+}
+EOF
 
 function TogglePicker()
 let g:nvim_tree_disable_window_picker =  1 - g:nvim_tree_disable_window_picker
@@ -960,7 +970,8 @@ end
 require'lualine'.setup{
     options = {
         theme = 'catppuccin',
-        symbols = {modified = ' ', readonly = ' '}
+        symbols = {modified = ' ', readonly = ' ', unnamed = 'ﳠ'},
+        globalstatus = true
     },
     sections = {
         lualine_a = {get_mode},
@@ -1289,11 +1300,16 @@ if PlugLoaded('trouble')
 nnoremap <leader>qq <cmd>cclose \| TroubleToggle quickfix<cr>
 endif
 
+" 'Edit' Keys
 " Vimrc
 nnoremap <leader>ev :tab split ~/.vimrc<cr>
 nnoremap <leader>ez :tab split ~/.zshrc<cr>
 nnoremap <leader>et :tab split ~/.tmux.conf<cr>
 nnoremap <leader>en :tab split ~/.vim/notes.md<cr>
+
+# Note Taking
+nnoremap <leader>ej <cmd>execute "e ~/.vim/notes/".system("date +'%m-%d-%y.md'")<CR>
+nnoremap <leader>eJ <cmd>call system("bash ~/.vim/notes/gen_index.sh") \| e ~/.vim/notes/Index.md<CR>
 
 augroup ec_cmds
   autocmd!
@@ -1377,6 +1393,7 @@ cnoremap jk <esc>
 cnoremap kj <esc>
 cnoremap jh <CR>
 cnoremap hj <CR>
+cnoremap jk <CR>
 
 " Inser line above / below
 nnoremap <leader>sk mpO<esc>`pdmp
@@ -1427,9 +1444,9 @@ nnoremap <silent> <M-,> mmA,<esc>`mmm
 vnoremap p "_dP
 " New line when completion open
 inoremap <M-CR> <Esc>o
-" Easy New lines
-" nnoremap sj mmo<esc>`mmm
-" nnoremap sk mmO<esc>`mmm
+# Insert Blank line before // After
+nnoremap <leader>sk mpO<esc>`pdmp
+nnoremap <leader>sj mpo<esc>`pdmp
 
 " ------------------------------------------------------------------
 " ===================
@@ -1596,28 +1613,3 @@ command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 " ---------------------------------------------------
 "  SandBox {{{1
 
-let g:notes_directories = ['~/.vim/notes']
-let g:notes_suffix = '.md'
-
-cnoremap jk <CR>
-cnoremap jh <CR>
-
-nnoremap <leader>sk mpO<esc>`pdmp
-nnoremap <leader>sj mpo<esc>`pdmp
-
-inoremap <c-f> <cmd>Include<CR>
-
-lua << EOF
-require "catppuccin".setup {
-    styles = {
-        comments = "italic",
-        functions = "NONE",
-        keywords = "NONE",
-        strings = "NONE",
-        variables = "NONE",
-        }
-    }
-EOF
-
-nnoremap <leader>ej <cmd>execute "e ~/.vim/notes/".system("date +'%m-%d-%y.md'")<CR>
-nnoremap <leader>eJ <cmd>call system("bash ~/.vim/notes/gen_index.sh") \| e ~/.vim/notes/Index.md<CR>
