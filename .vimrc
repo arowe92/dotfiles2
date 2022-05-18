@@ -579,6 +579,7 @@ nnoremap <M-p> <cmd>FuzzyBuffers<CR>
 nnoremap <M-t> <cmd>FuzzyTags<CR>
 nnoremap <M-T> <cmd>FuzzyResume<CR>
 nnoremap <leader>pm <cmd>execute 'BLines {'.'{{'<CR>
+nnoremap <leader>pM <cmd>execute 'Lines {'.'{{'<CR>
 
 " Fuzzy Mappings {{{3
 " Search Word
@@ -944,6 +945,44 @@ function get_mode()
   return m
 end
 
+-- Color for highlights
+local colors = {
+  yellow = '#ECBE7B',
+  cyan = '#008080',
+  darkblue = '#081633',
+  green = '#98be65',
+  orange = '#FF8800',
+  violet = '#a9a1e1',
+  magenta = '#c678dd',
+  blue = '#51afef',
+  red = '#ec5f67'
+}
+
+local _progress = {
+	'lsp_progress',
+	colors = {
+	  percentage  = colors.cyan,
+	  title  = colors.cyan,
+	  message  = colors.orange,
+	  spinner = colors.cyan,
+	  lsp_client_name = colors.magenta,
+	  use = true,
+	},
+	separators = {
+		component = ' ',
+		progress = ' | ',
+		message = { pre = ' ', post = ' '},
+		percentage = { pre = '', post = '% ' },
+		title = { pre = '', post = ' ' },
+		lsp_client_name = { pre = '', post = '' },
+		spinner = { pre = '', post = '' },
+		message = { commenced = 'In Progress', completed = 'Completed' },
+	},
+	display_components = { 'lsp_client_name', 'spinner', { 'title', 'percentage', 'message' } },
+	timer = { progress_enddelay = 500, spinner = 1000, lsp_client_name_enddelay = 1000 },
+	spinner_symbols = { '🌑 ', '🌒 ', '🌓 ', '🌔 ', '🌕 ', '🌖 ', '🌗 ', '🌘 ' },
+}
+
 require'lualine'.setup{
     options = {
         theme = 'catppuccin',
@@ -952,7 +991,7 @@ require'lualine'.setup{
     sections = {
         lualine_a = {get_mode},
         lualine_b = {'filename'},
-        lualine_c = {'lsp_progress'},
+        lualine_c = {_progress},
 
         lualine_x = {'Cwd'},
         lualine_y = {'branch', 'GetDate'},
@@ -967,7 +1006,15 @@ endif
 if PlugLoaded('nvim_treesitter')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "cpp", "javascript", "python", "scss", "typescript" },
+    ensure_installed = {
+        "cpp",
+        "javascript",
+        "python",
+        "scss",
+        "typescript",
+        "json",
+        "css"
+    },
     ignore_install = { "json" }, -- List of parsers to ignore installing
     highlight = {
         enable = true,
