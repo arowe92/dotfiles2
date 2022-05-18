@@ -1016,7 +1016,6 @@ require'lualine'.setup{
         lualine_a = {get_mode},
         lualine_b = {'filename'},
         lualine_c = {_progress},
-
         lualine_x = {'Cwd'},
         lualine_y = {'branch', 'GetDate'},
         lualine_z = {'diagnostics'},
@@ -1354,7 +1353,7 @@ nnoremap <leader>ez :tab split ~/.zshrc<cr>
 nnoremap <leader>et :tab split ~/.tmux.conf<cr>
 nnoremap <leader>en :tab split ~/.vim/notes.md<cr>
 
-# Note Taking
+" Note Taking
 nnoremap <leader>ej <cmd>execute "e ~/.vim/notes/".system("date +'%m-%d-%y.md'")<CR>
 nnoremap <leader>eJ <cmd>call system("bash ~/.vim/notes/gen_index.sh") \| e ~/.vim/notes/Index.md<CR>
 
@@ -1491,7 +1490,7 @@ nnoremap <silent> <M-,> mmA,<esc>`mmm
 vnoremap p "_dP
 " New line when completion open
 inoremap <M-CR> <Esc>o
-# Insert Blank line before // After
+" Insert Blank line before // After
 nnoremap <leader>sk mpO<esc>`pdmp
 nnoremap <leader>sj mpo<esc>`pdmp
 
