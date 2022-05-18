@@ -1,0 +1,17 @@
+[rust]
+disabled = true
+
+[character]
+vicmd_symbol = '[](bold yellow) '
+
+[git_branch]
+format = '[$symbol$branch]($style) '
+
+[directory]
+format = '[$path]($style)[$read_only]($read_only_style) '
+
+[hostname]
+format = '[$hostname]($style) '
+
+[username]
+format = '[$user]($style):'

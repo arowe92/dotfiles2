@@ -1,14 +1,11 @@
-
+#!/bin/bash
 cmds=()
-pre_cmds=()
-pre_cmds+=("mkdir -p $HOME/.config")
+cmds+=("mkdir -p $HOME/.config")
 
-
-# List of apt-get installs
-apt=""
+output="run_install.sh"
 
 # List of Standard packages
-apt_packages=(make cmake gcc fzf)
+apt_packages=(make cmake gcc)
 function apt_options () {
     for pkg in "${apt_packages[@]}"; do
         echo -n "$pkg apt-get 1 "
@@ -21,6 +18,11 @@ if [[ -z "$dotpath" ]]; then
     exit
 fi
 
+
+cmds+=("\n# Install Command")
+cmds+=("alias install='sudo apt-get install -y'")
+
+cmds+=("\n# clone")
 cmds+=("git clone https://github.com/arowe92/dotfiles2.git $dotpath")
 
 ###########################
@@ -34,13 +36,16 @@ fasd 'cli tool' 1 \
 tmux 'cli tool' 1 \
 neovim 'cli tool' 1 \
 ranger 'cli tool' 1 \
+starship 'cli tool' 1 \
+fzf 'cli tool' 1 \
+rust_tools 'cli tool' 1 \
 \
 $(apt_options) \
 n 'Language' 0 \
 atom 'App' 0 \
 guake 'App' 0 \
 jumpapp 'GUI Tool' 0 \
-links 'Make links' 1 \
+links 'Make links' 0 \
 \
 3>&1 1>&2 2>&3 | sed s/\"//g)
 
@@ -50,6 +55,7 @@ if [[ -z "$choices" ]]; then
 fi
 
 if [[ "$choices" == *".zshrc"* ]]; then
+    cmds+=("\n# zsh")
     cmds+=("echo 'source $dotpath/.zshrc' >> $HOME/.zshrc")
     cmds+=("echo 'source $dotpath/.config/aliases.sh' >> $HOME/.zshrc")
     cmds+=("echo 'source $dotpath/.config/functions.sh' >> $HOME/.zshrc")
@@ -58,50 +64,90 @@ if [[ "$choices" == *".zshrc"* ]]; then
 fi
 
 if [[ "$choices" == *".vimrc"* ]]; then
+    cmds+=("\n# vim")
     cmds+=("echo 'source $dotpath/.vimrc' >> $HOME/.vimrc")
     cmds+=("echo 'set runtimepath+=$dotpath' >> $HOME/.vimrc")
 fi
 
 if [[ "$choices" == *" .tmux.conf "* ]]; then
+    cmds+=("\n# tmux")
     cmds+=("echo 'source $dotpath/.tmux.conf' >> $HOME/.tmux.conf")
 fi
 
 if [[ "$choices" == *" zsh "* ]]; then
     # Oh-My-Zsh
-    cmds+=("mv $HOME/.zshrc $HOME/.zshrc_pre")
-    cmds+=("sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)\"")
-    cmds+=("mv $HOME/.zshrc_pre $HOME/.zshrc")
-    apt+=(zsh)
+    cmds+=("\n# zsh")
+    cmds+=("install zsh")
+    cmds+=("mv $HOME/.zshrc")
+    cmds+=("git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh")
+    cmds+=("mv $HOME/.zshrc")
+    cmds+=("curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh")
 fi
 
 if [[ "$choices" == *" fasd "* ]]; then
-    pre_cmds+=("sudo add-apt-repository ppa:aacebedo/fasd")
-    apt+=(fasd)
+    cmds+=("\n# fasd")
+    cmds+=("sudo add-apt-repository ppa:aacebedo/fasd && sudo apt-get update")
+    cmds+=("install fasd")
+fi
+
+if [[ "$choices" == *" fzf "* ]]; then
+    cmds+=("\n# fzf")
+    cmds+=("git clone https://github.com/junegunn/fzf /tmp/fzf")
+    cmds+=("cd /tmp/fzf && make install && rm -rf /tmp/fzf")
 fi
 
 if [[ "$choices" == *" tmux "* ]]; then
+    cmds+=("\n# tmux")
     cmds+=("git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm")
-    apt+=(tmux)
+    cmds+=("install tmux")
 fi
 
 if [[ "$choices" == *"neovim"* ]]; then
     cmds+=("mkdir -p $HOME/.config/nvim;")
     cmds+=("cp $dotpath/.config/nvim/init.vim $HOME/.config/nvim")
-    apt+=(neovim)
+    cmds+=("install neovim")
 fi
 
 if [[ "$choices" == *"ranger"* ]]; then
-    apt+=(caca-utils highlight atool w3m poppler-utils mediainfo)
-    apt+=(ranger)
+    cmds+=("sudo apt-get -y intall caca-utils highlight atool w3m poppler-utils mediainfo")
+    cmds+=("install ranger")
 fi
 
 if [[ "$choices" == *"atom"* ]]; then
-    pre_cmds+=("sudo echo \"deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main > /etc/apt/sources.list.d/atom.list")
-    pre_cmds+=("wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -")
+    cmds+=("sudo echo \"deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main > /etc/apt/sources.list.d/atom.list")
+    cmds+=("wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add - && sudo apt-get update")
+fi
+
+if [[ "$choices" == *"starship"* ]]; then
+    cmds+=("\n# Starship")
+    cmds+=("ln -s $dotpath/.config/starship.toml $HOME/.config/starship.toml")
+    cmds+=("curl -sS https://starship.rs/install.sh | sh")
+fi
+
+if [[ "$choices" == *"rust_tools"* ]]; then
+    cmds+=("\n# Rust Tools")
+    curl -L git.io/antigen > antigen.zsh
+
+    cmds+=("install ripgrep")
+    cmds+=("install bat")
+    cmds+=("install batcat")
+    cmds+=("install fd-find")
 fi
 
 if [[ "$choices" == *"jumpapp"* ]]; then
-    cmds+=("install_jumpapp")
+    cmds+=("\n# jump_app")
+    cmds+=("mkdir jumpapp")
+    cmds+=("cd jumpapp")
+    cmds+=("    sudo apt-get -y install build-essential debhelper git pandoc shunit2")
+    cmds+=("    git clone https://github.com/mkropat/jumpapp.git")
+    cmds+=("    cd jumpapp")
+    cmds+=("        make deb")
+    cmds+=("        sudo dpkg -i jumpapp*all.deb")
+    cmds+=("        # if there were missing dependencies")
+    cmds+=("        sudo apt-get -y install -f")
+    cmds+=("    cd ..")
+    cmds+=("cd ..")
+    cmds+=("rm -rf jumpapp")
 fi
 
 if [[ "$choices" == *" n "* ]]; then
@@ -118,6 +164,7 @@ LN () {
 }
 
 if [[ "$choices" == *"links"* ]]; then
+    cmds+=("\n# links")
     cmds+=("$(LN .config/nvim/init.vim)")
     cmds+=("$(LN .config/aliases.sh)")
     cmds+=("$(LN .config/functions.sh)")
@@ -127,45 +174,11 @@ if [[ "$choices" == *"links"* ]]; then
     cmds+=("$(LN .gitconfig)")
 fi
 
-# Install jumpapp
-install_jumpapp() {
-    mkdir jumpapp
-    cd jumpapp
-        sudo apt-get -y install build-essential debhelper git pandoc shunit2
-        git clone https://github.com/mkropat/jumpapp.git
-        cd jumpapp
-            make deb
-            sudo dpkg -i jumpapp*all.deb
-            # if there were missing dependencies
-            sudo apt-get -y install -f
-        cd ..
-    cd ..
-    rm -rf jumpapp
-}
+echo "#!/bin/bash\n\n" > $output
 
-# Add Apt packages
-arr=($choices)
-for choice in "${arr[@]}"; do
-    if [[ " ${apt_packages[@]} " =~ " ${choice} " ]]; then
-        apt+=("$choice")
-    fi
+for cmd in "${cmds[@]}"; do
+    echo -e "$cmd" >> $output
 done
 
-all_cmds+=("${pre_cmds[@]}")
-
-# Add Apt-Get Installs
-if [[ ! -z "${apt[@]}" ]]; then
-    install="sudo apt-get install -y ${apt[@]}"
-    all_cmds+=("sudo apt-get update")
-    all_cmds+=("$install")
-fi
-
-all_cmds+=("${cmds[@]}")
-
-for cmd in "${all_cmds[@]}"; do
-    echo $cmd
-    if [[ ! "$1" == "--dry-run" ]]; then
-        sh -c "$cmd" >> log.txt
-    fi
-done
+echo "output to $output"
 
