@@ -130,7 +130,11 @@ silent call SourceByLine($DOTFILE_PATH."/.config/nvim/colors.vim")
 " ------------------------------------------------------------------
 if g:GUI_TOOLS " {{{3
 PlugDef 'mbbill/undotree'
+
+if executable('ctags')
 PlugDef 'yegappan/taglist'
+endif
+
 PlugDef 'brooth/far.vim' " Find & Replace
 PlugDef 'skywind3000/vim-quickui'
 PlugDef 'liuchengxu/vim-which-key'
@@ -159,9 +163,6 @@ PlugDef 'hrsh7th/vim-vsnip'
 PlugDef 'hrsh7th/vim-vsnip-integ'
 " Pictograms for cmp
 PlugDef 'onsails/lspkind-nvim'
-
-" PlugDef 'L3MON4D3/LuaSnip'
-" PlugDef 'saadparwaiz1/cmp_luasnip'
 
 " Telescope
 PlugDef 'nvim-lua/popup.nvim'
@@ -1029,15 +1030,7 @@ endif
 if PlugLoaded('nvim_treesitter')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-    ensure_installed = {
-        "cpp",
-        "javascript",
-        "python",
-        "scss",
-        "typescript",
-        "json",
-        "css"
-    },
+    ensure_installed = {},
     ignore_install = { "json" }, -- List of parsers to ignore installing
     highlight = {
         enable = true,
@@ -1659,3 +1652,12 @@ command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 " ---------------------------------------------------
 "  SandBox {{{1
 
+nnoremap R <cmd>make<CR>
+nnoremap <leader>R <cmd>execute("setlocal makeprg=".input("Set run command: "))<CR>
+
+
+augroup MAKE
+    " Vim
+    autocmd BufRead *.rs set makeprg=cargo\ run
+    autocmd BufRead *.py set makeprg=python\ %
+augroup END

@@ -27,6 +27,7 @@ cmds+=("git clone https://github.com/arowe92/dotfiles2.git $dotpath")
 
 ###########################
 choices=$(whiptail --checklist 'CLI Utilities' 30 60 20 \
+brew 'package manager' 1 \
 .zshrc 'RC File' 1 \
 .tmux.conf 'RC File' 1 \
 .vimrc 'RC File' 1 \
@@ -38,7 +39,7 @@ neovim 'cli tool' 1 \
 ranger 'cli tool' 1 \
 starship 'cli tool' 1 \
 fzf 'cli tool' 1 \
-rust_tools 'cli tool' 1 \
+fd_rg_bat 'cli tool' 1 \
 \
 $(apt_options) \
 n 'Language' 0 \
@@ -52,6 +53,21 @@ links 'Make links' 0 \
 # Exit Early
 if [[ -z "$choices" ]]; then
     exit
+fi
+
+if [[ "$choices" == *" brew "* ]]; then
+    adduser brew
+    sudo -H -u brew bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+if [[ "$choices" == *" zsh "* ]]; then
+    # Oh-My-Zsh
+    cmds+=("\n# zsh")
+    cmds+=("install zsh")
+    cmds+=("mv $HOME/.zshrc")
+    cmds+=("git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh")
+    cmds+=("mv $HOME/.zshrc")
+    cmds+=("curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh")
 fi
 
 if [[ "$choices" == *".zshrc"* ]]; then
@@ -72,16 +88,6 @@ fi
 if [[ "$choices" == *" .tmux.conf "* ]]; then
     cmds+=("\n# tmux")
     cmds+=("echo 'source $dotpath/.tmux.conf' >> $HOME/.tmux.conf")
-fi
-
-if [[ "$choices" == *" zsh "* ]]; then
-    # Oh-My-Zsh
-    cmds+=("\n# zsh")
-    cmds+=("install zsh")
-    cmds+=("mv $HOME/.zshrc")
-    cmds+=("git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh")
-    cmds+=("mv $HOME/.zshrc")
-    cmds+=("curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh")
 fi
 
 if [[ "$choices" == *" fasd "* ]]; then
@@ -105,7 +111,9 @@ fi
 if [[ "$choices" == *"neovim"* ]]; then
     cmds+=("mkdir -p $HOME/.config/nvim;")
     cmds+=("cp $dotpath/.config/nvim/init.vim $HOME/.config/nvim")
-    cmds+=("install neovim")
+    cmds+=("wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage")
+    cmds+=("chmod 755 nvim.appimage")
+    cmds+=("mv neovim.appimage /usr/local/bin/nvim")
 fi
 
 if [[ "$choices" == *"ranger"* ]]; then
@@ -124,10 +132,9 @@ if [[ "$choices" == *"starship"* ]]; then
     cmds+=("curl -sS https://starship.rs/install.sh | sh")
 fi
 
-if [[ "$choices" == *"rust_tools"* ]]; then
-    cmds+=("\n# Rust Tools")
-    curl -L git.io/antigen > antigen.zsh
 
+if [[ "$choices" == *"fd_rg_bat"* ]]; then
+    cmds+=("\n# Rust Tools")
     cmds+=("install ripgrep")
     cmds+=("install bat")
     cmds+=("install batcat")
@@ -165,12 +172,6 @@ LN () {
 
 if [[ "$choices" == *"links"* ]]; then
     cmds+=("\n# links")
-    cmds+=("$(LN .config/nvim/init.vim)")
-    cmds+=("$(LN .config/aliases.sh)")
-    cmds+=("$(LN .config/functions.sh)")
-    cmds+=("$(LN .config/ranger/scope.sh)")
-    cmds+=("$(LN .config/tmux/pane-left.conf)")
-    cmds+=("$(LN .config/tmux/pane-up.conf)")
     cmds+=("$(LN .gitconfig)")
 fi
 
