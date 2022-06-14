@@ -2,7 +2,7 @@
 "  Master Vim RC  "
 """""""""""""""""""
 "  Configuration {{{1
-"  RC Configuration {{{2
+"    RC Configuration {{{2
 let g:GIT_TOOLS = get(g:, 'GIT_TOOLS', 1)
 let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 0)
 let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
@@ -37,7 +37,7 @@ if exists('$VIM_RAW')
     endfunction
 else
 
-"  Vim-Plug {{{2
+"    Vim-Plug {{{2
 " Install vim-plug if it doesnt exist
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -158,9 +158,11 @@ PlugDef 'hrsh7th/cmp-cmdline'
 PlugDef 'hrsh7th/cmp-vsnip'
 PlugDef 'hrsh7th/cmp-calc'
 PlugDef 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+PlugDef 'andersevenrud/compe-tmux'
 
 PlugDef 'hrsh7th/vim-vsnip'
 PlugDef 'hrsh7th/vim-vsnip-integ'
+PlugDef 'rafamadriz/friendly-snippets'
 " Pictograms for cmp
 PlugDef 'onsails/lspkind-nvim'
 
@@ -174,7 +176,7 @@ PlugDef 'nvim-telescope/telescope-file-browser.nvim'
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
-" PlugDef 'ray-x/lsp_signature.nvim'
+PlugDef 'ray-x/lsp_signature.nvim'
 PlugDef 'tami5/lspsaga.nvim'
 PlugDef 'folke/trouble.nvim'
 
@@ -213,6 +215,7 @@ endif
 " Sandbox {{{3
 PlugDef 'mechatroner/rainbow_csv'
 PlugDef 'chentoast/marks.nvim'
+PlugDef 'mattn/emmet-vim'
 
 call plug#end()
 
@@ -263,7 +266,7 @@ set tags+=~/.vim/tags
 " Map key
 let mapleader=" "
 
-"  Programs {{{2
+"    Programs {{{2
 " Use ag if it exists
 if executable('rg')
     " Use rg over grep
@@ -281,7 +284,7 @@ if exists(':GuiFont')
 GuiFont FuraMono NF:h11
 endif
 
-"  Cycle Settings {{{2
+"    Cycle Settings {{{2
 let setting_cycles = {
             \ "foldmethod": ['manual', 'expr', 'syntax', 'marker'],
             \ "mouse": ['a', ''],
@@ -312,9 +315,9 @@ noremap <leader>7c <cmd>call Cycle_setting("colorcolumn")<CR>
 " ------------------------------------------------------------------
 
 "=========================
-"   Plugin Settings {{{1
+"  Plugin Settings {{{1
 "-------------------------
-"  Visual Multi {{{2
+"    Visual Multi {{{2
 if PlugLoaded('visual-multi')
 let g:VM_default_mappings = 1
 let g:VM_maps = {}
@@ -338,7 +341,7 @@ let g:VM_case_setting = 'sensitive'
 let g:VM_theme = 'purplegray'
 endif
 
-"  Far {{{2
+"    Far {{{2
 if PlugLoaded('far')
 let g:far#source='rg'
 
@@ -346,7 +349,7 @@ command! FindReplace Farr
 command! Find Farf
 endif
 
-"  Vim Printer {{{2
+"    Vim Printer {{{2
 let g:vim_printer_print_below_keybinding = '<leader>xc'
 let g:vim_printer_print_above_keybinding = '<leader>xC'
 let g:vim_printer_items = {
@@ -356,7 +359,7 @@ let g:vim_printer_items = {
             \ }
 
 
-"  Nvim Tree {{{2
+"    Nvim Tree {{{2
 if PlugLoaded('nvim_tree_lua')
 noremap <leader>\ :NvimTreeToggle<CR>
 noremap <leader>\| :NvimTreeFindFile<CR>
@@ -385,7 +388,7 @@ endfunction
 
 endif
 
-"  Which Key {{{2
+"    Which Key {{{2
 if PlugLoaded('which_key')
 noremap <silent> <leader> :WhichKey ' '<CR>
 let g:which_key_map =  {}
@@ -404,7 +407,7 @@ call which_key#register('<Space>', "g:which_key_map")
 noremap <leader>W <cmd>execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
-"  Startify {{{2
+"    Startify {{{2
 if PlugLoaded('startify')
 let g:startify_custom_header = startify#center(split(system('figlet nvim'), '\n'))
 let g:startify_change_to_dir = 1
@@ -441,7 +444,7 @@ nnoremap <leader>es <cmd>Startify<cr>
 endif
 
 if PlugLoaded('conflict_marker')
-"  Conflict Marker {{{2
+"    Conflict Marker {{{2
 let g:conflict_marker_enable_mappings = 1
 
 function! HighlightConflictMarker() abort
@@ -454,7 +457,7 @@ endfunction
 autocmd VimEnter * call HighlightConflictMarker()
 endif
 
-"  Git Gutter {{{2
+"    Git Gutter {{{2
 if PlugLoaded('gitgutter')
 let g:gitgutter_map_keys = 0
 
@@ -475,7 +478,7 @@ if g:NERD_FONT
 endif
 endif
 
-"  Indent Blankline {{{2
+"    Indent Blankline {{{2
 if PlugLoaded('indent_blankline')
 lua << EOF
 require("indent_blankline").setup {
@@ -487,7 +490,7 @@ EOF
 let g:indent_blankline_char = '▏'
 endif
 
-"  EasyMotion {{{2
+"    EasyMotion {{{2
 if PlugLoaded('easymotion')
 let g:EasyMotion_startofline = 0
 let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
@@ -501,7 +504,7 @@ map <Leader>k <Plug>(easymotion-k)
 map <Leader>h <Plug>(easymotion-linebackward)
 endif
 
-"  Hop {{{2
+"    Hop {{{2
 if PlugLoaded('hop')
 lua require'hop'.setup()
 
@@ -511,7 +514,7 @@ map <leader>l <cmd>HopWordCurrentLineAC<CR>
 map <leader>h <cmd>HopWordCurrentLineBC<CR>
 endif
 
-"  Lightspeed {{{2
+"    Lightspeed {{{2
 if PlugLoaded('lightspeed')
 lua << EOF
 require'lightspeed'.setup {
@@ -524,7 +527,7 @@ require'lightspeed'.setup {
 EOF
 endif
 
-"  Marks {{{2
+"    Marks {{{2
 if PlugLoaded('marks')
 lua << EOF
 require'marks'.setup {
@@ -549,7 +552,7 @@ require'marks'.setup {
 EOF
 endif
 
-"  Terminal Toggle {{{2
+"    Terminal Toggle {{{2
 if PlugLoaded('toggle_terminal')
 noremap <silent> <M-`> :ToggleTerminal<CR>
 tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
@@ -558,8 +561,8 @@ tnoremap <silent> <C-t> <C-\><C-n>:ToggleTerminal<CR>
 endif
 
 command! -nargs=+ Ivy Telescope <args> theme=ivy
-
-"  Fuzzy Commands {{{2
+"  Fuzzy Plugins {{{2
+"    Fuzzy Commands {{{3
 command! Fuzzy         Ivy builtin
 command! FuzzyFiles    Files
 command! FuzzyFilesR   History
@@ -587,14 +590,14 @@ nnoremap <M-T> <cmd>FuzzyResume<CR>
 nnoremap <leader>pm <cmd>execute 'BLines {'.'{{'<CR>
 nnoremap <leader>pM <cmd>execute 'Lines {'.'{{'<CR>
 
-" Fuzzy Mappings {{{3
+"    Fuzzy Mappings {{{3
 " Search Word
 nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
 xnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
 
 nnoremap <leader>xf <cmd>execute('silent grep "'.input('Search For: ').'" \| FuzzyQF ')<CR>
 
-" ==== Telescope ========= {{{3
+"    Telescope {{{3
 if PlugLoaded('telescope_nvim')
 
 lua << EOF
@@ -642,7 +645,7 @@ nnoremap <leader>pu <cmd>Ivy lsp_document_symbols<CR>
 noremap <leader><M-\> :Ivy file_browser cwd=%:h<CR>
 endif
 
-" Fzf {{{3
+"    FZF {{{3
 if PlugLoaded('fzf')
 command! FindReplace Farr
 command! Find Farf
@@ -679,7 +682,7 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 endif
 
-" Clap {{{3
+"    Clap {{{3
 if PlugLoaded('clap')
 let g:clap_layout = { 'relative': 'editor' }
 let g:clap_preview_direction = 'UD'
@@ -687,11 +690,17 @@ let g:clap_theme = 'material_design_dark'
 let g:clap_enable_background_shadow = v:false
 endif
 
-"  nvim-cmp {{{2
+"    nvim-cmp {{{2
 if PlugLoaded("nvim_cmp")
 set completeopt=menu,menuone,noselect
-let g:vsnip_snippet_dir = $HOME."/.vim/my_snippets/"
 
+"    VSnippets {{{3
+let g:vsnip_snippet_dirs = [
+            \ $HOME."/.vim/my_snippets/",
+            \ $HOME."/.vim/plugged/friendly-snippets/snippets"
+            \ ]
+
+"    Cmp Setup {{{3
 lua <<EOF
 -- Setup nvim-cmp.
 local cmp = require'cmp'
@@ -704,8 +713,8 @@ cmp.setup({
         end,
     },
     mapping = {
-        ['<M-k>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c', 'i' }),
-        ['<M-j>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c', 'i' }),
+        ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c', 'i' }),
+        ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c', 'i' }),
         ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
         ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
         ['<M-Enter>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -725,9 +734,10 @@ cmp.setup({
         { name = 'calc' },
         { name = 'vsnip' },
         { name = 'nvim_lsp' },
-        { name = 'cmp_tabnine' },
+        { name = 'tmux' },
         { name = 'buffer' },
         { name = 'path' },
+        { name = 'cmp_tabnine' },
     }),
     formatting = {
         format = lspkind.cmp_format({with_text = false, maxwidth = 50})
@@ -800,7 +810,7 @@ if PlugLoaded('coq_nvim')
 endif
 " ------------------------------------------------------------------
 
-"  Nvim LSP {{{2
+"    Nvim LSP {{{2
 if PlugLoaded('nvim_lspconfig')
 lua << EOF
 local lsp = require "lspconfig"
@@ -904,7 +914,7 @@ endif
 
 endif " end LSP
 
-"  Lua Line {{{2
+"    Lua Line {{{2
 if PlugLoaded('lualine')
 
 function! GetDate ()
@@ -1026,7 +1036,7 @@ EOF
 endif
 " ==== Lua Line End ====
 
-"  TreeSitter {{{2
+"    TreeSitter {{{2
 if PlugLoaded('nvim_treesitter')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -1081,14 +1091,14 @@ xmap <A-s> grn
 xmap <A-S> grm
 endif " nvim_treesitter
 
-"  Interesting Words {{{2
+"    Interesting Words {{{2
 let g:interestingWordsDefaultMappings = 0
 let g:interestingWordsRandomiseColors = 1
 nnoremap <silent> <leader>xi :call InterestingWords('n')<cr>
 xnoremap <silent> <leader>xi :call InterestingWords('v')<cr>
 nnoremap <silent> <leader>xI :call UncolorAllWords()<cr>
 
-"  Sandwich {{{2
+"    Sandwich {{{2
 if PlugLoaded('vim_sandwich')
 let g:sandwich_no_default_key_mappings = 1
 let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
@@ -1110,7 +1120,7 @@ nmap <unique> <leader>srb <Plug>(sandwich-replace-auto)
 
 endif
 
-"  VimSpector {{{2
+"    VimSpector {{{2
 if PlugLoaded('vimspector')
 nmap <leader>dc <Plug>VimspectorContinue
 nmap <leader>ds <Plug>VimspectorLaunch
@@ -1127,20 +1137,20 @@ nmap <leader>dl <Plug>VimspectorStepInto
 nmap <leader>dh <Plug>VimspectorStepOut
 endif
 
-"  Switch to Layout / Maximize Pane {{{2
+"    Switch to Layout / Maximize Pane {{{2
 if PlugLoaded('nvim_maximize_window_toggle')
 nnoremap <leader>m :ToggleOnly<CR>
 nnoremap <M-Enter> :ToggleOnly<CR>
 endif
 
-"  Sideways {{{2
+"    Sideways {{{2
 if PlugLoaded('sideways')
 " Move Arguments left or right
 noremap <M-<> :SidewaysLeft<CR>
 noremap <M->> :SidewaysRight<CR>
 endif
 
-"  Custom 'Plugins' {{{2
+"    Custom 'Plugins' {{{2
 " Copy To Other Window {{{3
 if 1
 function! CopyOther() abort
@@ -1219,7 +1229,7 @@ if PlugLoaded('clever_f')
 endif
 
 " ------------------------------------------------------------------
-"  Misc PLugins {{{2
+"    Misc PLugins {{{2
 let g:session_autosave='yes'
 let g:session_autosave_periodic=3
 let g:session_autoload='no'
@@ -1348,6 +1358,7 @@ nnoremap <leader>en :tab split ~/.vim/notes.md<cr>
 
 " Note Taking
 nnoremap <leader>ej <cmd>execute "e ~/.vim/notes/".system("date +'%m-%d-%y.md'")<CR>
+nnoremap <leader>e<M-j> <cmd>execute "e ~/.vim/notes/".input("Name:").".md"<CR>
 nnoremap <leader>eJ <cmd>call system("bash ~/.vim/notes/gen_index.sh") \| e ~/.vim/notes/Index.md<CR>
 
 augroup ec_cmds
@@ -1499,7 +1510,7 @@ command! Install source ~/.vimrc | PlugInstall
 
 " Change Dir
 nnoremap <leader>Cf <cmd>CdFile<CR>
-nnoremap <leader>Cg <cmd>CdGit<CR>
+nnoremap <leader>eg <cmd>CdGit<CR>
 
 " Format Commands file
 command! FormatClang silent execute '%!clang-format %'
@@ -1655,7 +1666,11 @@ nnoremap R <cmd>make<CR>
 nnoremap <leader>R <cmd>execute("setlocal makeprg=".input("Set run command: "))<CR>
 
 augroup MAKE
-    " Vim
     autocmd BufRead *.rs set makeprg=cargo\ run
     autocmd BufRead *.py set makeprg=python\ %
 augroup END
+
+let g:user_emmet_leader_key='<m-v>'
+nnoremap <leader>xm 2F"r{astyles.<esc>f"r}
+vnoremap <leader>xm =gv:s/"\(.*\)"/{styles.\1}/g<CR>
+
