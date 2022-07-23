@@ -4,7 +4,6 @@
 "  Configuration {{{1
 "    RC Configuration {{{2
 let g:GIT_TOOLS = get(g:, 'GIT_TOOLS', 1)
-let g:CPP_TOOLS = get(g:, 'CPP_TOOLS', 0)
 let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
 let g:NVIM_TOOLS = get(g:, 'NVIM_TOOLS', 1)
 let g:STATUS_LINE = get(g:, 'STATUS_LINE', 1)
@@ -14,7 +13,6 @@ let g:NERD_FONT = get(g:, 'NERD_FONT', 1)
 " Light Weight Config {{{3
 if exists('$VIM_LITE')
     let g:GIT_TOOLS = 1
-    let g:CPP_TOOLS = 0
     let g:GUI_TOOLS = 0
     let g:NVIM_TOOLS = 0
     let g:STATUS_LINE = 0
@@ -23,7 +21,6 @@ endif
 " Nvim VSCode Plugin Options {{{3
 if exists('g:vscode')
     let g:GIT_TOOLS = 0
-    let g:CPP_TOOLS = 0
     let g:GUI_TOOLS = 0
     let g:NVIM_TOOLS = 0
     let g:STATUS_LINE = 0
@@ -32,6 +29,13 @@ endif
 " Vim for servers
 let g:VIM_RAW = v:false
 if exists('$VIM_RAW')
+    let g:VIM_RAW = v:true
+
+    call plug#begin()
+    Plug 'tiagovla/tokyodark.nvim'
+    call plug#end()
+
+    colorscheme tokyodark
     function! PlugLoaded(name) abort
         return 0
     endfunction
@@ -90,13 +94,11 @@ PlugDef 'junegunn/fzf.vim'
 " Window Management {{{3
 PlugDef 'caenrique/nvim-maximize-window-toggle'
 PlugDef 'Asheq/close-buffers.vim'
-PlugDef 'caenrique/nvim-toggle-terminal'
 
 " Text Editing {{{3
 PlugDef 'mg979/vim-visual-multi', {'branch': 'master'}
 PlugDef 'AndrewRadev/sideways.vim'
 PlugDef 'tpope/vim-commentary'
-PlugDef 'tpope/vim-sensible'
 PlugDef 'tpope/vim-eunuch' " Unix Commands
 PlugDef 'meain/vim-printer'
 PlugDef 'wellle/targets.vim'
@@ -135,7 +137,7 @@ if executable('ctags')
 PlugDef 'yegappan/taglist'
 endif
 
-PlugDef 'brooth/far.vim' " Find & Replace
+" PlugDef 'brooth/far.vim' " Find & Replace
 PlugDef 'skywind3000/vim-quickui'
 PlugDef 'liuchengxu/vim-which-key'
 PlugDef 'kyazdani42/nvim-tree.lua'
@@ -192,12 +194,6 @@ PlugDef 'airblade/vim-gitgutter'
 PlugDef 'rhysd/conflict-marker.vim'
 endif
 " ------------------------------------------------------------------
-" Hardcore C++ tools {{{3
-if g:CPP_TOOLS
-PlugDef 'puremourning/vimspector'
-PlugDef 'gauteh/vim-cppman'
-endif
-" ------------------------------------------------------------------
 " Tmux Integration {{{3
 if g:TMUX
 PlugDef 'christoomey/vim-tmux-navigator'
@@ -214,8 +210,15 @@ endif
 " ------------------------------------------------------------------
 " Sandbox {{{3
 PlugDef 'mechatroner/rainbow_csv'
-PlugDef 'chentoast/marks.nvim'
+" PlugDef 'chentoast/marks.nvim'
 PlugDef 'mattn/emmet-vim'
+PlugDef 'tell-k/vim-autopep8'
+PlugDef 'nvim-telescope/telescope-live-grep-args.nvim'
+PlugDef 'Pocco81/TrueZen.nvim'
+PlugDef 'mfussenegger/nvim-dap'
+PlugDef 'kevinhwang91/nvim-bqf'
+PlugDef 'rcarriga/nvim-dap-ui'
+PlugDef 'anuvyklack/hydra.nvim'
 
 call plug#end()
 
@@ -225,6 +228,9 @@ endif
 " =========================
 "  General Settings {{{1
 " ----------------------
+filetype plugin indent on
+syntax enable
+
 set wrap
 set number
 set hlsearch
@@ -250,6 +256,23 @@ set foldmethod=indent
 set shortmess+=A
 set signcolumn=number
 
+" Vim-sensible options
+set autoindent
+set backspace=indent,eol,start
+set complete-=i
+set smarttab
+set nrformats-=octal
+set laststatus=2
+set ruler
+set display+=lastline
+set encoding=utf-8
+set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+set tabpagemax=50
+set history=1000
+set viminfo^=!
+set sessionoptions-=options
+set viewoptions-=options
+
 " Tabs
 set shiftwidth=4
 set tabstop=4
@@ -270,10 +293,21 @@ let mapleader=" "
 " Use ag if it exists
 if executable('rg')
     " Use rg over grep
-    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --ignore-vcs
-elseif executable('ag')
-    set grepprg=ag\ --nogroup\ --nocolor
+    let g:_grepprg="rg\\ --vimgrep\\ --no-heading\\ --smart-case\\ --ignore-vcs"
+    execute "set grepprg=".g:_grepprg
 endif
+
+" Set grep prg
+function! SetGrepArg(args)
+    let l:text = substitute(a:args, ' ', '\\ ', 'g')
+    execute "set grepprg=".g:_grepprg.'\ '.l:text
+    set grepprg
+endfunction
+
+" Set grep prg
+function! SetGrepCurrentFile()
+    call SetGrepArg("-t ".&filetype)
+endfunction
 
 " Use 3.8 if exists
 if executable('python3.8')
@@ -288,7 +322,11 @@ endif
 let setting_cycles = {
             \ "foldmethod": ['manual', 'expr', 'syntax', 'marker'],
             \ "mouse": ['a', ''],
-            \ "colorcolumn": ['120', '']
+            \ "colorcolumn": ['120', ''],
+            \ "listchars": [
+                \      'tab:⇢\ ,trail:-,extends:►,precedes:◄,nbsp:+,space:\ ',
+                \ 'eol:¬,tab:⇢·,trail:-,extends:►,precedes:◄,nbsp:+,space:␣'
+                \]
             \ }
 
 function! Cycle_setting(name)
@@ -312,6 +350,7 @@ noremap <leader>7N <cmd>call Cycle_setting("relativenumber")<CR>
 noremap <leader>7m <cmd>call Cycle_setting("mouse")<CR>
 noremap <leader>7f <cmd>call Cycle_setting("foldmethod")<CR>
 noremap <leader>7c <cmd>call Cycle_setting("colorcolumn")<CR>
+noremap <leader>7<space> <cmd>call Cycle_setting("listchars")<CR>
 " ------------------------------------------------------------------
 
 "=========================
@@ -344,9 +383,6 @@ endif
 "    Far {{{2
 if PlugLoaded('far')
 let g:far#source='rg'
-
-command! FindReplace Farr
-command! Find Farf
 endif
 
 "    Vim Printer {{{2
@@ -363,28 +399,33 @@ let g:vim_printer_items = {
 if PlugLoaded('nvim_tree_lua')
 noremap <leader>\ :NvimTreeToggle<CR>
 noremap <leader>\| :NvimTreeFindFile<CR>
-noremap <leader>7p :call TogglePicker()<CR>
-
-
-let g:nvim_tree_highlight_opened_files = 1
-let g:nvim_tree_git_hl = 1
 
 lua << EOF
 require'nvim-tree'.setup {
     disable_netrw = true,
+    renderer = {
+        highlight_opened_files = "all",
+        highlight_git = true,
+    },
+    live_filter = {
+        always_show_folders = false,
+        prefix = "❯ "
+    },
     actions = {
         open_file = {
             window_picker = {
                 enable = false
+                }
             }
+        },
+    view = { mappings = { list = {
+        { key = { "<C-]>"},                       action = "cd" },
+        { key = "C-[",                            action = "dir_up" },
         }
-    }
+    }}
 }
 EOF
 
-function TogglePicker()
-let g:nvim_tree_disable_window_picker =  1 - g:nvim_tree_disable_window_picker
-endfunction
 
 endif
 
@@ -393,8 +434,7 @@ if PlugLoaded('which_key')
 noremap <silent> <leader> :WhichKey ' '<CR>
 let g:which_key_map =  {}
 let g:which_key_map.p = { 'name' : '+fuzzy' }
-let g:which_key_map.c = { 'name' : '+coc' }
-let g:which_key_map.d = { 'name' : '+vimspector' }
+let g:which_key_map.d = { 'name' : '+debugging' }
 let g:which_key_map.e = { 'name' : '+edit' }
 let g:which_key_map.g = { 'name' : '+git' }
 let g:which_key_map.x = { 'name' : '+extension' }
@@ -402,15 +442,12 @@ let g:which_key_map.W = { 'name' : '+WhichKey' }
 let g:which_key_map['7'] = { 'name' : '+toggle' }
 
 call which_key#register('<Space>', "g:which_key_map")
-
-" Show Help for char
-noremap <leader>W <cmd>execute 'WhichKey "'.nr2char(getchar()).'"'<CR>
 endif
 
 "    Startify {{{2
 if PlugLoaded('startify')
 let g:startify_custom_header = startify#center(split(system('figlet nvim'), '\n'))
-let g:startify_change_to_dir = 1
+let g:startify_change_to_dir = 0
 let g:startify_session_dir = '~/.vim/sessions'
 let g:startify_enable_unsafe = 1 " Faster startup
 let g:startify_bookmarks = [
@@ -490,23 +527,9 @@ EOF
 let g:indent_blankline_char = '▏'
 endif
 
-"    EasyMotion {{{2
-if PlugLoaded('easymotion')
-let g:EasyMotion_startofline = 0
-let g:EasyMotion_keys='asdfgtrebvcwqxzyuionmpASDFGHlkjh'
-map <leader>f <Plug>(easymotion-bd-f)
-map <leader>S <Plug>(easymotion-bd-f2)
-map <leader>s <Plug>(easymotion-bd-w)
-
-map <Leader>l <Plug>(easymotion-lineforward)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
-endif
-
 "    Hop {{{2
 if PlugLoaded('hop')
-lua require'hop'.setup()
+lua require'hop'.setup({keys = 'asdfgqwerthjklyuio'})
 
 map <leader>j <cmd>HopLineStartAC<CR>
 map <leader>k <cmd>HopLineStartBC<CR>
@@ -552,33 +575,25 @@ require'marks'.setup {
 EOF
 endif
 
-"    Terminal Toggle {{{2
-if PlugLoaded('toggle_terminal')
-noremap <silent> <M-`> :ToggleTerminal<CR>
-tnoremap <silent> <M-`> <C-\><C-n>:ToggleTerminal<CR>
-noremap <silent> <C-t> :ToggleTerminal<CR>
-tnoremap <silent> <C-t> <C-\><C-n>:ToggleTerminal<CR>
-endif
-
 command! -nargs=+ Ivy Telescope <args> theme=ivy
 "  Fuzzy Plugins {{{2
 "    Fuzzy Commands {{{3
 command! Fuzzy         Ivy builtin
 command! FuzzyFiles    Files
-command! FuzzyFilesR   History
+command! FuzzyFilesR   Ivy oldfiles
 command! FuzzyCom      Ivy commands
 command! FuzzyComR     Ivy command_history
 command! FuzzyQF       Ivy quickfix
-command! FuzzyTags     Clap tags
+command! FuzzyTags     Ivy current_buffer_tags
 command! FuzzyFindFile Ivy quickfix
 command! FuzzyInc      Ivy current_buffer_fuzzy_find
 command! FuzzyBuffers  Ivy buffers
-command! FuzzyFindAll  Ivy live_grep
+command! FuzzyFindAll  Rg
 command! FuzzyResume   Ivy resume
 
 " Mappings
 nnoremap <C-p> <cmd>FuzzyFiles<cr>
-nnoremap <M-P> <cmd>FuzzyCom<cr>
+nnoremap <M-P> <cmd>FuzzyFilesR<cr>
 nnoremap <M-r> <cmd>FuzzyComR<cr>
 nnoremap <M-R> <cmd>FuzzyCom<cr>
 nnoremap <M-e> <cmd>Fuzzy<cr>
@@ -592,8 +607,9 @@ nnoremap <leader>pM <cmd>execute 'Lines {'.'{{'<CR>
 
 "    Fuzzy Mappings {{{3
 " Search Word
-nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
-xnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
+" nnoremap gw <cmd>silent exe("grep! ".expand("<cword>")) \| FuzzyQF <CR>
+" xnoremap gw "my:silent exe("grep! ".@m) \| FuzzyQF <CR>
+nnoremap gw <cmd>silent exe("Rg ".expand("<cword>"))<CR>
 
 nnoremap <leader>xf <cmd>execute('silent grep "'.input('Search For: ').'" \| FuzzyQF ')<CR>
 
@@ -607,6 +623,11 @@ defaults = {
     preview_title = false,
     prompt_title = false,
     layout_strategy = "vertical",
+    extensions = {
+        live_grep_args = {
+            auto_quoting = true, -- enable/disable auto-quoting
+        }
+    },
     mappings = {
         n = {
             ['<c-d>'] = require('telescope.actions').delete_buffer
@@ -618,15 +639,8 @@ defaults = {
     }
 }
 require("telescope").load_extension "file_browser"
+require("telescope").load_extension "live_grep_args"
 EOF
-
-if PlugLoaded('project_nvim')
-lua << EOF
-  require("project_nvim").setup {}
-  require('telescope').load_extension('projects')
-EOF
-nnoremap <leader>pr <cmd>Ivy projects<CR>
-endif
 
 nnoremap <leader>p  <cmd>Ivy<cr>
 nnoremap <leader>pp <cmd>Ivy find_files<cr>
@@ -634,6 +648,7 @@ nnoremap <leader>pc <cmd>Ivy commands<CR>
 nnoremap <leader>pC <cmd>Ivy command_history<CR>
 nnoremap <leader>p<M-c> <cmd>Clap colors<CR>
 nnoremap <leader>ph <cmd>Ivy help_tags<CR>
+nnoremap <leader>pf <cmd>Ivy live_grep_args<CR>
 nnoremap <leader>pB <cmd>Ivy file_browser<CR>
 nnoremap <leader>pb <cmd>Ivy buffers<CR>
 nnoremap <leader>pa <cmd>Ivy current_buffer_tags<CR>
@@ -731,12 +746,13 @@ cmp.setup({
         ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item()),
     },
     sources = cmp.config.sources({
-        { name = 'calc' },
-        { name = 'vsnip' },
-        { name = 'nvim_lsp' },
-        { name = 'tmux' },
+        { name = 'nvim_lsp'},
         { name = 'buffer' },
         { name = 'path' },
+        { name = 'vsnip' },
+    }, {
+        { name = 'calc' },
+        { name = 'tmux' },
         { name = 'cmp_tabnine' },
     }),
     formatting = {
@@ -790,24 +806,6 @@ EOF
 endif
 endif
 
-" Coq
-if PlugLoaded('coq_nvim')
-    let g:coq_settings = {}
-    let g:coq_settings["clients.tabnine.enabled"] = v:true
-    let g:coq_settings["clients.snippets.user_path"] = "~/.vim/my_snippets/"
-    let g:coq_settings["keymap.recommended"] = v:false
-    let g:coq_settings["keymap.jump_to_mark"] = '<S-Tab>'
-    let g:coq_settings["keymap.pre_select"] = v:false
-    let g:coq_settings["display.ghost_text.enabled"] = v:false
-    let g:coq_settings["auto_start"] = 'shut-up'
-
-    inoremap <expr> <Esc>   pumvisible() ? "\<C-e><Esc>" : "\<Esc>"
-    inoremap <expr> <C-c>   pumvisible() ? "\<C-e><C-c>" : "\<C-c>"
-    inoremap <expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
-    inoremap <expr> <CR>    pumvisible() ? "\<CR>"  : "\<CR>"
-    inoremap <expr> <Tab>   pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-y>" : "\<C-y>") : "\<Tab>"
-    " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
-endif
 " ------------------------------------------------------------------
 
 "    Nvim LSP {{{2
@@ -1049,7 +1047,8 @@ require'nvim-treesitter.configs'.setup {
         end
     },
     indent = {
-        enable = { "typescript" }
+        enable = { "typescript" },
+        disable = { "cpp" },
     },
     incremental_selection = {
         enable = true,
@@ -1120,21 +1119,51 @@ nmap <unique> <leader>srb <Plug>(sandwich-replace-auto)
 
 endif
 
-"    VimSpector {{{2
-if PlugLoaded('vimspector')
-nmap <leader>dc <Plug>VimspectorContinue
-nmap <leader>ds <Plug>VimspectorLaunch
-nmap <leader>dS :VimspectorReset<CR>
-nmap <leader>dr <Plug>VimspectorRestart
-nmap <leader>dt <Plug>VimspectorStop
-nmap <leader>dp <Plug>VimspectorPause
-nmap <leader>dd <Plug>VimspectorToggleBreakpoint
-nmap <leader>dD <Plug>VimspectorToggleConditionalBreakpoint
-nmap <leader>df <Plug>VimspectorAddFunctionBreakpoint
-nmap <leader>dC <Plug>VimspectorRunToCursor
-nmap <leader>dj <Plug>VimspectorStepOver
-nmap <leader>dl <Plug>VimspectorStepInto
-nmap <leader>dh <Plug>VimspectorStepOut
+"    nvim-dap {{{2
+if PlugLoaded('dap')
+lua << EOF
+local dap = require('dap')
+dap.adapters.cppdbg = {
+  id = 'cppdbg',
+  type = 'executable',
+  command = '/home/arowe/.vscode-server/extensions/ms-vscode.cpptools-1.10.8/debugAdapters/bin/OpenDebugAD7'
+}
+
+local dap = require('dap')
+dap.configurations.cpp = {
+  {
+    name = "Launch file",
+    type = "cppdbg",
+    request = "launch",
+    arguments = vim.g.dap_args,
+    program = function()
+         if vim.g.dap_prg ~= nil then
+             return vim.g.dap_prg
+         else
+             return vim.fn.input('Path: ', vim.fn.getcwd() .. '/bazel-bin/core/src/unit_tests/' .. vim.fn.expand('%:t:r'), 'file')
+         end
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+  },
+}
+
+vim.fn.sign_define('DapBreakpoint', {text='', texthl='WildMenu', linehl='Visual', numhl=''});
+EOF
+
+nnoremap <silent> <leader>dc <Cmd>lua require'dap'.continue()<CR>
+nnoremap <silent> <leader>dC <Cmd>lua require'dap'.run_last()<CR>
+nnoremap <silent> <leader>dj <Cmd>lua require'dap'.step_over()<CR>
+nnoremap <silent> <leader>dl <Cmd>lua require'dap'.step_into()<CR>
+nnoremap <silent> <leader>dh <Cmd>lua require'dap'.step_out()<CR>
+nnoremap <silent> <leader>dd <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+nnoremap <silent> <leader>dC <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+nnoremap <silent> <leader>dr <Cmd>lua require'dap'.repl.open()<CR>
+nnoremap <silent> <leader>dL <Cmd>lua require'dap'.run_last()<CR>
+nnoremap <silent> <leader>ds <Cmd>lua require'dap'.terminate()<CR>
+
+nnoremap <silent> <leader>du <Cmd>lua require'dapui'.toggle()<CR>
+lua require("dapui").setup()
 endif
 
 "    Switch to Layout / Maximize Pane {{{2
@@ -1209,23 +1238,14 @@ if !$VIM_RAW
 source ~/.vim/colorscheme.vim
 function! WriteColor()
     let l:name = trim(execute('colorscheme'))
+    echo "WRITING COLORS ".l:name
     call system('echo colorscheme '.l:name.' > ~/.vim/colorscheme.vim')
 endfunction
-augroup MyColors
-    au!
-    "Write Colorscheme
-    autocmd ColorScheme * call WriteColor()
-augroup END
-endif
-
-" clever-f {{{ 3
-if PlugLoaded('clever_f')
-    let g:clever_f_across_no_line = 1
-
-    nnoremap <Esc> <cmd>call clever_f#reset()<CR>
-    nnoremap <leader>7C <cmd>ToggleMultiLine<CR>
-
-    command! ToggleMultiLine exe "let g:clever_f_across_no_line = ".(1 - g:clever_f_across_no_line)."\| echo 'Across Lines: '.(1 - g:clever_f_across_no_line)"
+"augroup MyColors
+"    au!
+"    "Write Colorscheme
+"    " autocmd ColorScheme * call WriteColor()
+"augroup END
 endif
 
 " ------------------------------------------------------------------
@@ -1235,11 +1255,11 @@ let g:session_autosave_periodic=3
 let g:session_autoload='no'
 let g:interestingWordsDefaultMappings = 0
 let g:autoload_session = 0
-
+let g:autopep8_disable_show_diff=1
 
 execute 'nnoremap <M-g> :Git '
 nnoremap <M-o> :ClangdSwitchSourceHeader<CR>
-nnoremap <M-u> :SymbolsOutline<CR>
+nnoremap <M-u> :FuzzyTags<CR>
 nnoremap <leader>u :UndotreeToggle \| UndotreeFocus<CR>
 nnoremap Q :Bdelete menu<CR>
 noremap <M-/> :Commentary<CR>
@@ -1346,7 +1366,7 @@ nnoremap <silent> <leader>qx <cmd>call setqflist([], 'r')<CR>
 
 " Use Troubles quickfix if
 if PlugLoaded('trouble')
-nnoremap <leader>qq <cmd>cclose \| TroubleToggle quickfix<cr>
+nnoremap <leader>qQ <cmd>cclose \| TroubleToggle quickfix<cr>
 endif
 
 " 'Edit' Keys
@@ -1360,11 +1380,6 @@ nnoremap <leader>en :tab split ~/.vim/notes.md<cr>
 nnoremap <leader>ej <cmd>execute "e ~/.vim/notes/".system("date +'%m-%d-%y.md'")<CR>
 nnoremap <leader>e<M-j> <cmd>execute "e ~/.vim/notes/".input("Name:").".md"<CR>
 nnoremap <leader>eJ <cmd>call system("bash ~/.vim/notes/gen_index.sh") \| e ~/.vim/notes/Index.md<CR>
-
-augroup ec_cmds
-  autocmd!
-  autocmd FileType javascript nnoremap <leader>ec <cmd>e package.json<cr>
-augroup END
 
 " Incrementing
 vnoremap <C-g> g<C-a>
@@ -1393,6 +1408,10 @@ cnoremap <C-j> <C-W>s<C-w><C-k>
 cnoremap <C-k> <C-w>s<C-w><C-k>
 cnoremap <C-l> <C-w>v<C-w><C-l>
 cnoremap <C-h> <C-w>v<C-w><C-h>
+
+" Delete Word and Line
+inoremap <C-U> <C-G>u<C-U>
+inoremap <C-W> <C-G>u<C-W>
 
 " ==== Vim Command Overrides ==== {{{2
 " Move to end of line easy
@@ -1470,9 +1489,6 @@ augroup END
 endif
 
 " ==== Misc ==== {{{2
-" Run Line in Vim
-autocmd FileType vim nnoremap <buffer> yr yy:<C-r>"<CR>
-autocmd FileType vim xnoremap <buffer> yr y:@"<CR>
 " run line in shell
 nnoremap yR yy:!<C-r>"<CR>
 " Yank link
@@ -1497,6 +1513,9 @@ inoremap <M-CR> <Esc>o
 " Insert Blank line before // After
 nnoremap <leader>sk mpO<esc>`pdmp
 nnoremap <leader>sj mpo<esc>`pdmp
+" Make Prg
+nnoremap R <cmd>make<CR>
+nnoremap <leader>R <cmd>execute("setlocal makeprg=".input("Set run command: "))<CR>
 
 " ------------------------------------------------------------------
 " ===================
@@ -1540,7 +1559,7 @@ command! Include call Fzf({'source': 'fd "\.h$"', 'sink': function('Include')}))
 command! InsertInclude call Fzf({'source': 'fd', 'sink': function('InsertInclude')}))
 endif
 
-"  Functions {{{1
+"  functions {{{1
 function! Cwd() abort
     let l:path = getcwd()
     let l:pattern = getenv("HOME")
@@ -1566,18 +1585,25 @@ augroup Cmds
     autocmd BufEnter *.h,*.cc setlocal iskeyword=@,48-57,_,192-255
 
     " Vim
-    autocmd BufRead * if &filetype == 'vim' |
-                \ nmap <buffer> gh :exe 'help '.expand('<cword>')<CR> |
-                \ set foldmethod=marker |
-                \ endif
+    autocmd FileType vim
+                \ nmap <buffer> gh :exe 'help '.expand('<cword>')<CR>
+                \ | nnoremap <buffer> yr yy:<C-r>"<CR>
+                \ | xnoremap <buffer> yr y:@"<CR>
+                \ | set foldmethod=marker
+                \ | nnoremap <buffer> R :source ~/.vimrc<CR>
 
-    " Vim
-    autocmd BufRead * if &filetype == 'typescript' |
-                \ nmap <buffer> <leader>dd :normal! odebugger;<ESC><CR> |
-                \ endif
+    " TypeScript
+    autocmd FileType typescript
+                \ nmap <leader>ec <cmd>e package.json<cr>
+                \ nmap <buffer> <leader>dd :normal! odebugger;<ESC><CR>
+
+    " Python
+    autocmd FileType python
+                \ nnoremap <buffer> <leader>cf :Autopep8<CR>
+                \ | set makeprg=python\ %
 augroup END
 
-" ==== Fzf Functions ==== {{{2
+" ==== Fzf functions ==== {{{2
 " Easy way to Include c++ files
 function! Include(file, ...) abort
     let l:file = a:file
@@ -1606,48 +1632,22 @@ function! InsertInclude(file, ...) abort
     exe "normal! i" . l:include. "\<Esc>"
 endfunction
 
-function! Replace(search, replace, qf) abort
-    if a:search == ''
-        let l:search = input("Text to Replace: ")
-    else
-        let l:search = a:search
-    endif
-
-    if a:replace == ''
-        let l:replace = input("Text to Insert: ")
-    else
-        let l:replace = a:replace
-    endif
-
-    if l:search == ''
-        return
-    endif
-
-    if l:replace == ''
-        return
-    endif
-
-    let l:text = substitute(l:replace, '/','\\/', 'g')
-
-    let l:cmd = '%s/'.l:search.'/'.l:text.'/g'
-    if a:qf == v:true
-        let l:cmd = 'cfdo '.l:cmd
-    endif
-    echo l:cmd
-    execute (l:cmd)
-endfunction
-
-command! -nargs=? Replace call Replace('', <q-args>, v:false)
-command! ReplaceReg call Replace(@", '', v:false)
-command! -nargs=? ReplaceAll call Replace(g:_last_grep, <q-args>, v:true)
-
 " Grep
-command! -nargs=1 Grep silent grep <q-args> | copen
-command! -nargs=+ Find let g:_last_grep = <q-args> | silent grep <q-args> | copen
+command! -nargs=1 QFindGlobal let g:_last_grep = <q-args> | silent grep <q-args> | copen
+command! -nargs=1 QFindFile let g:_last_grep = <q-args> | silent grep <q-args> % | copen
+command! -nargs=1 QReplace execute "cdo s/".g:_last_grep."/".<q-args>."/g"
+command! -nargs=1 QReplaceW execute "cdo s/".g:_last_grep."/".<q-args>."/g | w"
 
-nnoremap <leader>xf :Find
-nnoremap <leader>xr :Replace<CR>
-nnoremap <leader>xR :ReplaceAll<CR>
+nnoremap <leader>xf <cmd>execute("QFindFile ".input("Search Current File: "))<CR>
+nnoremap <leader>xF <cmd>execute("QFindGlobal ".input("Search Global: "))<CR>
+nnoremap <leader>xr <cmd>execute("QReplace ".input("Replace '".g:_last_grep."' in ".len(getqflist())." places with: "))<CR>
+nnoremap <leader>xR <cmd>execute("QReplaceW ".input("Replace and WRITE '".g:_last_grep."' in ".len(getqflist())." places with: "))<CR>
+nnoremap <leader>xs :%s///g<Left><Left><Left>
+
+nnoremap <leader>f /
+nnoremap <leader>F ?
+nnoremap <leader>/ :execute 'QFindGlobal '.input("Search Global For: ")<CR>
+nnoremap <leader>? :execute 'QReplaceW '.input("Replace <".g:_last_grep."> With: ")<CR>
 
 " Dump a  command
 function! Dump(cmd) abort
@@ -1660,17 +1660,132 @@ function! Dump(cmd) abort
 endfunction
 command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 
+" QuickFix Utils {{{ 3
+" When using `dd` in the quickfix list, remove the item from the quickfix list.
+function! RemoveQFItem()
+  let curqfidx = line('.') - 1
+  let qfall = getqflist()
+  call remove(qfall, curqfidx)
+  call setqflist(qfall, 'r')
+  execute curqfidx + 1 . "cfirst"
+  :copen
+endfunction
+:command! RemoveQFItem :call RemoveQFItem()
+" Use map <buffer> to only map dd in the quickfix window. Requires +localmap
+autocmd FileType qf map <buffer> dd <cmd>RemoveQFItem<cr>
+
+function! GrepQuickFix(pat)
+  let all = getqflist()
+  for d in all
+    if bufname(d['bufnr']) !~ a:pat && d['text'] !~ a:pat
+        call remove(all, index(all,d))
+    endif
+  endfor
+  call setqflist(all)
+endfunction
+
+function! GrepQuickFixRemove(pat)
+  let all = getqflist()
+  for d in all
+    if bufname(d['bufnr']) =~ a:pat || d['text'] =~ a:pat
+        call remove(all, index(all,d))
+    endif
+  endfor
+  call setqflist(all)
+endfunction
+command! -nargs=* GrepQF call GrepQuickFix(<q-args>)
+command! -nargs=* GrepQFRemove call GrepQuickFixRemove(<q-args>)
+nnoremap <silent> <leader>q/ <cmd>exe "GrepQF ".input("Select Items /")<CR>
+nnoremap <silent> <leader>q? <cmd>exe "GrepQFRemove ".input("Remove Items /")<CR>
+
+if g:VIM_RAW
+    finish
+endif
+
 " ---------------------------------------------------
 "  SandBox {{{1
-nnoremap R <cmd>make<CR>
-nnoremap <leader>R <cmd>execute("setlocal makeprg=".input("Set run command: "))<CR>
-
-augroup MAKE
-    autocmd BufRead *.rs set makeprg=cargo\ run
-    autocmd BufRead *.py set makeprg=python\ %
-augroup END
-
-let g:user_emmet_leader_key='<m-v>'
+let g:user_emmet_leader_key='<c-n>'
 nnoremap <leader>xm 2F"r{astyles.<esc>f"r}
 vnoremap <leader>xm =gv:s/"\(.*\)"/{styles.\1}/g<CR>
+let g:fzf_colors =
+            \ {'fg':      ['fg', 'Normal'],
+            \ 'bg':      ['bg', 'Normal'],
+            \ 'hl':      ['fg', 'Error'],
+            \ 'fg+':     ['fg', 'Normal'],
+            \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+            \ 'hl+':     ['fg', 'Error'],
+            \ 'info':    ['fg', 'PreProc'],
+            \ 'border':  ['fg', 'Ignore'],
+            \ 'prompt':  ['fg', 'Conditional'],
+            \ 'pointer': ['fg', 'Exception'],
+            \ 'marker':  ['fg', 'Keyword'],
+            \ 'spinner': ['fg', 'Label'],
+            \ 'header':  ['fg', 'Comment'] }
 
+
+lua << EOF
+local Hydra = require('hydra')
+
+Hydra({
+   name = 'View Mode2',
+   mode = 'n',
+   body = '<M-h>',
+   heads = {
+      { 'k', '5kzz', },
+      { 'h', '20kzz', },
+      { 'j', '5jzz', },
+      { 'l', '20jzz', },
+   }
+})
+
+local function cmd(command)
+   return table.concat({ '<Cmd>', command, '<CR>' })
+end
+
+local hint = [[
+  _f_: files       _m_: marks
+  _o_: old files   _g_: live grep
+  _p_: projects    _/_: search in file
+
+  _r_: resume      _u_: undotree
+  _h_: vim help    _c_: execute command
+  _k_: keymaps     _;_: commands history
+  _O_: options     _?_: search history
+
+  _<Enter>_: Telescope           _<Esc>_
+]]
+
+Hydra({
+   name = 'Telescope',
+   hint = hint,
+   config = {
+      color = 'teal',
+      invoke_on_body = true,
+      hint = {
+         position = 'middle',
+         border = 'rounded',
+      },
+   },
+   mode = 'n',
+   body = '<m-h>t',
+   heads = {
+      { 'f', cmd 'Ivy find_files' },
+      { 'g', cmd 'Ivy live_grep' },
+      { 'o', cmd 'Ivy oldfiles', { desc = 'recently opened files' } },
+      { 'h', cmd 'Ivy help_tags', { desc = 'vim help' } },
+      { 'm', cmd 'MarksListBuf', { desc = 'marks' } },
+      { 'k', cmd 'Ivy keymaps' },
+      { 'O', cmd 'Ivy vim_options' },
+      { 'r', cmd 'Ivy resume' },
+      { 'p', cmd 'Ivy projects', { desc = 'projects' } },
+      { '/', cmd 'Ivy current_buffer_fuzzy_find', { desc = 'search in file' } },
+      { '?', cmd 'Ivy search_history',  { desc = 'search history' } },
+      { ';', cmd 'Ivy command_history', { desc = 'command-line history' } },
+      { 'c', cmd 'Ivy commands', { desc = 'execute command' } },
+      { 'u', cmd 'silent! %foldopen! | UndotreeToggle', { desc = 'undotree' }},
+      { '<Enter>', cmd 'Ivy', { exit = true, desc = 'list all pickers' } },
+      { '<Esc>', nil, { exit = true, nowait = true } },
+   }
+})
+EOF
+colorscheme kosmikoa

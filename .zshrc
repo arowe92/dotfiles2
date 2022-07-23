@@ -1,10 +1,11 @@
 ###################################
 ## PLUGINS
 ###################################
+# zmodload zsh/zprof
+
 DISABLE_UPDATE_PROMPT=true
 source ~/.oh-my-zsh/oh-my-zsh.sh
 source ~/.zplug/init.zsh
-
 zplug "plugins/git", from:oh-my-zsh
 zplug "plugins/pip", from:oh-my-zsh
 zplug "plugins/vi-mode", from:oh-my-zsh
@@ -49,7 +50,7 @@ export FZF_TMUX_OPTS="-p70%,70%"
 export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 export FZF_CTRL_T_COMMAND="fd --color=always"
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket-$(tmux display-message -p '#{session_name}' 2>/dev/null)"
-# export BAT_CONFIG_PATH="$HOME/.bat.conf"
+export BAT_CONFIG_PATH="$HOME/.bat.conf"
 
 # Pagers
 _exists () { command -v $1 > /dev/null }
