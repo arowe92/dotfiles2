@@ -53,9 +53,13 @@ with open(Path.home() / '.zsh_history', 'rb') as f:
         except Exception:
             continue
 
+
+output = []
 for line, cmd, parts in lines:
     for p in parts:
         if (p, cmd) not in flags:
-            print(f'{YELLOW}{counts[(p, cmd)]}\t{GREEN}{str(p)}\t{BLUE}{line}{ENDC}')
             flags.add((p, cmd))
+            output += [(counts[(p, cmd)], str(p), line)]
 
+for num, flag, line in sorted(output, key=lambda x: -x[0]):
+    print(f'{YELLOW}{num}\t{GREEN}{flag}\t{BLUE}{line.replace(flag, "")}{ENDC}')

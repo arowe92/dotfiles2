@@ -246,14 +246,16 @@ zle -N fzf-get-file-widget
 bindkey '^Sf' fzf-get-file-widget
 
 ###############################
-# CD Down Widget
+# Ctrlp Widget
 # @hotkey ^p (no leader)
 ###############################
-fzf_cd() {
-    dir="`fd -t d | fzf-down`"
-    [[ -n "$dir" ]] && cd $dir
+_ctrlp() {
+    cmd=$(ctrlp)
+    LBUFFER+="$cmd"
+    zle accept-line
 }
-bindkey -s '^p' 'fzf_cd\n'
+zle -N _ctrlp
+bindkey '^p' _ctrlp
 
 ###############################
 # CD Up Widget
