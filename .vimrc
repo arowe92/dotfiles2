@@ -58,6 +58,9 @@ function! s:FormatPlugName(name) abort
 endfunction
 function! PlugLoaded(name) abort
     let l:name = s:FormatPlugName(a:name)
+    if l:name =~ 'nvim' && !has('nvim')
+        return 0
+    endif
     return exists('g:plugin_'.l:name)
 endfunction
 function! PlugDef(...) abort
@@ -66,7 +69,6 @@ function! PlugDef(...) abort
     if l:name =~ 'nvim' && !has('nvim')
         return
     endif
-
     execute 'Plug '.join(a:000)
     execute ('let g:plugin_'.l:name.' = 1')
 endfunction
@@ -107,7 +109,7 @@ PlugDef 'wellle/targets.vim'
 PlugDef 'tpope/vim-repeat'
 PlugDef 'lfv89/vim-interestingwords'
 PlugDef 'xolox/vim-misc'
-PlugDef 'xolox/vim-session'
+" PlugDef 'xolox/vim-session'
 
 " Language Support {{{3
 PlugDef 'tikhomirov/vim-glsl'
@@ -179,7 +181,7 @@ PlugDef 'nvim-telescope/telescope-file-browser.nvim'
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 PlugDef 'ray-x/lsp_signature.nvim'
-PlugDef 'tami5/lspsaga.nvim'
+PlugDef 'glepnir/lspsaga.nvim'
 PlugDef 'folke/trouble.nvim'
 
 " Clap
@@ -212,13 +214,13 @@ endif
 PlugDef 'mechatroner/rainbow_csv'
 " PlugDef 'chentoast/marks.nvim'
 PlugDef 'mattn/emmet-vim'
-PlugDef 'tell-k/vim-autopep8'
+" PlugDef 'tell-k/vim-autopep8'
 PlugDef 'nvim-telescope/telescope-live-grep-args.nvim'
-PlugDef 'Pocco81/TrueZen.nvim'
-PlugDef 'mfussenegger/nvim-dap'
-PlugDef 'kevinhwang91/nvim-bqf'
-PlugDef 'rcarriga/nvim-dap-ui'
-PlugDef 'anuvyklack/hydra.nvim'
+" PlugDef 'Pocco81/TrueZen.nvim'
+" PlugDef 'mfussenegger/nvim-dap'
+" PlugDef 'kevinhwang91/nvim-bqf'
+" PlugDef 'rcarriga/nvim-dap-ui'
+" PlugDef 'anuvyklack/hydra.nvim'
 
 call plug#end()
 
@@ -548,6 +550,9 @@ require'lightspeed'.setup {
   },
 }
 EOF
+
+nmap <leader>s <Plug>(Lightspeed_s)
+nmap <leader>S <Plug>(Lightspeed_S)
 endif
 
 "    Marks {{{2
@@ -857,12 +862,7 @@ if PlugLoaded("lspsaga")
 lua << EOF
 local saga = require 'lspsaga'
 saga.init_lsp_saga {
-    code_action_prompt = { virtual_text = false },
-    rename_prompt_populate = true,
-    error_sign = "",
-    warn_sign = "",
-    hint_sign = "",
-    infor_sign = "",
+    --diagnostic_header = { " ", " ", " ", "ﴞ " },
 }
 EOF
 
@@ -903,10 +903,15 @@ endif
 
 if PlugLoaded('lsp_signature')
 lua << EOF
-require "lsp_signature".setup({
-bind = true, -- This is mandatory, otherwise border config won't get registered.
-floating_window = false
-})
+cfg = {
+    bind = true, -- This is mandatory, otherwise border config won't get registered.
+    floating_window = false,
+    always_trigger = false, -- sometime show signature on new line or in middle of parameter can be confusing, set it to false for #58;
+    toggle_key = '<M-s>',
+    select_signature_key = nil,
+}
+require "lsp_signature".setup(cfg);
+require'lsp_signature'.on_attach(cfg, bufnr)
 EOF
 endif
 
@@ -1103,19 +1108,19 @@ let g:sandwich_no_default_key_mappings = 1
 let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
 
 " add
-nmap <unique> <leader>sa <Plug>(sandwich-add)
-xmap <unique> <leader>sa <Plug>(sandwich-add)
-omap <unique> <leader>sa <Plug>(sandwich-add)
+nmap sa <Plug>(sandwich-add)
+xmap sa <Plug>(sandwich-add)
+omap sa <Plug>(sandwich-add)
 
 " delete
-nmap <unique> <leader>sd <Plug>(sandwich-delete)
-xmap <unique> <leader>sd <Plug>(sandwich-delete)
-nmap <unique> <leader>sdb <Plug>(sandwich-delete-auto)
+nmap sd <Plug>(sandwich-delete)
+xmap sd <Plug>(sandwich-delete)
+nmap sdb <Plug>(sandwich-delete-auto)
 
 " replace
-nmap <unique> <leader>sr <Plug>(sandwich-replace)
-xmap <unique> <leader>sr <Plug>(sandwich-replace)
-nmap <unique> <leader>srb <Plug>(sandwich-replace-auto)
+nmap sr <Plug>(sandwich-replace)
+xmap sr <Plug>(sandwich-replace)
+nmap srb <Plug>(sandwich-replace-auto)
 
 endif
 
@@ -1252,7 +1257,7 @@ endif
 "    Misc PLugins {{{2
 let g:session_autosave='yes'
 let g:session_autosave_periodic=3
-let g:session_autoload='no'
+let g:session_autoload=0
 let g:interestingWordsDefaultMappings = 0
 let g:autoload_session = 0
 let g:autopep8_disable_show_diff=1
@@ -1698,7 +1703,7 @@ command! -nargs=* GrepQFRemove call GrepQuickFixRemove(<q-args>)
 nnoremap <silent> <leader>q/ <cmd>exe "GrepQF ".input("Select Items /")<CR>
 nnoremap <silent> <leader>q? <cmd>exe "GrepQFRemove ".input("Remove Items /")<CR>
 
-if g:VIM_RAW
+if g:VIM_RAW || !has('nvim')
     finish
 endif
 
@@ -1723,69 +1728,111 @@ let g:fzf_colors =
             \ 'header':  ['fg', 'Comment'] }
 
 
+" lua << EOF
+" local Hydra = require('hydra')
+
+" Hydra({
+"    name = 'View Mode2',
+"    mode = 'n',
+"    body = '<M-h>',
+"    heads = {
+"       { 'k', '5kzz', },
+"       { 'h', '20kzz', },
+"       { 'j', '5jzz', },
+"       { 'l', '20jzz', },
+"    }
+" })
+
+" local function cmd(command)
+"    return table.concat({ '<Cmd>', command, '<CR>' })
+" end
+
+" local hint = [[
+"   _f_: files       _m_: marks
+"   _o_: old files   _g_: live grep
+"   _p_: projects    _/_: search in file
+
+"   _r_: resume      _u_: undotree
+"   _h_: vim help    _c_: execute command
+"   _k_: keymaps     _;_: commands history
+"   _O_: options     _?_: search history
+
+"   _<Enter>_: Telescope           _<Esc>_
+" ]]
+
+" Hydra({
+"    name = 'Telescope',
+"    hint = hint,
+"    config = {
+"       color = 'teal',
+"       invoke_on_body = true,
+"       hint = {
+"          position = 'middle',
+"          border = 'rounded',
+"       },
+"    },
+"    mode = 'n',
+"    body = '<m-h>t',
+"    heads = {
+"       { 'f', cmd 'Ivy find_files' },
+"       { 'g', cmd 'Ivy live_grep' },
+"       { 'o', cmd 'Ivy oldfiles', { desc = 'recently opened files' } },
+"       { 'h', cmd 'Ivy help_tags', { desc = 'vim help' } },
+"       { 'm', cmd 'MarksListBuf', { desc = 'marks' } },
+"       { 'k', cmd 'Ivy keymaps' },
+"       { 'O', cmd 'Ivy vim_options' },
+"       { 'r', cmd 'Ivy resume' },
+"       { 'p', cmd 'Ivy projects', { desc = 'projects' } },
+"       { '/', cmd 'Ivy current_buffer_fuzzy_find', { desc = 'search in file' } },
+"       { '?', cmd 'Ivy search_history',  { desc = 'search history' } },
+"       { ';', cmd 'Ivy command_history', { desc = 'command-line history' } },
+"       { 'c', cmd 'Ivy commands', { desc = 'execute command' } },
+"       { 'u', cmd 'silent! %foldopen! | UndotreeToggle', { desc = 'undotree' }},
+"       { '<Enter>', cmd 'Ivy', { exit = true, desc = 'list all pickers' } },
+"       { '<Esc>', nil, { exit = true, nowait = true } },
+"    }
+" })
+" EOF
+colorscheme kosmikoa
+
+let g:user_emmet_expandabbr_key = '<C-n><C-n>'
+" let g:user_emmet_expandword_key = '<C-y>;'
+" let g:user_emmet_update_tag = '<C-y>u'
+" let g:user_emmet_balancetaginward_key = '<C-y>d'
+" let g:user_emmet_balancetagoutward_key = '<C-y>D'
+" let g:user_emmet_next_key = '<C-y>n'
+" let g:user_emmet_prev_key = '<C-y>N'
+" let g:user_emmet_imagesize_key = '<C-y>i'
+" let g:user_emmet_togglecomment_key = '<C-y>/'
+" let g:user_emmet_splitjointag_key = '<C-y>j'
+" let g:user_emmet_removetag_key = '<C-y>k'
+" let g:user_emmet_anchorizeurl_key = '<C-y>a'
+" let g:user_emmet_anchorizesummary_key = '<C-y>A'
+" let g:user_emmet_mergelines_key = '<C-y>m'
+" let g:user_emmet_codepretty_key = '<C-y>c'
+"
+nnoremap X "_dd
+
 lua << EOF
-local Hydra = require('hydra')
-
-Hydra({
-   name = 'View Mode2',
-   mode = 'n',
-   body = '<M-h>',
-   heads = {
-      { 'k', '5kzz', },
-      { 'h', '20kzz', },
-      { 'j', '5jzz', },
-      { 'l', '20jzz', },
-   }
-})
-
-local function cmd(command)
-   return table.concat({ '<Cmd>', command, '<CR>' })
+local signs = {
+  Error = ' ',
+  Warn = ' ',
+  Info = ' ',
+  Hint = 'ﴞ ',
+}
+for type, icon in pairs(signs) do
+  local hl = 'DiagnosticSign' .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
-local hint = [[
-  _f_: files       _m_: marks
-  _o_: old files   _g_: live grep
-  _p_: projects    _/_: search in file
-
-  _r_: resume      _u_: undotree
-  _h_: vim help    _c_: execute command
-  _k_: keymaps     _;_: commands history
-  _O_: options     _?_: search history
-
-  _<Enter>_: Telescope           _<Esc>_
-]]
-
-Hydra({
-   name = 'Telescope',
-   hint = hint,
-   config = {
-      color = 'teal',
-      invoke_on_body = true,
-      hint = {
-         position = 'middle',
-         border = 'rounded',
-      },
-   },
-   mode = 'n',
-   body = '<m-h>t',
-   heads = {
-      { 'f', cmd 'Ivy find_files' },
-      { 'g', cmd 'Ivy live_grep' },
-      { 'o', cmd 'Ivy oldfiles', { desc = 'recently opened files' } },
-      { 'h', cmd 'Ivy help_tags', { desc = 'vim help' } },
-      { 'm', cmd 'MarksListBuf', { desc = 'marks' } },
-      { 'k', cmd 'Ivy keymaps' },
-      { 'O', cmd 'Ivy vim_options' },
-      { 'r', cmd 'Ivy resume' },
-      { 'p', cmd 'Ivy projects', { desc = 'projects' } },
-      { '/', cmd 'Ivy current_buffer_fuzzy_find', { desc = 'search in file' } },
-      { '?', cmd 'Ivy search_history',  { desc = 'search history' } },
-      { ';', cmd 'Ivy command_history', { desc = 'command-line history' } },
-      { 'c', cmd 'Ivy commands', { desc = 'execute command' } },
-      { 'u', cmd 'silent! %foldopen! | UndotreeToggle', { desc = 'undotree' }},
-      { '<Enter>', cmd 'Ivy', { exit = true, desc = 'list all pickers' } },
-      { '<Esc>', nil, { exit = true, nowait = true } },
-   }
+vim.diagnostic.config({
+  signs = true,
+  update_in_insert = false,
+  underline = true,
+  severity_sort = true,
+  virtual_text = {
+    source = true,
+  },
 })
 EOF
-colorscheme kosmikoa
+

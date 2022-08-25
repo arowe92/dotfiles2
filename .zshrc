@@ -1,26 +1,12 @@
+
+
 ###################################
 ## PLUGINS
 ###################################
-# zmodload zsh/zprof
+autoload -Uz compinit && compinit
 
-DISABLE_UPDATE_PROMPT=true
-source ~/.oh-my-zsh/oh-my-zsh.sh
-source ~/.zplug/init.zsh
-zplug "plugins/git", from:oh-my-zsh
-zplug "plugins/pip", from:oh-my-zsh
-zplug "plugins/vi-mode", from:oh-my-zsh
-zplug "plugins/fzf", from:oh-my-zsh
-
-zplug "clvv/fasd"
-zplug "lincheney/fzf-tab-completion", use:"zsh/*"
-zplug "zsh-users/zsh-autosuggestions", defer:2
-zplug "zsh-users/zsh-history-substring-search", defer:3
-zplug "zsh-users/zsh-syntax-highlighting", defer:3
-
-zplug "themes/3den", from:oh-my-zsh, as:theme
-
-zplug load
-
+source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+antidote load
 
 ###################################
 ## PATH
