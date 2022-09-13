@@ -1,0 +1,2 @@
+--glob=!*.min.js
+--glob=!*.min.css

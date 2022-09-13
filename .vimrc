@@ -3,27 +3,17 @@
 """""""""""""""""""
 "  Configuration {{{1
 "    RC Configuration {{{2
-let g:GIT_TOOLS = get(g:, 'GIT_TOOLS', 1)
-let g:GUI_TOOLS = get(g:, 'GUI_TOOLS', 1)
-let g:NVIM_TOOLS = get(g:, 'NVIM_TOOLS', 1)
-let g:STATUS_LINE = get(g:, 'STATUS_LINE', 1)
+let g:BASIC_ONLY= get(g:, 'BASIC_ONLY', 0)
+let g:LSP_TOOLS = get(g:, 'LSP_TOOLS', 1)
+let g:IDE_TOOLS = get(g:, 'IDE_TOOLS', 1)
 let g:TMUX = get(g:, 'TMUX', 1) && exists("$TMUX")
 let g:NERD_FONT = get(g:, 'NERD_FONT', 1)
 
 " Light Weight Config {{{3
-if exists('$VIM_LITE')
-    let g:GIT_TOOLS = 1
-    let g:GUI_TOOLS = 0
-    let g:NVIM_TOOLS = 0
-    let g:STATUS_LINE = 0
-endif
-
-" Nvim VSCode Plugin Options {{{3
-if exists('g:vscode')
-    let g:GIT_TOOLS = 0
-    let g:GUI_TOOLS = 0
-    let g:NVIM_TOOLS = 0
-    let g:STATUS_LINE = 0
+if exists('$VIM_LITE') || exists('g:vscode') || !has('nvim')
+    let g:BASIC_ONLY = 1
+    let g:LSP_TOOLS = 0
+    let g:IDE_TOOLS = 0
 endif
 
 " Vim for servers
@@ -65,12 +55,12 @@ function! PlugLoaded(name) abort
 endfunction
 function! PlugDef(...) abort
     let l:name = split(a:000[0], '/')[1]
-    let l:name = s:FormatPlugName(l:name)
+    let l:stem = s:FormatPlugName(l:name)
     if l:name =~ 'nvim' && !has('nvim')
         return
     endif
     execute 'Plug '.join(a:000)
-    execute ('let g:plugin_'.l:name.' = 1')
+    execute ('let g:plugin_'.l:stem.' = 1')
 endfunction
 command! -nargs=+ PlugDef call PlugDef(<f-args>)
 function SourceByLine(file)
@@ -85,41 +75,30 @@ endfunction
 " Essentials {{{3
 PlugDef 'phaazon/hop.nvim'
 PlugDef 'ggandor/lightspeed.nvim'
-PlugDef 'bogado/file-line'
 PlugDef 'machakann/vim-sandwich'
-
-" GUI Essentials {{{3
-PlugDef 'dstein64/nvim-scrollview'
-PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
-PlugDef 'junegunn/fzf.vim'
-
-" Window Management {{{3
-PlugDef 'caenrique/nvim-maximize-window-toggle'
-PlugDef 'Asheq/close-buffers.vim'
+PlugDef 'AndrewRadev/sideways.vim'
+PlugDef 'meain/vim-printer'
 
 " Text Editing {{{3
 PlugDef 'mg979/vim-visual-multi', {'branch': 'master'}
-PlugDef 'AndrewRadev/sideways.vim'
-PlugDef 'tpope/vim-commentary'
-PlugDef 'tpope/vim-eunuch' " Unix Commands
-PlugDef 'meain/vim-printer'
 PlugDef 'wellle/targets.vim'
 
-" Misc {{{3
+" Tpope {{{ 3
+PlugDef 'tpope/vim-commentary'
 PlugDef 'tpope/vim-repeat'
+
+if !g:BASIC_ONLY " {{{3
+" Misc {{{3
 PlugDef 'lfv89/vim-interestingwords'
-PlugDef 'xolox/vim-misc'
-" PlugDef 'xolox/vim-session'
+PlugDef 'tpope/vim-eunuch' " Unix Commands
 
 " Language Support {{{3
 PlugDef 'tikhomirov/vim-glsl'
 PlugDef 'pangloss/vim-javascript',  { 'for': 'javascript' }
-PlugDef 'elixir-editors/vim-elixir'
 PlugDef 'rust-lang/rust.vim'
 PlugDef 'MTDL9/vim-log-highlighting'
 PlugDef 'plasticboy/vim-markdown'
 PlugDef 'cespare/vim-toml'
-PlugDef 'manicmaniac/coconut.vim'
 PlugDef 'google/vim-jsonnet'
 PlugDef 'mechatroner/rainbow_csv'
 
@@ -130,25 +109,59 @@ PlugDef 'kyazdani42/nvim-web-devicons' " for file icons
 
 " Colorschemes {{{3
 silent call SourceByLine($DOTFILE_PATH."/.config/nvim/colors.vim")
-
-" ------------------------------------------------------------------
-if g:GUI_TOOLS " {{{3
-PlugDef 'mbbill/undotree'
-
-if executable('ctags')
-PlugDef 'yegappan/taglist'
 endif
 
-" PlugDef 'brooth/far.vim' " Find & Replace
+" ------------------------------------------------------------------
+if g:IDE_TOOLS " {{{3
+" Git Tools
+PlugDef 'tpope/vim-fugitive'
+PlugDef 'airblade/vim-gitgutter'
+PlugDef 'rhysd/conflict-marker.vim'
+
+" FZF
+PlugDef 'junegunn/fzf', { 'do': { -> fzf#install() } }
+PlugDef 'junegunn/fzf.vim'
+
+" Telescope
+PlugDef 'nvim-lua/popup.nvim'
+PlugDef 'nvim-lua/plenary.nvim'
+PlugDef 'nvim-telescope/telescope.nvim'
+PlugDef 'nvim-telescope/telescope-file-browser.nvim'
+
+" Clap
+PlugDef 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
+PlugDef 'goolord/nvim-clap-lsp'
+PlugDef 'liuchengxu/vista.vim'
+
+" Status Line
+PlugDef 'hoob3rt/lualine.nvim'
+PlugDef 'pacha/vem-tabline'
+PlugDef 'arkav/lualine-lsp-progress'
+
+" Window Management {{{3
+PlugDef 'caenrique/nvim-maximize-window-toggle'
+PlugDef 'Asheq/close-buffers.vim'
+
+" Scroll Bar
+PlugDef 'dstein64/nvim-scrollview'
+PlugDef 'mbbill/undotree'
+
+" List of Tags if ctags exists
+if executable('ctags')
+    PlugDef 'yegappan/taglist'
+endif
+
+" Other IDE Features
 PlugDef 'skywind3000/vim-quickui'
 PlugDef 'liuchengxu/vim-which-key'
 PlugDef 'kyazdani42/nvim-tree.lua'
-" PlugDef 'simrat39/symbols-outline.nvim'
 PlugDef 'mhinz/vim-startify'
+
+" PlugDef 'simrat39/symbols-outline.nvim'
 endif
 
 " ------------------------------------------------------------------
-if g:NVIM_TOOLS " {{{3
+if g:LSP_TOOLS " {{{3
 " TreeSitter
 PlugDef 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 PlugDef 'p00f/nvim-ts-rainbow'
@@ -170,30 +183,12 @@ PlugDef 'rafamadriz/friendly-snippets'
 " Pictograms for cmp
 PlugDef 'onsails/lspkind-nvim'
 
-" Telescope
-PlugDef 'nvim-lua/popup.nvim'
-PlugDef 'nvim-lua/plenary.nvim'
-PlugDef 'nvim-telescope/telescope.nvim'
-PlugDef 'nvim-telescope/telescope-file-browser.nvim'
-
-
 " LSP Config
 PlugDef 'neovim/nvim-lspconfig'
 PlugDef 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 PlugDef 'ray-x/lsp_signature.nvim'
 PlugDef 'glepnir/lspsaga.nvim'
 PlugDef 'folke/trouble.nvim'
-
-" Clap
-PlugDef 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
-PlugDef 'goolord/nvim-clap-lsp'
-PlugDef 'liuchengxu/vista.vim'
-endif
-" ------------------------------------------------------------------
-if g:GIT_TOOLS " {{{3
-PlugDef 'tpope/vim-fugitive'
-PlugDef 'airblade/vim-gitgutter'
-PlugDef 'rhysd/conflict-marker.vim'
 endif
 " ------------------------------------------------------------------
 " Tmux Integration {{{3
@@ -202,15 +197,8 @@ PlugDef 'christoomey/vim-tmux-navigator'
 PlugDef 'roxma/vim-tmux-clipboard'
 endif
 " ------------------------------------------------------------------
-" " Status bar {{{3
-if g:STATUS_LINE
-PlugDef 'hoob3rt/lualine.nvim'
-PlugDef 'pacha/vem-tabline'
-PlugDef 'arkav/lualine-lsp-progress'
-endif
-
-" ------------------------------------------------------------------
 " Sandbox {{{3
+if !g:BASIC_ONLY
 PlugDef 'mechatroner/rainbow_csv'
 " PlugDef 'chentoast/marks.nvim'
 PlugDef 'mattn/emmet-vim'
@@ -221,6 +209,7 @@ PlugDef 'nvim-telescope/telescope-live-grep-args.nvim'
 " PlugDef 'kevinhwang91/nvim-bqf'
 " PlugDef 'rcarriga/nvim-dap-ui'
 " PlugDef 'anuvyklack/hydra.nvim'
+endif
 
 call plug#end()
 
@@ -251,12 +240,15 @@ set cursorline
 set hidden
 set noshowmode
 set iskeyword=@,48-57,_,192-255
-set termguicolors
-set fillchars=vert:\│,eob:\ " Space
 set scrolloff=3 " Keep 3 lines below and above the cursor
 set foldmethod=indent
 set shortmess+=A
+
+if has('nvim')
+set termguicolors
+set fillchars=vert:\│,eob:\ " Space
 set signcolumn=number
+endif
 
 " Vim-sensible options
 set autoindent
@@ -857,13 +849,36 @@ nnoremap <silent> ]c <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>cd <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 nnoremap <silent> <leader>cf <cmd>lua vim.lsp.buf.formatting()<CR>
 
+if g:NERD_FONT
+lua << EOF
+    local signs = {
+      Error = ' ',
+      Warn = ' ',
+      Info = ' ',
+      Hint = 'ﴞ ',
+    }
+    for type, icon in pairs(signs) do
+      local hl = 'DiagnosticSign' .. type
+      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    end
+
+    vim.diagnostic.config({
+      signs = true,
+      update_in_insert = false,
+      underline = true,
+      severity_sort = true,
+      virtual_text = {
+        source = true,
+      },
+    })
+EOF
+endif
+
 " LSP Saga {{{ 3
 if PlugLoaded("lspsaga")
 lua << EOF
 local saga = require 'lspsaga'
-saga.init_lsp_saga {
-    --diagnostic_header = { " ", " ", " ", "ﴞ " },
-}
+saga.init_lsp_saga {}
 EOF
 
 " Lsp Actions
@@ -919,14 +934,6 @@ endif " end LSP
 
 "    Lua Line {{{2
 if PlugLoaded('lualine')
-
-function! GetDate ()
-    if exists("$TMUX")
-        return ''
-    else
-        return trim(system('date +"%I:%m%P %a %m/%d" | sed -e "s/ 0/ /" -e "s/^0//"'))
-    endif
-endfunction
 
 function! TSStatus()
     let l:status = nvim_treesitter#statusline({})
@@ -1031,7 +1038,7 @@ require'lualine'.setup{
         lualine_b = {'filename'},
         lualine_c = {_progress},
         lualine_x = {'Cwd'},
-        lualine_y = {'branch', 'GetDate'},
+        lualine_y = {'branch'},
         lualine_z = {'diagnostics'},
     },
 }
@@ -1505,8 +1512,6 @@ noremap <leader>r @:<CR>
 noremap <M-a> 1GVG
 " Paste line with in middle
 nnoremap <leader>P "_r<Enter>PkJJ
-" run Clang
-nnoremap <leader>F :FormatClang<CR>
 " Easy Semicolon
 nnoremap <silent> <M-;> mmA;<esc>`mmm
 nnoremap <silent> <M-:> mm$x`mmm
@@ -1586,8 +1591,11 @@ augroup Cmds
     autocmd BufNewFile,BufRead *.h,*.cc set syntax=cpp.doxygen |
                 \ setlocal bufhidden=delete |
                 \ setlocal iskeyword=@,48-57,_,192-255
-    autocmd BufModifiedSet,BufWrite *.cc,*.h setlocal bufhidden=hide
     autocmd BufEnter *.h,*.cc setlocal iskeyword=@,48-57,_,192-255
+
+    if has('nvim')
+        autocmd BufModifiedSet,BufWrite *.cc,*.h setlocal bufhidden=hide
+    endif
 
     " Vim
     autocmd FileType vim
@@ -1637,6 +1645,7 @@ function! InsertInclude(file, ...) abort
     exe "normal! i" . l:include. "\<Esc>"
 endfunction
 
+" ==== Grep functions ==== {{{2
 " Grep
 command! -nargs=1 QFindGlobal let g:_last_grep = <q-args> | silent grep <q-args> | copen
 command! -nargs=1 QFindFile let g:_last_grep = <q-args> | silent grep <q-args> % | copen
@@ -1653,17 +1662,6 @@ nnoremap <leader>f /
 nnoremap <leader>F ?
 nnoremap <leader>/ :execute 'QFindGlobal '.input("Search Global For: ")<CR>
 nnoremap <leader>? :execute 'QReplaceW '.input("Replace <".g:_last_grep."> With: ")<CR>
-
-" Dump a  command
-function! Dump(cmd) abort
-    vsplit | enew | " open a new split (with 10% height (?))
-    setlocal bufhidden=wipe buftype=nofile nobuflisted nolist noswapfile norelativenumber nonumber
-    put =execute(a:cmd)
-    norm gg2dd
-    setlocal readonly nomodifiable nomodified
-    nnoremap <buffer><silent> <Esc> :bd<CR>
-endfunction
-command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
 
 " QuickFix Utils {{{ 3
 " When using `dd` in the quickfix list, remove the item from the quickfix list.
@@ -1703,7 +1701,18 @@ command! -nargs=* GrepQFRemove call GrepQuickFixRemove(<q-args>)
 nnoremap <silent> <leader>q/ <cmd>exe "GrepQF ".input("Select Items /")<CR>
 nnoremap <silent> <leader>q? <cmd>exe "GrepQFRemove ".input("Remove Items /")<CR>
 
-if g:VIM_RAW || !has('nvim')
+" Dump a  command
+function! Dump(cmd) abort
+    vsplit | enew | " open a new split (with 10% height (?))
+    setlocal bufhidden=wipe buftype=nofile nobuflisted nolist noswapfile norelativenumber nonumber
+    put =execute(a:cmd)
+    norm gg2dd
+    setlocal readonly nomodifiable nomodified
+    nnoremap <buffer><silent> <Esc> :bd<CR>
+endfunction
+command! -nargs=1 Dump execute "call Dump(" string(<q-args>) ")"
+
+if g:BASIC_ONLY
     finish
 endif
 
@@ -1713,7 +1722,7 @@ let g:user_emmet_leader_key='<c-n>'
 nnoremap <leader>xm 2F"r{astyles.<esc>f"r}
 vnoremap <leader>xm =gv:s/"\(.*\)"/{styles.\1}/g<CR>
 let g:fzf_colors =
-            \ {'fg':      ['fg', 'Normal'],
+            \ {'fg':      ['fg', 'Keyword'],
             \ 'bg':      ['bg', 'Normal'],
             \ 'hl':      ['fg', 'Error'],
             \ 'fg+':     ['fg', 'Normal'],
@@ -1794,6 +1803,7 @@ let g:fzf_colors =
 " })
 " EOF
 colorscheme kosmikoa
+" colorscheme edge
 
 let g:user_emmet_expandabbr_key = '<C-n><C-n>'
 " let g:user_emmet_expandword_key = '<C-y>;'
@@ -1813,26 +1823,4 @@ let g:user_emmet_expandabbr_key = '<C-n><C-n>'
 "
 nnoremap X "_dd
 
-lua << EOF
-local signs = {
-  Error = ' ',
-  Warn = ' ',
-  Info = ' ',
-  Hint = 'ﴞ ',
-}
-for type, icon in pairs(signs) do
-  local hl = 'DiagnosticSign' .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
-vim.diagnostic.config({
-  signs = true,
-  update_in_insert = false,
-  underline = true,
-  severity_sort = true,
-  virtual_text = {
-    source = true,
-  },
-})
-EOF
 
