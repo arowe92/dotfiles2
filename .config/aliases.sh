@@ -75,12 +75,6 @@ done;
 
 alias py="python3"
 
-if [[ ! -z "$VIM" ]]; then
-    alias nvim='nvr'
-else
-    alias nvim='nvim_socket'
-fi
-
 ########################
 # NEW ALIASES
 ########################
