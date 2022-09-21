@@ -1,15 +1,7 @@
 // Place your key bindings in this file to override the defaultsauto[]
 [
-    {
-        "key": "alt+h",
-        "command": "editor.action.showHover",
-        "when": "editorTextFocus"
-    },
-    {
-        "key": "ctrl+k ctrl+i",
-        "command": "-editor.action.showHover",
-        "when": "editorTextFocus"
-    },
+
+    // Line Moving 
     {
         "key": "ctrl+alt+l",
         "command": "editor.action.indentLines",
@@ -172,9 +164,8 @@
         "command": "-workbench.action.focusAboveGroup"
     },
     {
-        "key": "ctrl+l",
-        "command": "workbench.action.focusRightGroup",
-        "when": "editorTextFocus && neovim.mode != 'insert'"
+        "key": "ctrl+x l",
+        "command": "workbench.action.focusRightGroup"
     },
     {
         "key": "ctrl+h",
@@ -182,8 +173,9 @@
         "when": "editorTextFocus && neovim.mode != 'insert'"
     },
     {
-        "key": "ctrl+w",
-        "command": "workbench.action.closeActiveEditor"
+        "key": "ctrl+shift+w",
+        "command": "workbench.action.closeActiveEditor",
+        "when": "terminalEditorFocus"
     },
     {
         "key": "ctrl+k",
@@ -324,20 +316,8 @@
         "when": "neovim.recording || editorTextFocus && neovim.init && neovim.mode != 'insert'"
     },
     {
-        "key": "f",
-        "args": "f",
-        "command": "vscode-neovim.send",
-        "when": "neovim.recording || editorTextFocus && neovim.init && neovim.mode != 'insert'"
-    },
-    {
-        "key": "k",
-        "args": "k",
-        "command": "vscode-neovim.send",
-        "when": "neovim.recording || editorTextFocus && neovim.init && neovim.mode != 'insert'"
-    },
-    {
-        "key": "h",
-        "args": "h",
+        "key": "shift+\\",
+        "args": "<S-\\>",
         "command": "vscode-neovim.send",
         "when": "neovim.recording || editorTextFocus && neovim.init && neovim.mode != 'insert'"
     },
@@ -390,11 +370,6 @@
     },
     {
         "key": "ctrl+shift+-",
-        "command": "workbench.action.decreaseViewSize",
-        "when": "!editorFocus"
-    },
-    {
-        "key": "ctrl+shift+-",
         "command": "workbench.action.decreaseViewWidth",
         "when": "editorFocus"
     },
@@ -414,5 +389,116 @@
     {
         "key": "ctrl+j",
         "command": "workbench.action.focusBelowGroup"
+    },
+    {
+        "key": "ctrl+shift+t",
+        "command": "workbench.action.createTerminalEditor"
+    },
+    {
+        "key": "ctrl+u",
+        "command": "workbench.action.terminal.scrollUpPage",
+        "when": "terminalFocus && terminalHasBeenCreated && !terminalAltBufferActive || terminalFocus && terminalProcessSupported && !terminalAltBufferActive"
+    },
+    {
+        "key": "shift+pageup",
+        "command": "-workbench.action.terminal.scrollUpPage",
+        "when": "terminalFocus && terminalHasBeenCreated && !terminalAltBufferActive || terminalFocus && terminalProcessSupported && !terminalAltBufferActive"
+    },
+    {
+        "key": "ctrl+d",
+        "command": "workbench.action.terminal.scrollDownPage",
+        "when": "terminalFocus && terminalHasBeenCreated && !terminalAltBufferActive || terminalFocus && terminalProcessSupported && !terminalAltBufferActive"
+    },
+    {
+        "key": "ctrl+alt+enter",
+        "command": "workbench.action.maximizeEditor"
+    },
+    {
+        "key": "shift+f11",
+        "command": "workbench.action.toggleZenMode"
+    },
+    {
+        "key": "ctrl+k z",
+        "command": "-workbench.action.toggleZenMode"
+    },
+    {
+        "key": "ctrl+x shift+k",
+        "command": "workbench.action.moveEditorToAboveGroup"
+    },
+    {
+        "key": "ctrl+x shift+j",
+        "command": "workbench.action.moveEditorToBelowGroup"
+    },
+    {
+        "key": "ctrl+x shift+h",
+        "command": "workbench.action.moveEditorToLeftGroup"
+    },
+    {
+        "key": "ctrl+x shift+l",
+        "command": "workbench.action.moveEditorToRightGroup"
+    },
+    {
+        "key": "ctrl+x k",
+        "command": "workbench.action.focusAboveGroup"
+    },
+    {
+        "key": "ctrl+x j",
+        "command": "workbench.action.focusBelowGroup"
+    },
+    {
+        "key": "ctrl+x h",
+        "command": "workbench.action.focusLeftGroup"
+    },
+    {
+        "key": "ctrl+shift+-",
+        "command": "workbench.action.decreaseViewSize",
+        "when": "!editorFocus"
+    },
+    {
+        "key": "ctrl+shift+alt+=",
+        "command": "workbench.action.decreaseViewSize",
+        "when": "auxiliaryBarFocus"
+    },
+    {
+        "key": "ctrl+shift+alt+p",
+        "command": "projectManager.listProjects"
+    },
+    {
+        "key": "shift+alt+p",
+        "command": "-projectManager.listProjects"
+    },
+    {
+        "key": "ctrl+alt+p",
+        "command": "workbench.action.openPreviousEditorFromHistory"
+    },
+    {
+        "key": "ctrl+shift+r",
+        "command": "workbench.action.tasks.test",
+        "when": "taskCommandsRegistered"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-vscode-neovim.send-cmdline",
+        "when": "neovim.mode == 'cmdline_insert' || neovim.mode == 'cmdline_normal' || neovim.mode == 'cmdline_replace'"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-vscode-neovim.send",
+        "when": "editorTextFocus && neovim.ctrlKeysNormal && neovim.init && neovim.mode != 'insert'"
+    },
+    {
+        "key": "ctrl+w",
+        "command": "-vscode-neovim.send",
+        "when": "editorTextFocus && neovim.ctrlKeysInsert && neovim.mode == 'insert'"
+    },
+    {
+        "key": "ctrl+x e",
+        "command": "workbench.action.terminal.moveToEditor",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+x e",
+        "command": "workbench.action.terminal.moveToTerminalPanel",
+        "when": "terminalEditorFocus"
     }
 ]
