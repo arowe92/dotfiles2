@@ -26,6 +26,7 @@ Map <leader>ft "terminal.focus"
 Map <leader>fo "workbench.panel.output.focus"
 Map <leader>fu "outline.focus"
 Map <leader>fe "workbench.files.action.focusFilesExplorer"
+Map <leader>fs "workbench.view.search.focus"
 
 " Edits
 Map <leader>ek "workbench.action.openGlobalKeybindings"
@@ -64,4 +65,18 @@ Map <leader>z4 "editor.foldLevel4"
 Map <leader>z5 "editor.foldLevel5"
 Map <leader>z6 "editor.foldLevel6"
 
+" Bookmarks
+Map [b "bookmarks.jumpToPrevious"
+Map ]b "bookmarks.jumpToNext"
+Map <leader>bb "bookmarks.toggle"
+Map <leader>bl "bookmarks.list"
+Map <leader>bL "bookmarks.listFromAllFiles"
 
+Map <leader>gu "git.revertSelectedRanges"
+
+" Merging
+Map [c "merge-conflict.previous"
+Map ]c "merge-conflict.next"
+Map <leader>co "merge-conflict.accept.current"
+Map <leader>ct "merge-conflict.accept.incoming"
+Map <leader>cb "merge-conflict.accept.both"
