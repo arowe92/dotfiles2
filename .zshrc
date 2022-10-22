@@ -1,12 +1,12 @@
-
+autoload -Uz compinit && compinit
 
 ###################################
 ## PLUGINS
 ###################################
-autoload -Uz compinit && compinit
-
 source ${ZDOTDIR:-~}/.antidote/antidote.zsh
 antidote load
+
+compinit
 
 ###################################
 ## PATH
@@ -35,6 +35,7 @@ export FZF_DEFAULT_OPTS='--ansi --bind ctrl-e:preview-up,ctrl-y:preview-down,ctr
 export FZF_TMUX_OPTS="-p70%,70%"
 export FZF_CTRL_R_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 export FZF_CTRL_T_COMMAND="fd --color=always"
+export FZF_COMPLETION_TRIGGER='**'
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket-$(tmux display-message -p '#{session_name}' 2>/dev/null)"
 export BAT_CONFIG_PATH="$DOTFILE_PATH/.config/bat.conf"
 export RIPGREP_CONFIG_PATH="$DOTFILE_PATH/.config/ripgreprc"

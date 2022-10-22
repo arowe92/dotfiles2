@@ -1,2 +1,4 @@
 --glob=!*.min.js
 --glob=!*.min.css
+--glob=!*.bundled.*
+--glob=!*.map
