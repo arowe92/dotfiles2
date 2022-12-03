@@ -1802,7 +1802,8 @@ let g:fzf_colors =
 "    }
 " })
 " EOF
-colorscheme kosmikoa
+" colorscheme kosmikoa
+colorscheme tokyodark
 " colorscheme edge
 
 let g:user_emmet_expandabbr_key = '<C-n><C-n>'

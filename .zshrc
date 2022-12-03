@@ -1,8 +1,13 @@
-autoload -Uz compinit && compinit
 
 ###################################
 ## PLUGINS
 ###################################
+autoload -Uz compinit && compinit
+
+# Vim Edit
+autoload edit-command-line
+zle -N edit-command-line
+
 source ${ZDOTDIR:-~}/.antidote/antidote.zsh
 antidote load
 

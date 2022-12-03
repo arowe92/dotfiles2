@@ -16,4 +16,3 @@ zsh-users/zsh-autosuggestions
 
 pierpo/fzf-docker
 
-./bin
