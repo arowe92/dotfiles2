@@ -52,8 +52,5 @@ set directory^=/tmp/swp
 set tags+=~/.vim/tags
 
 if has('nvim')
-set termguicolors
-set fillchars=vert:\│,eob:\ " Space
-set signcolumn=number
 endif
 

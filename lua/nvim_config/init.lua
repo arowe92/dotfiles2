@@ -19,3 +19,6 @@ vim.cmd('source ' .. env.DOTFILE_PATH .. '/vim/init.vim')
 
 -- General Mapped functions
 require 'nvim_config.functions'
+require 'nvim_config.keymap'
+require 'nvim_config.options'
+

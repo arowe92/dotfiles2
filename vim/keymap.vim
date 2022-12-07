@@ -8,7 +8,8 @@ inoremap <C-s> <ESC><cmd>w<CR>
 nnoremap <silent> <leader>H :nohlsearch<cr>
 
 " Delete buffer / Close
-noremap <nowait> <C-w> <cmd>bd<CR>
+" noremap <nowait> <C-w> <cmd>bd<CR>
+noremap <nowait> <C-w> <cmd>bp<bar>sp<bar>bn<bar>bd<CR>
 noremap <C-q> <cmd>q<CR>
 
 " Easy Indenting
@@ -72,7 +73,6 @@ nnoremap <A-7> <C-x>
 inoremap <C-v> <C-r>"
 " Move to End of line
 inoremap <C-e> <Esc>A
-nnoremap <expr>A getline('.') == '' ? "A<C-f>" : "A"
 
 " Open / Close tags
 inoremap <M-{> {<CR><CR>}<UP><C-f>

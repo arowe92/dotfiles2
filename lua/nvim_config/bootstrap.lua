@@ -1,5 +1,5 @@
 local ensure_packer = function()
-    local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+    local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.vim'
     if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
         vim.fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
         vim.cmd [[packadd packer.nvim]]
@@ -7,5 +7,4 @@ local ensure_packer = function()
     end
     return false
 end
-
 return ensure_packer

@@ -1,0 +1,49 @@
+{
+  "BlockComment": {
+    "prefix": ["block"],
+    "body": [
+      "/**",
+      " * ${1:Text}",
+      " */"
+    ],
+    "description": "C++ Style Block Comment"
+  },
+  "ForOf": {
+    "prefix": ["forof"],
+    "body": [
+        "for (const ${1:key} in ${2:data}) {",
+        "    const ${3:value} = ${2:data}[${1:key}];",
+        "}"
+    ],
+    "description": "Practical For Of Loop"
+  },
+  "Test": {
+      "prefix": ["test"],
+      "body": [
+            "// @INLINE_TEST",
+            "import { expect } from 'chai';",
+
+            "describe('${1:test_name}', () => {",
+                "\tit('${2:case_name}', () => {",
+                "\t",
+                "\t});",
+            "});"
+      ],
+      "description": "inline test"
+  },
+  "Ignore": {
+      "prefix": ["ignore"],
+      "body": [
+            "// @ts-ignore"
+      ],
+      "description": "ts ignore"
+  },
+  "Handler": {
+      "prefix": ["on"],
+      "body": [
+            "on${1:event}={(${2:args}) => {${3:body}}}"
+      ],
+      "description": "ts ignore"
+  }
+}
+

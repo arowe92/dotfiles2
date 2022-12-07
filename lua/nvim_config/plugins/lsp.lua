@@ -1,9 +1,8 @@
-
 return {
     'neovim/nvim-lspconfig',
 
-    config = function ()
-        local opts = { noremap=true, silent=true }
+    config = function()
+        local opts = { noremap = true, silent = true }
         vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
         -- vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
@@ -23,18 +22,20 @@ return {
         vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)
         vim.keymap.set('n', '<space>cr', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
+        vim.keymap.set('n', '<m-.>', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
         vim.keymap.set('n', '<S-A-f>', vim.lsp.buf.formatting, opts)
+        vim.keymap.set('n', '<m-o>', '<cmd>ClangdSwitchSourceHeader<cr>')
     end,
 
     -- Custom Hook to run after wards
-    _post_config = function () 
+    _post_config = function()
         require("mason").setup()
         require("mason-lspconfig").setup {
             ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright" }
         }
         require("mason-lspconfig").setup_handlers {
-            function (server_name) 
+            function(server_name)
                 require("lspconfig")[server_name].setup {}
             end,
         }

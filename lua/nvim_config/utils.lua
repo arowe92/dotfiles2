@@ -2,9 +2,19 @@ local M = {}
 
 -- Mapping Convenience
 M.nmapc = function(lhs, rhs)
-    vim.keymap.set('n', lhs, '<cmd>' .. rhs .. '<cr>')
+    vim.keymap.set('n', lhs, '<cmd>' .. rhs .. '<CR>')
 end
 
+-- Mapping Convenience
+M.nmapc_text= function(lhs, rhs, text)
+    if not text then
+        text = rhs:gsub('"', '\\"')
+    end
+
+    vim.keymap.set('n', lhs, '<cmd>' .. rhs .. ' | echo "'..text..'"<cr>')
+end
+
+-- Get path to script that is calling this functions
 M.script_path = function()
     local str = debug.getinfo(2, 'S').source:sub(2)
 

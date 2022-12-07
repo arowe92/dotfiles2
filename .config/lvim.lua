@@ -61,7 +61,6 @@ lvim.builtin.telescope.defaults.vimgrep_arguments = {
     '-u'
 }
 
-print(vim.inspect(lvim.builtin.telescope.defaults.layout_config))
 lvim.builtin.telescope.defaults.layout_config.width = 0.9
 
 -- TODO: User Config for predefined plugins

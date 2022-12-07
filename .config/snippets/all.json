@@ -1,0 +1,11 @@
+{
+  "BlockComment": {
+    "prefix": ["block"],
+    "body": [
+      "/**",
+      " * ${1:Text}",
+      " */"
+    ],
+    "description": "C++ Style Block Comment"
+  }
+}

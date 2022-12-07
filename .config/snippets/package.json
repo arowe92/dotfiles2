@@ -9,6 +9,14 @@
       {
         "language": "typescript",
         "path": "./typescript.json"
+      },
+      {
+        "language": "cpp",
+        "path": "./cpp.json"
+      },
+      {
+        "language": "all",
+        "path": "./all.json"
       }
     ]
   }
