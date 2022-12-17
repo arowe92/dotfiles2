@@ -19,7 +19,7 @@ return {
         cmp.setup({
             snippet = {
                 expand = function(args)
-                    vim.fn["vsnip#anonymous"](args.body) 
+                    vim.fn["vsnip#anonymous"](args.body)
                 end,
             },
             window = {
@@ -31,15 +31,28 @@ return {
                 ['<C-b>'] = cmp.mapping.scroll_docs(-4),
                 ['<C-f>'] = cmp.mapping.scroll_docs(4),
                 ['<C-Space>'] = cmp.mapping.complete(),
-                ['<C-e>'] = cmp.mapping.abort(),
-                ['<CR>'] = cmp.mapping.confirm({ select = true }), 
-                ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+                ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'c', 'i' }),
+                ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'c', 'i' }),
+                ['<M-Enter>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+                ['<C-y>'] = cmp.config.disable,
+                ['<C-e>'] = cmp.mapping({
+                    i = cmp.mapping.abort(),
+                    c = cmp.mapping.close(),
+                }),
+                ['<Tab>'] = cmp.mapping({
+                    i = cmp.mapping.confirm({ select = true }),
+                    c = cmp.mapping.select_next_item(),
+                }),
+                ['<Enter>'] = cmp.mapping(cmp.mapping.confirm({ select = false })),
+                ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item()),
             }),
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' },
             }, {
                 { name = 'buffer' },
+                { name = 'path' },
             })
         })
 

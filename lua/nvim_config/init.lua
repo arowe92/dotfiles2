@@ -12,9 +12,9 @@ require('packer').startup(load_plugins)
 require('nvim_config.plugins.lsp')._post_config()
 
 -- Set Colorscheme
-vim.cmd('colorscheme moonlight')
+vim.cmd('colorscheme carbonfox')
 
--- Source VIM Mappings
+-- Source VIM Config files
 vim.cmd('source ' .. env.DOTFILE_PATH .. '/vim/init.vim')
 
 -- General Mapped functions
@@ -22,3 +22,15 @@ require 'nvim_config.functions'
 require 'nvim_config.keymap'
 require 'nvim_config.options'
 
+dofile("/home/arowe/nvim.lua")
+
+-- Persistent Colorscheme 
+vim.api.nvim_create_augroup('colors', { clear = true })
+vim.api.nvim_create_autocmd('Colorscheme', {
+    group = 'colors',
+    pattern = { '*' },
+    callback = function ()
+        io.popen('echo colorscheme '.. vim.api.nvim_command_output('color') .. ' > ~/.local/share/nvim/colorscheme.vim')
+    end
+})
+vim.cmd('silent source ~/.local/share/nvim/colorscheme.vim')

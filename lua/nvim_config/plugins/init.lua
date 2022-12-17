@@ -20,6 +20,33 @@ return function(use)
         'roxma/vim-tmux-clipboard',
         'williamboman/mason.nvim',
         'williamboman/mason-lspconfig.nvim',
+        {
+            'rcarriga/nvim-dap-ui',
+            requires = { 'mfussenegger/nvim-dap' },
+            config = function()
+                local dap = require('dap')
+                dap.adapters.cppdbg = {
+                    id = 'cppdbg',
+                    type = 'executable',
+                    command = '/home/arowe/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
+                }
+
+                dap.configurations.cpp = {
+                    {
+                        name = "Launch file",
+                        type = "cppdbg",
+                        request = "launch",
+                        program = function()
+                            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+                        end,
+                        cwd = '${workspaceFolder}',
+                        stopAtEntry = true,
+                    },
+                }
+
+                require("dapui").setup()
+            end
+        },
 
         -- Commenting
         {
@@ -31,7 +58,6 @@ return function(use)
                         block = '<m-?>',
                     },
                 })
-
                 -- Commenting
                 vim.keymap.set('x', '<m-?>', '<Plug>(comment_toggle_blockwise_visual)')
                 vim.keymap.set('x', '<m-/>', '<Plug>(comment_toggle_linewise_visual)')
@@ -47,11 +73,14 @@ return function(use)
                 local utils = require 'nvim_config.utils'
                 require('bufferline').setup({
                     options = {
+                        truncate_names = false
                     }
                 })
 
                 utils.nmapc('<A-Left>', 'BufferLineCyclePrev')
                 utils.nmapc('<A-Right>', 'BufferLineCycleNext')
+                utils.nmapc('<leader><A-Left>', 'BufferLineMovePrev')
+                utils.nmapc('<leader><A-Right>', 'BufferLineMoveNext')
             end
         },
 
@@ -78,7 +107,25 @@ return function(use)
             'junegunn/fzf',
             run = ':call fzf#install()',
             config = function()
-                -- vim.g.fzf_layout = { tmux = '-p80%,60%' }
+                vim.g.fzf_layout = { tmux = '-p80%,60%' }
+
+                vim.g.fzf_colors = {
+                    fg = { 'fg', 'Normal' },
+                    bg = { 'bg', 'Normal' },
+                    hl = { 'fg', 'Comment' },
+                    ["fg+"] = { 'fg', 'CursorLine', 'CursorColumn', 'Normal' },
+                    ["bg+"] = { 'bg', 'CursorLine', 'CursorColumn' },
+                    ["hl+"] = { 'fg', 'Statement' },
+                    info = { 'fg', 'PreProc' },
+                    border = { 'fg', 'Ignore' },
+                    prompt = { 'fg', 'Conditional' },
+                    pointer = { 'fg', 'Exception' },
+                    marker = { 'fg', 'Keyword' },
+                    spinner = { 'fg', 'Label' },
+                    header = { 'fg', 'Comment' }
+                }
+
+                require('nvim_config.env').MODULES.fzf = true
             end
         },
         'junegunn/fzf.vim',
@@ -112,8 +159,8 @@ return function(use)
                 local hop = require 'hop'
                 hop.setup()
 
-                utils.nmapc('<leader>j', 'HopLineAC')
-                utils.nmapc('<leader>k', 'HopLineBC')
+                utils.mapc('<leader>j', 'HopLineStartAC')
+                utils.mapc('<leader>k', 'HopLineStartBC')
             end
         },
 
@@ -132,6 +179,35 @@ return function(use)
                 require("luasnip.loaders.from_vscode").lazy_load({
                     paths = { DOT .. '/.config/snippets/' }
                 })
+            end
+        },
+
+        {
+            "nvim-zh/colorful-winsep.nvim",
+            config = function()
+                require('colorful-winsep').setup({
+                    symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
+                })
+            end
+        },
+
+        {
+            "petertriho/nvim-scrollbar",
+            config = function()
+                require("scrollbar").setup()
+            end
+        },
+
+        {
+            'tpope/vim-fugitive',
+            config = function()
+                vim.cmd [[nnoremap <A-g> :Git ]]
+            end
+        },
+        {
+            'takac/vim-hardtime',
+            config = function()
+                -- vim.g.hardtime_default_on = true
             end
         }
     }

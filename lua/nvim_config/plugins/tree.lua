@@ -9,6 +9,7 @@ local CONFIG = {
 
         require('nvim-tree').setup {
             view = {
+                width = 50,
                 mappings = {
                     custom_only = false,
                     list = {
@@ -31,6 +32,8 @@ local CONFIG = {
         local utils = require('nvim_config.utils')
         utils.nmapc('<leader>\\', "NvimTreeToggle")
         utils.nmapc('<leader>|', "NvimTreeFindFile")
+        utils.nmapc('<M-=>', "NvimTreeResize +20")
+        utils.nmapc('<M-->', "NvimTreeResize -20")
     end
 }
 

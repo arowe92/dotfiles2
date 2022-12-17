@@ -5,4 +5,6 @@ local M = {}
 -- Path to Dot Repo
 M.DOTFILE_PATH = vim.fn.resolve(utils.script_path() .. '../../')
 
+M.MODULES = {}
+
 return M

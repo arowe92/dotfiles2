@@ -4,6 +4,12 @@ local M = {}
 M.nmapc = function(lhs, rhs)
     vim.keymap.set('n', lhs, '<cmd>' .. rhs .. '<CR>')
 end
+M.mapc = function(lhs, rhs)
+    vim.keymap.set({'n', 'v'}, lhs, '<cmd>' .. rhs .. '<CR>')
+end
+M.nmap = function(lhs, rhs)
+    vim.keymap.set('n', lhs, rhs)
+end
 
 -- Mapping Convenience
 M.nmapc_text= function(lhs, rhs, text)
