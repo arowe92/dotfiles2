@@ -29,7 +29,9 @@ nmapc('<M-f>', 'Telescope live_grep')
 nmapc('<M-p>', 'Telescope buffers')
 nmapc('<S-M-p>', 'Telescope oldfiles')
 nmapc('<M-r>', 'Telescope commands')
+nmapc('<S-M-r>', 'Telescope command_history')
 nmapc('<M-t>', 'Telescope lsp_document_symbols')
+nmapc('<M-/>', 'Telescope current_buffer_fuzzy_find')
 
 -- Telescope
 nmapc('<leader>pp', 'Telescope find_files')
@@ -38,6 +40,7 @@ nmapc('<leader>pF', 'Telescope live_grep')
 nmapc('<leader>ph', 'Telescope help_tags')
 nmapc('<leader>pc', 'Telescope commands')
 nmapc('<leader>pf', 'Telescope current_buffer_fuzzy_find')
+nmapc('<leader>pr', 'Telescope resume')
 
 -- FZF
 nmapc('<leader>pi', 'Include')

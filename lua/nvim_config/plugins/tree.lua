@@ -1,4 +1,3 @@
-
 local CONFIG = {
     'nvim-tree/nvim-tree.lua',
     requires = { 'nvim-tree/nvim-web-devicons' },
@@ -13,7 +12,7 @@ local CONFIG = {
                 mappings = {
                     custom_only = false,
                     list = {
-                        { key = { "<C-]>"}, action = "cd" },
+                        { key = { "<C-]>" }, action = "cd" },
                         { key = "C-[", action = "dir_up" },
                         { key = "l", action = "edit", action_cb = edit_or_open },
                         { key = "L", action = "vsplit_preview", action_cb = vsplit_preview },
@@ -21,6 +20,21 @@ local CONFIG = {
                         { key = "H", action = "collapse_all", action_cb = collapse_all }
                     }
                 },
+            },
+            renderer = {
+                icons = {
+                    glyphs = {
+                        git = {
+                            unstaged = "",
+                            staged = "",
+                            unmerged = "",
+                            renamed = "➜",
+                            untracked = "",
+                            deleted = "",
+                            ignored = "◌",
+                        }
+                    }
+                }
             },
             actions = {
                 open_file = {

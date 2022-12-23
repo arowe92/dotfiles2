@@ -159,8 +159,8 @@ return function(use)
                 local hop = require 'hop'
                 hop.setup()
 
-                utils.mapc('<leader>j', 'HopLineStartAC')
-                utils.mapc('<leader>k', 'HopLineStartBC')
+                utils.mapc('<leader>j', 'HopVerticalAC')
+                utils.mapc('<leader>k', 'HopVerticalBC')
             end
         },
 

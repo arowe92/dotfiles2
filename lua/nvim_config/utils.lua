@@ -5,7 +5,7 @@ M.nmapc = function(lhs, rhs)
     vim.keymap.set('n', lhs, '<cmd>' .. rhs .. '<CR>')
 end
 M.mapc = function(lhs, rhs)
-    vim.keymap.set({'n', 'v'}, lhs, '<cmd>' .. rhs .. '<CR>')
+    vim.keymap.set({'n', 'v', 'o'}, lhs, '<cmd>' .. rhs .. '<CR>')
 end
 M.nmap = function(lhs, rhs)
     vim.keymap.set('n', lhs, rhs)
