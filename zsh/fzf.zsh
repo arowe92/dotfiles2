@@ -53,6 +53,14 @@ _fzfgb() {
   sed 's#^remotes/##'
 }
 
+_fzfgb() {
+  is_in_git_repo || return
+  git recent |
+  fzf-down --ansi --multi --tac --preview-window right:50% \
+    --preview 'git show --stat --color=always $(sed s/^..// <<< {} | cut -f2)'  | 
+    cut -f2
+}
+
 _fzfgt() {
   is_in_git_repo || return
   git tag --sort -version:refname |

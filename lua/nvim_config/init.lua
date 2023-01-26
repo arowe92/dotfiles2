@@ -12,7 +12,7 @@ require('packer').startup(load_plugins)
 require('nvim_config.plugins.lsp')._post_config()
 
 -- Set Colorscheme
-vim.cmd('colorscheme carbonfox')
+-- vim.cmd('colorscheme carbonfox')
 
 -- Source VIM Config files
 vim.cmd('source ' .. env.DOTFILE_PATH .. '/vim/init.vim')
@@ -23,6 +23,7 @@ require 'nvim_config.keymap'
 require 'nvim_config.options'
 
 dofile("/home/arowe/nvim.lua")
+vim.cmd"source /home/arowe/.vimrc"
 
 -- Persistent Colorscheme 
 vim.api.nvim_create_augroup('colors', { clear = true })

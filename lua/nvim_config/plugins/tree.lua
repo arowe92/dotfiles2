@@ -7,6 +7,9 @@ local CONFIG = {
         vim.opt.termguicolors = true
 
         require('nvim-tree').setup {
+            git = {
+                ignore = false,
+            },
             view = {
                 width = 50,
                 mappings = {

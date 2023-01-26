@@ -37,7 +37,10 @@ return function(use)
                         type = "cppdbg",
                         request = "launch",
                         program = function()
-                            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+                            local file = vim.fn.system("find_test.sh --raw")
+                            file = file:gsub("%s+", "")
+                            file = file:gsub(".cc", "")
+                            return './bazel-bin/' .. file
                         end,
                         cwd = '${workspaceFolder}',
                         stopAtEntry = true,
@@ -74,7 +77,7 @@ return function(use)
                 require('bufferline').setup({
                     options = {
                         truncate_names = false
-                    }
+                    },
                 })
 
                 utils.nmapc('<A-Left>', 'BufferLineCyclePrev')
@@ -194,7 +197,12 @@ return function(use)
         {
             "petertriho/nvim-scrollbar",
             config = function()
-                require("scrollbar").setup()
+                require("scrollbar").setup({
+                    handlers = {
+                        gitsigns = true,
+                        search = true,
+                    }
+                })
             end
         },
 
@@ -209,6 +217,50 @@ return function(use)
             config = function()
                 -- vim.g.hardtime_default_on = true
             end
+        }, {
+            'AndrewRadev/sideways.vim',
+            config = function()
+                local nmapc = require 'nvim_config.utils'.nmapc
+
+                nmapc('<M-<>', 'SidewaysLeft')
+                nmapc('<M->>', 'SidewaysRight')
+            end
+        }, {
+            'akinsho/git-conflict.nvim',
+            config = function()
+                require('git-conflict').setup({ default_mappings = false })
+                vim.keymap.set('n', 'co', '<Plug>(git-conflict-ours)')
+                vim.keymap.set('n', 'ct', '<Plug>(git-conflict-theirs)')
+                vim.keymap.set('n', 'cb', '<Plug>(git-conflict-both)')
+                vim.keymap.set('n', 'c0', '<Plug>(git-conflict-none)')
+                vim.keymap.set('n', ']x', '<Plug>(git-conflict-prev-conflict)')
+                vim.keymap.set('n', '[x', '<Plug>(git-conflict-next-conflict)')
+            end
+        }, {
+            'kevinhwang91/nvim-hlslens',
+            config = function()
+                require('hlslens').setup()
+
+                local kopts = { noremap = true, silent = true }
+
+                vim.api.nvim_set_keymap('n', 'n',
+                    [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
+                    kopts)
+                vim.api.nvim_set_keymap('n', 'N',
+                    [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
+                    kopts)
+                vim.api.nvim_set_keymap('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+                vim.api.nvim_set_keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+                vim.api.nvim_set_keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+                vim.api.nvim_set_keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+            end
+        }, {
+            "tiagovla/scope.nvim",
+            config = function()
+                require("scope").setup()
+            end
         }
+
+
     }
 end

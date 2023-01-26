@@ -12,5 +12,12 @@
       "}"
     ],
     "description": "Class definition template."
+  },
+  "Info": {
+    "prefix": ["info"],
+    "body": [
+        "info(0) << $1 << std::endl"
+    ],
+    "description": "Info Logging"
   }
 }

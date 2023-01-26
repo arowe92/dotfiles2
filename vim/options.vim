@@ -20,6 +20,7 @@ set iskeyword=@,48-57,_,192-255
 set scrolloff=3 " Keep 3 lines below and above the cursor
 set foldmethod=indent
 set shortmess+=A
+set shortmess+=S
 
 " Vim-sensible options
 set autoindent
@@ -54,3 +55,7 @@ set tags+=~/.vim/tags
 if has('nvim')
 endif
 
+if executable('rg')
+    " Use rg over grep
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --ignore-vcs
+endif

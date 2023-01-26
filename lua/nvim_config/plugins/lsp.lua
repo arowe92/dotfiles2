@@ -26,6 +26,13 @@ return {
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
         vim.keymap.set('n', '<S-A-f>', vim.lsp.buf.formatting, opts)
         vim.keymap.set('n', '<m-o>', '<cmd>ClangdSwitchSourceHeader<cr>')
+
+        vim.keymap.set('n', '<S-A-s>', function ()
+            vim.lsp.buf.formatting({ async = false })
+            vim.defer_fn(function ()
+                vim.cmd("w")
+            end, 500)
+        end, opts)
     end,
 
     -- Custom Hook to run after wards
@@ -36,7 +43,13 @@ return {
         }
         require("mason-lspconfig").setup_handlers {
             function(server_name)
-                require("lspconfig")[server_name].setup {}
+                if server_name == "clangd" then
+                    require("lspconfig")[server_name].setup {
+                        cmd = { "clangd", "-header-insertion=never" }
+                    }
+                else
+                    require("lspconfig")[server_name].setup {}
+                end
             end,
         }
     end

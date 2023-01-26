@@ -20,8 +20,10 @@ return {
                     { 'mode' },
                 },
                 lualine_b = { 'filename', 'branch' },
-                lualine_c = {},
-                lualine_x = {},
+                lualine_c = { function ()
+                    return vim.fn.getcwd():gsub('/home/arowe/', '~/')
+                end},
+                lualine_x = { 'searchcount' },
                 lualine_y = { 'filetype' },
                 lualine_z = {
                     function()

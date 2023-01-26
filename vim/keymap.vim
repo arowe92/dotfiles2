@@ -154,3 +154,9 @@ vnoremap p "_dP
 " New line when completion open
 inoremap <M-CR> <Esc>o
 
+" Quit All
+nnoremap ZZ <CMD>qa!<CR>
+nnoremap Zz <CMD>qa<CR>
+
+" Replace Search
+nnoremap <leader>r :%s/<C-r>///g<Left><Left>
