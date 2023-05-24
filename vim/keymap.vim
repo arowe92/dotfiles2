@@ -83,7 +83,8 @@ inoremap <M-'> ''<Left>
 
 " ==== Command Mode ==== {{{2
 cnoremap <C-v> <C-r>"
-cnoremap <M-v> <C-f>
+cnoremap <M-r> <C-f>
+cnoremap <M-v> <C-r>/
 
 cnoremap <C-j> <C-W>s<C-w><C-k>
 cnoremap <C-k> <C-w>s<C-w><C-k>
@@ -160,3 +161,6 @@ nnoremap Zz <CMD>qa<CR>
 
 " Replace Search
 nnoremap <leader>r :%s/<C-r>///g<Left><Left>
+nnoremap <leader>R *:%s/<C-r>///g<Left><Left>
+vnoremap <leader>r :%s/<C-r>///g<Left><Left>
+vnoremap <leader>R :%s/<C-r>///g<Left><Left>

@@ -137,7 +137,10 @@ return function(use)
         {
             'lewis6991/gitsigns.nvim',
             config = function()
-                require('gitsigns').setup()
+                require('gitsigns').setup({
+                    signcolumn = false,
+                    numhl      = true,
+                })
 
                 local utils = require 'nvim_config.utils'
                 utils.nmapc('<leader>gu', 'Gitsigns reset_hunk')
@@ -259,8 +262,56 @@ return function(use)
             config = function()
                 require("scope").setup()
             end
+        }, {
+            'liuchengxu/vim-clap'
+        }, {
+            'Eandrju/cellular-automaton.nvim',
+            config = function()
+                vim.keymap.set("n", "<leader>CA", "<cmd>CellularAutomaton make_it_rain<CR>")
+            end
+        },
+        {
+            'glepnir/template.nvim',
+            cmd = { 'Template', 'TemProject' },
+            config = function()
+                require('template').setup({
+                    temp_dir = '~/.local/share/templates'
+                })
+            end
+        },
+
+        {
+            'jose-elias-alvarez/null-ls.nvim',
+            config = function()
+                local null_ls = require("null-ls")
+                null_ls.setup({
+                    sources = {
+                        null_ls.builtins.formatting.autopep8,
+                    },
+                })
+            end
+        },
+
+        {
+            "folke/which-key.nvim",
+            config = function()
+                local wk = require("which-key")
+                wk.setup {
+                    triggers_nowait = { "<m-u>" }
+                }
+
+                wk.register({
+                    ['<m-u>'] = {
+                        name = "Insert",
+                        s = { "std::string", "std::string" },
+                    },
+                }, {
+                    mode = "i",
+                    prefix = "",
+                    nowait = true,
+                })
+
+            end
         }
-
-
     }
 end

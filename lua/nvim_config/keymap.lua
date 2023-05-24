@@ -26,6 +26,7 @@ nmapc('<M-Down>', 'tabnext')
 
 -- Misc
 vim.keymap.set('n', '<a-5>', ':%s///g<Left><Left><Left>')
+vim.keymap.set('t', '<c-h>', '<c-\\><c-n><c-h>')
 
 -- Fuzzy Find Quick Keys
 nmapc('<C-p>', 'Files')
@@ -74,6 +75,7 @@ vim.cmd('noremenu PopUp.Definition <cmd>lua vim.lsp.buf.definition()<cr>')
 vim.cmd('noremenu PopUp.Implementation <cmd>lua vim.lsp.buf.implementation()<cr>')
 vim.cmd('noremenu PopUp.Type\\ Definition <cmd>lua vim.lsp.buf.type_definition()<cr>')
 vim.cmd('noremenu PopUp.-1- <NOP>')
+vim.cmd('noremenu PopUp.Search <cmd>execute "grep <cword>"<cr>')
 vim.cmd('noremenu PopUp.References <cmd>lua vim.lsp.buf.references()<cr>')
 vim.cmd('noremenu PopUp.Signature <cmd>lua vim.lsp.buf.signature_help()<cr>')
 vim.cmd('noremenu PopUp.-2- <NOP>')

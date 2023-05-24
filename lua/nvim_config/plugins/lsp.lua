@@ -24,12 +24,14 @@ return {
         vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', '<m-.>', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        vim.keymap.set('n', '<S-A-f>', vim.lsp.buf.formatting, opts)
+        vim.keymap.set('n', '<S-A-f>', function()
+            vim.lsp.buf.format { async = true }
+        end, opts)
         vim.keymap.set('n', '<m-o>', '<cmd>ClangdSwitchSourceHeader<cr>')
 
-        vim.keymap.set('n', '<S-A-s>', function ()
+        vim.keymap.set('n', '<S-A-s>', function()
             vim.lsp.buf.formatting({ async = false })
-            vim.defer_fn(function ()
+            vim.defer_fn(function()
                 vim.cmd("w")
             end, 500)
         end, opts)
@@ -39,7 +41,7 @@ return {
     _post_config = function()
         require("mason").setup()
         require("mason-lspconfig").setup {
-            ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright" }
+            ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright", "remark_ls" }
         }
         require("mason-lspconfig").setup_handlers {
             function(server_name)

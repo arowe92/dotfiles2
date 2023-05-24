@@ -53,7 +53,7 @@ _fzfgb() {
   sed 's#^remotes/##'
 }
 
-_fzfgb() {
+_fzfgg() {
   is_in_git_repo || return
   git recent |
   fzf-down --ansi --multi --tac --preview-window right:50% \
@@ -108,5 +108,5 @@ bind-git-helper() {
 }
 
 bindkey -r '^g'
-bind-git-helper f b t r h s
+bind-git-helper f b t r h s g
 unset -f bind-git-helper
