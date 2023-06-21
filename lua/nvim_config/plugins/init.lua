@@ -287,31 +287,32 @@ return function(use)
                 null_ls.setup({
                     sources = {
                         null_ls.builtins.formatting.autopep8,
+                        null_ls.builtins.formatting.prettier,
                     },
                 })
             end
         },
 
-        {
-            "folke/which-key.nvim",
-            config = function()
-                local wk = require("which-key")
-                wk.setup {
-                    triggers_nowait = { "<m-u>" }
-                }
-
-                wk.register({
-                    ['<m-u>'] = {
-                        name = "Insert",
-                        s = { "std::string", "std::string" },
-                    },
-                }, {
-                    mode = "i",
-                    prefix = "",
-                    nowait = true,
-                })
-
-            end
-        }
+        -- {
+        --     "folke/which-key.nvim",
+        --     config = function()
+        --         local wk = require("which-key")
+        --         wk.setup {
+        --             triggers_nowait = { "<m-u>" }
+        --         }
+        --
+        --         wk.register({
+        --             ['<m-u>'] = {
+        --                 name = "Insert",
+        --                 s = { "std::string", "std::string" },
+        --             },
+        --         }, {
+        --             mode = "i",
+        --             prefix = "",
+        --             nowait = true,
+        --         })
+        --
+        --     end
+        -- }
     }
 end
