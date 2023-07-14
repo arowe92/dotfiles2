@@ -188,7 +188,7 @@ help () {
 # ZLE Widgets
 #############################################################
 # Leader
-bindkey -r '^S'
+bindkey -r '^F'
 
 ###############################
 # Search Help Widget
@@ -199,7 +199,7 @@ help_cmd () {
     help $cmd
 }
 zle -N help_cmd
-bindkey '^Sh' help_cmd
+bindkey '^Fh' help_cmd
 
 ###############################
 # Search Commands Widget
@@ -211,7 +211,7 @@ insert_cmd () {
     zle end-of-line
 }
 zle -N insert_cmd
-bindkey '^Sc' insert_cmd
+bindkey '^Fc' insert_cmd
 
 ###############################
 # Edit Command Widget
@@ -224,7 +224,7 @@ edit_cmd () {
     zle end-of-line
 }
 zle -N edit_cmd
-bindkey '^SC' edit_cmd
+bindkey '^FC' edit_cmd
 
 ###############################
 # Select DIR Widget
@@ -233,7 +233,7 @@ fzf-get-dir-widget() {
     LBUFFER+=$(dx)
 }
 zle -N fzf-get-dir-widget
-bindkey '^Sd' fzf-get-dir-widget
+bindkey '^Fd' fzf-get-dir-widget
 
 ###############################
 # Select File Widget
@@ -243,7 +243,7 @@ fzf-get-file-widget() {
     LBUFFER+=$(fx)
 }
 zle -N fzf-get-file-widget
-bindkey '^Sf' fzf-get-file-widget
+bindkey '^Ff' fzf-get-file-widget
 
 ###############################
 # Ctrlp Widget
@@ -259,7 +259,7 @@ bindkey '^p' _ctrlp
 
 ###############################
 # CD Up Widget
-# @hotkey ^u (no leader)
+# @hotkey u 
 ###############################
 fzf_cd_up() {
     i=0
@@ -278,19 +278,19 @@ fzf_cd_up() {
     [[ -n "$choice" ]] && cd $choice
 
 }
-bindkey -s '^u' 'fzf_cd_up\n'
+bindkey -s '^Fu' 'fzf_cd_up\n'
 
 ###############################
 # Echo Path Widget
 # @hotkey o
 ###############################
-bindkey -s '^So' '`fasd_echo`\t'
+bindkey -s '^Fo' '`fasd_echo`\t'
 
 ###############################
 # Edit in Nvim Widget
 # @hotkey p
 ###############################
-bindkey -s '^Sp' 'nvim `fasd_echo`\n'
+bindkey -s '^Fp' 'nvim `fasd_echo`\n'
 
 ###############################
 # Search Flags Widget
@@ -303,17 +303,17 @@ fzf-flags-widget() {
     LBUFFER+=$result
 }
 zle -N fzf-flags-widget
-bindkey '^sF' fzf-flags-widget
+bindkey '^F^F' fzf-flags-widget
 
 ## Sandbox
 cheatsheet-widget() {
     tmux popup -w 50% -h 50% bat $HOME/Documents/notes.md
 }
 zle -N cheatsheet-widget
-bindkey '^st' cheatsheet-widget
+bindkey '^Ft' cheatsheet-widget
 
 edit-cheatsheet-widget() {
     tmux popup -w 50% -h 50% 'VIM_RAW=1 nvim $HOME/Documents/notes.md'
 }
 zle -N edit-cheatsheet-widget
-bindkey '^sT' edit-cheatsheet-widget
+bindkey '^FT' edit-cheatsheet-widget

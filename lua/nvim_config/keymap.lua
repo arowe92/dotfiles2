@@ -47,6 +47,7 @@ nmapc('<leader>pc', 'Telescope commands')
 nmapc('<leader>pf', 'Telescope current_buffer_fuzzy_find')
 nmapc('<leader>pr', 'Telescope resume')
 nmapc('<leader>pd', 'Telescope diagnostics')
+nmapc('<leader>pm', 'Telescope marks')
 
 -- FZF
 nmapc('<leader>pi', 'Include')

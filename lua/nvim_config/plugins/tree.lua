@@ -7,22 +7,12 @@ local CONFIG = {
         vim.opt.termguicolors = true
 
         require('nvim-tree').setup {
+            on_attach = on_attach,
             git = {
                 ignore = false,
             },
             view = {
                 width = 50,
-                mappings = {
-                    custom_only = false,
-                    list = {
-                        { key = { "<C-]>" }, action = "cd" },
-                        { key = "C-[", action = "dir_up" },
-                        { key = "l", action = "edit", action_cb = edit_or_open },
-                        { key = "L", action = "vsplit_preview", action_cb = vsplit_preview },
-                        { key = "h", action = "close_node" },
-                        { key = "H", action = "collapse_all", action_cb = collapse_all }
-                    }
-                },
             },
             renderer = {
                 icons = {
@@ -56,11 +46,11 @@ local CONFIG = {
 
 -- Copied From https://github.com/nvim-tree/nvim-tree.lua/wiki/Recipes
 
-local function collapse_all()
+function collapse_all()
     require("nvim-tree.actions.tree-modifiers.collapse-all").fn()
 end
 
-local function edit_or_open()
+function edit_or_open()
     local lib = require("nvim-tree.lib")
     local view = require("nvim-tree.view")
 
@@ -83,28 +73,42 @@ local function edit_or_open()
 
 end
 
+-- open as vsplit on current node
 local function vsplit_preview()
-    local lib = require("nvim-tree.lib")
-    local view = require("nvim-tree.view")
+    local api = require('nvim-tree.api')
+    local node = api.tree.get_node_under_cursor()
 
-    -- open as vsplit on current node
-    local action = "vsplit"
-    local node = lib.get_node_at_cursor()
-
-    -- Just copy what's done normally with vsplit
-    if node.link_to and not node.nodes then
-        require('nvim-tree.actions.node.open-file').fn(action, node.link_to)
-
-    elseif node.nodes ~= nil then
-        lib.expand_or_collapse(node)
-
+    if node.nodes ~= nil then
+        -- expand or collapse folder
+        api.node.open.edit()
     else
-        require('nvim-tree.actions.node.open-file').fn(action, node.absolute_path)
-
+        -- open file as vsplit
+        api.node.open.vertical()
     end
 
     -- Finally refocus on tree if it was lost
-    view.focus()
+    api.tree.focus()
+end
+
+function on_attach(bufnr)
+    local function print_node_path(node)
+        print(node.absolute_path)
+    end
+
+    local api = require('nvim-tree.api')
+
+    api.config.mappings.default_on_attach(bufnr)
+
+    local function opts(desc)
+        return { desc = 'nvim-tree: ' .. desc, buffer = bufnr }
+    end
+
+    vim.keymap.set('n', 'C-]', api.tree.change_root_to_node, opts('CD'))
+    vim.keymap.set('n', 'C-[', api.tree.change_root_to_parent, opts('Up'))
+    vim.keymap.set('n', 'l', api.node.open.edit, opts('Open'))
+    vim.keymap.set('n', 'L', vsplit_preview, opts('Preview'))
+    vim.keymap.set('n', 'h', api.node.navigate.parent_close, opts('Close Directory'))
+    vim.keymap.set('n', 'H', api.tree.collapse_all, opts('Collapse'))
 end
 
 return CONFIG

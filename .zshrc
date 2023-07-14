@@ -44,6 +44,7 @@ export FZF_COMPLETION_TRIGGER='**'
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket-$(tmux display-message -p '#{session_name}' 2>/dev/null)"
 export BAT_CONFIG_PATH="$DOTFILE_PATH/.config/bat.conf"
 export RIPGREP_CONFIG_PATH="$DOTFILE_PATH/.config/ripgreprc"
+export STARSHIP_CONFIG="$DOTFILE_PATH/.config/starship.toml"
 
 # Pagers
 _exists () { command -v $1 > /dev/null }

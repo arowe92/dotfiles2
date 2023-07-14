@@ -50,7 +50,8 @@ with open(Path.home() / '.zsh_history', 'rb') as f:
             for p in parts:
                 counts[(p, cmd)] += 1
 
-        except Exception:
+        except Exception as e:
+            print(e) 
             continue
 
 

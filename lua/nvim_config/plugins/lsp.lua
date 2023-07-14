@@ -48,7 +48,7 @@ return {
     _post_config = function()
         require("mason").setup()
         require("mason-lspconfig").setup {
-            ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright", "remark_ls" }
+            ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright" }
         }
         require("mason-lspconfig").setup_handlers {
             function(server_name)

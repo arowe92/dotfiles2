@@ -3,6 +3,7 @@ return {
     'edenEast/nightfox.nvim',
     'folke/tokyonight.nvim',
     'rebelot/kanagawa.nvim',
+    { "catppuccin/nvim", as = "catppuccin" },
 
     {
         'rose-pine/neovim',
@@ -11,7 +12,7 @@ return {
             require('rose-pine').setup({
                 variant = 'moon',
                 dark_variant = 'moon',
-                disable_italics=true
+                disable_italics = true
             })
         end
     }
