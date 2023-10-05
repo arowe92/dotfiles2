@@ -18,12 +18,21 @@ return function(use)
         'lukas-reineke/indent-blankline.nvim',
         'christoomey/vim-tmux-navigator',
         'roxma/vim-tmux-clipboard',
-        'williamboman/mason.nvim',
-        'williamboman/mason-lspconfig.nvim',
+
+        {
+            'williamboman/mason.nvim',
+            tags = { "lsp" }
+        },
+
+        {
+            'williamboman/mason-lspconfig.nvim',
+            tags = { "lsp" }
+        },
 
         -- Commenting
         {
             'numToStr/Comment.nvim',
+            tags = { "essential" },
             config = function()
                 require('Comment').setup({
                     toggler = {
@@ -41,6 +50,7 @@ return function(use)
         -- BufferLine
         {
             'akinsho/bufferline.nvim',
+            tags = { "essential" },
             requires = 'nvim-tree/nvim-web-devicons',
             config = function()
                 local utils = require 'nvim_config.utils'
@@ -69,15 +79,22 @@ return function(use)
         -- Surround / Sandwich
         {
             'ur4ltz/surround.nvim',
+            tags = { "essential" },
             config = function()
                 require 'surround'.setup { mappings_style = 'sandwich' }
             end
+        },
+
+        {
+            "tpope/vim-repeat",
+            tags = { "essential" },
         },
 
 
         -- FZF
         {
             'junegunn/fzf',
+            tags = { "essential", "external" },
             run = ':call fzf#install()',
             config = function()
                 vim.g.fzf_layout = { tmux = '-p80%,60%' }
@@ -101,7 +118,10 @@ return function(use)
                 require('nvim_config.env').MODULES.fzf = true
             end
         },
-        'junegunn/fzf.vim',
+        {
+            'junegunn/fzf.vim',
+            tags = { "essential", "external" },
+        },
 
         -- Git Signs
         {
@@ -129,6 +149,7 @@ return function(use)
         -- Hop
         {
             'phaazon/hop.nvim',
+            tags = { "essential" },
             commit = "caaccee",
             config = function()
                 local utils = require 'nvim_config.utils'
@@ -142,6 +163,7 @@ return function(use)
 
         {
             'rhysd/clever-f.vim',
+            tags = { "essential" },
             config = function()
                 vim.g.clever_f_across_no_line = true
             end
@@ -169,6 +191,7 @@ return function(use)
 
         {
             "petertriho/nvim-scrollbar",
+            tags = { "heavy" },
             config = function()
                 require("scrollbar").setup({
                     handlers = {
@@ -196,8 +219,10 @@ return function(use)
             end
         },
 
+        -- Highlight Git Conflicts
         {
             'akinsho/git-conflict.nvim',
+            tag = "*",
             config = function()
                 require('git-conflict').setup({ default_mappings = false })
                 vim.keymap.set('n', 'co', '<Plug>(git-conflict-ours)')
@@ -209,6 +234,7 @@ return function(use)
             end
         },
 
+        -- Formatting through LSP
         {
             'jose-elias-alvarez/null-ls.nvim',
             config = function()
@@ -217,11 +243,39 @@ return function(use)
                     sources = {
                         null_ls.builtins.formatting.autopep8,
                         null_ls.builtins.formatting.prettier,
+                        null_ls.builtins.formatting.buf,
                     },
                 })
             end
         },
 
+        -- Display Marks
         { 'kshenoy/vim-signature' },
+
+        -- Code Actions
+        {
+            'weilbith/nvim-code-action-menu',
+            tags = { "heavy" },
+            config = function()
+                local nmapc = require 'nvim_config.utils'.nmapc
+                nmapc('<space>ca', 'CodeActionMenu')
+            end
+        },
+
+        -- "MiniMap on Right"
+        {
+            'gorbit99/codewindow.nvim',
+            tags = { "heavy" },
+            config = function()
+                local codewindow = require('codewindow')
+                codewindow.setup({
+                    auto_enable = false,
+                    window_border = 'none',
+                    minimap_width = 16,
+                    width_multiplier = 4
+                })
+                codewindow.apply_default_keybinds()
+            end,
+        }
     }
 end

@@ -1,12 +1,16 @@
 return {
     'neovim/nvim-lspconfig',
+    requires = 'nvim-lua/lsp-status.nvim',
 
     config = function()
+        local lsp_status = require('lsp-status')
+        lsp_status.register_progress()
+
         local opts = { noremap = true, silent = true }
         vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-        -- vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-        -- vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+        vim.keymap.set('n', '<space>de', vim.diagnostic.open_float, opts)
+        vim.keymap.set('n', '<space>dq', vim.diagnostic.setloclist, opts)
 
         -- Mappings.
         vim.keymap.set('n', 'gd', vim.lsp.buf.declaration, opts)
@@ -21,7 +25,7 @@ return {
         end, opts)
         vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)
         vim.keymap.set('n', '<space>cr', vim.lsp.buf.rename, opts)
-        vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
+        -- vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', '<m-.>', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
         vim.keymap.set('n', '<S-A-f>', function()
@@ -38,14 +42,18 @@ return {
 
         require 'lspconfig'.tsserver.setup {
             on_attach = function(client)
+                lsp_status.on_attach(client)
                 client.server_capabilities.documentFormattingProvider = false
                 client.server_capabilities.documentRangeFormattingProvider = false
             end,
+
+            capabilities = lsp_status.capabilities
         }
     end,
 
     -- Custom Hook to run after wards
     _post_config = function()
+        local lsp_status = require('lsp-status')
         require("mason").setup()
         require("mason-lspconfig").setup {
             ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright" }
@@ -54,10 +62,17 @@ return {
             function(server_name)
                 if server_name == "clangd" then
                     require("lspconfig")[server_name].setup {
-                        cmd = { "clangd", "-header-insertion=never" }
+                        cmd = { "clangd", "-header-insertion=never" },
+                        on_attach = lsp_status.on_attach,
+                        capabilities = lsp_status.capabilities,
+                        handlers = lsp_status.extensions.clangd.setup(),
+                        filetypes = { 'c', 'cpp' },
                     }
                 else
-                    require("lspconfig")[server_name].setup {}
+                    require("lspconfig")[server_name].setup {
+                        on_attach = lsp_status.on_attach,
+                        capabilities = lsp_status.capabilities
+                    }
                 end
             end,
         }

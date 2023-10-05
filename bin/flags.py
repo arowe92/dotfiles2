@@ -14,7 +14,6 @@ from pathlib import Path
 from collections import defaultdict
 
 path = Path.home() / '.zsh_history'
-print(path)
 lines = set()
 counts = defaultdict(lambda: 0)
 flags = set()
@@ -31,7 +30,7 @@ with open(Path.home() / '.zsh_history', 'rb') as f:
     for line in f.readlines():
         try:
             line = line.decode()
-            line = ';'.join(line.split(';')[1:])
+            # line = ';'.join(line.split(';')[1:])
             line = line.replace('\n', '')
             line = line.replace('\t', ' ')
             parts = [p for p in line.split(' ') if p.startswith('-') and p not in blacklist]

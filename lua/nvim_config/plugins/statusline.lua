@@ -24,7 +24,9 @@ return {
                     return vim.fn.getcwd():gsub('/home/arowe/', '~/')
                 end},
                 lualine_x = { 'searchcount' },
-                lualine_y = { 'filetype' },
+                lualine_y = { function ()
+                    return require('lsp-status').status()
+                end},
                 lualine_z = {
                     function()
                         local current_line = vim.fn.line "."
