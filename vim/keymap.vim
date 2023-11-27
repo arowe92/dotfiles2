@@ -1,4 +1,4 @@
-let mapleader=" "
+" let mapleader=" "
 
 " Save  File
 nnoremap <C-s> <cmd>w<CR>

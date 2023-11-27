@@ -3,10 +3,10 @@ return {
 
     config = function()
         local opts = { noremap = true, silent = true }
-        vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+        vim.keymap.set('s', '[d', vim.diagnostic.goto_prev, opts)
         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-        -- vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-        -- vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+        vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+        vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
         -- Mappings.
         vim.keymap.set('n', 'gd', vim.lsp.buf.declaration, opts)
@@ -24,9 +24,9 @@ return {
         vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', '<m-.>', vim.lsp.buf.code_action, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        vim.keymap.set('n', '<S-A-f>', vim.lsp.buf.formatting, opts)
+        vim.keymap.set('n', '<S-A-f>', vim.lsp.buf.format, opts)
         vim.keymap.set('n', '<m-o>', '<cmd>ClangdSwitchSourceHeader<cr>')
-
+        
         vim.keymap.set('n', '<S-A-s>', function ()
             vim.lsp.buf.formatting({ async = false })
             vim.defer_fn(function ()

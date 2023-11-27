@@ -26,16 +26,20 @@ nmapc('<M-Down>', 'tabnext')
 
 -- Misc
 vim.keymap.set('n', '<a-5>', ':%s///g<Left><Left><Left>')
+vim.cmd('tnoremap <C-h> <C-\\><C-n>')
 
 -- Fuzzy Find Quick Keys
-nmapc('<C-p>', 'Files')
-nmapc('<M-f>', 'Rg')
+nmapc('<C-p>', 'Telescope git_files')
+nmapc('<M-f>', 'Telescope live_grep')
 nmapc('<M-p>', 'Telescope buffers')
 nmapc('<S-M-p>', 'Telescope oldfiles')
 nmapc('<M-r>', 'Telescope commands')
 nmapc('<S-M-r>', 'Telescope command_history')
 nmapc('<M-t>', 'Telescope lsp_document_symbols')
 nmapc('<leader>/', 'Telescope current_buffer_fuzzy_find')
+
+nmapc('<leader>\\', 'NvimTreeToggle')
+nmapc('<leader>|', 'NvimFindFile')
 
 -- Telescope
 nmapc('<leader>pp', 'Telescope find_files')

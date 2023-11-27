@@ -1,13 +1,25 @@
 return {
     'hrsh7th/nvim-cmp',
 
-    requires = {
+    event = { "InsertEnter", "CmdlineEnter" },
+
+    dependencies = {
         'hrsh7th/cmp-nvim-lsp',
         'hrsh7th/cmp-buffer',
         'hrsh7th/cmp-path',
         'hrsh7th/cmp-cmdline',
 
-        'L3MON4D3/LuaSnip',
+
+        {
+            'L3MON4D3/LuaSnip',
+            config = function ()
+                local DOT = require("nvim_config.env").DOTFILE_PATH;
+
+                require("luasnip.loaders.from_vscode").lazy_load({
+                    paths = { DOT .. '/.config/snippets/' }
+                })
+            end
+        }, 
         'saadparwaiz1/cmp_luasnip',
     },
 
