@@ -1,17 +1,7 @@
-local components = {
-    scrollbar = {
-        function()
-            return 'foo'
-        end,
-        padding = { left = 0, right = 0 },
-        -- color = "SLProgress",
-        cond = nil,
-    },
-}
 
 return {
     'nvim-lualine/lualine.nvim',
-    requires = { 'kyazdani42/nvim-web-devicons' },
+    dependencies = { 'kyazdani42/nvim-web-devicons' },
     config = function()
         require('lualine').setup({
             globalstatus = true,
@@ -24,9 +14,7 @@ return {
                     return vim.fn.getcwd():gsub('/home/arowe/', '~/')
                 end},
                 lualine_x = { 'searchcount' },
-                lualine_y = { function ()
-                    return require('lsp-status').status()
-                end},
+                lualine_y = { 'filetype' },
                 lualine_z = {
                     function()
                         local current_line = vim.fn.line "."

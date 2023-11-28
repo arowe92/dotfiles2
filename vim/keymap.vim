@@ -31,10 +31,10 @@ vnoremap <A-K> :m '<-2<CR>gv
 
 " ==== Windows and Panes ==== {{{2
 " Pane Selection
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
-noremap <C-h> <C-w>h
+" noremap <C-j> <C-w>j
+" noremap <C-k> <C-w>k
+" noremap <C-l> <C-w>l
+" noremap <C-h> <C-w>h
 
 " Pane Creation
 noremap <C-x><C-j> <C-W>s<C-w><C-j>

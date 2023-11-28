@@ -1,15 +1,17 @@
 -- Perform Bootstrap Installs
-(require 'nvim_config.bootstrap')()
+require 'nvim_config.bootstrap'
 
 -- Load env constants
 local env = require('nvim_config.env')
 
+-- Set Mapleader
+vim.g.mapleader = ' '
+
 -- Configure and load plugins
 local load_plugins = require 'nvim_config.plugins.init'
-require('packer').startup(load_plugins)
 
 -- Setups that have to come after package management
-require('nvim_config.plugins.lsp')._post_config()
+vim.opt.runtimepath:append(env.DOTFILE_PATH)
 
 -- Source VIM Config files
 vim.cmd('source ' .. env.DOTFILE_PATH .. '/vim/init.vim')
@@ -18,6 +20,9 @@ vim.cmd('source ' .. env.DOTFILE_PATH .. '/vim/init.vim')
 require 'nvim_config.functions'
 require 'nvim_config.keymap'
 require 'nvim_config.options'
+
+require("lazy").setup(load_plugins, {})
+require('nvim_config.plugins.lsp')._post_config()
 
 -- Load a custom lua
 if vim.fn.filereadable(env.HOME .. '/nvim.lua') then

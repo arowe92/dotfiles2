@@ -1,13 +1,27 @@
 return {
     'hrsh7th/nvim-cmp',
 
-    requires = {
+    event = {
+        "CmdlineEnter",
+        "InsertEnter",
+    },
+
+    dependencies = {
         'hrsh7th/cmp-nvim-lsp',
         'hrsh7th/cmp-buffer',
         'hrsh7th/cmp-path',
         'hrsh7th/cmp-cmdline',
 
-        'L3MON4D3/LuaSnip',
+        {
+            "L3MON4D3/LuaSnip",
+            config = function()
+                local DOT = require("nvim_config.env").DOTFILE_PATH;
+
+                require("luasnip.loaders.from_vscode").lazy_load({
+                    paths = { DOT .. '/.config/snippets/' }
+                })
+            end
+        },
         'saadparwaiz1/cmp_luasnip',
     },
 
@@ -19,7 +33,7 @@ return {
         cmp.setup({
             snippet = {
                 expand = function(args)
-                    vim.fn["vsnip#anonymous"](args.body)
+                    require'luasnip'.lsp_expand(args.body)
                 end,
             },
             window = {

@@ -1,7 +1,6 @@
 return {
     'mg979/vim-visual-multi',
-
-    config = function()
+    init = function()
         vim.g.VM_default_mappings = 1
         vim.g.VM_maps = {
             ['Find Under']         = "<M-d>",

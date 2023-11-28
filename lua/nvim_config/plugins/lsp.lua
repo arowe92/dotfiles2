@@ -1,6 +1,9 @@
 return {
     'neovim/nvim-lspconfig',
-    requires = 'nvim-lua/lsp-status.nvim',
+    dependencies = 'nvim-lua/lsp-status.nvim',
+    event = {
+        "VeryLazy"
+    },
 
     config = function()
         local lsp_status = require('lsp-status')
@@ -40,40 +43,42 @@ return {
             end, 500)
         end, opts)
 
-        require 'lspconfig'.tsserver.setup {
-            on_attach = function(client)
-                lsp_status.on_attach(client)
-                client.server_capabilities.documentFormattingProvider = false
-                client.server_capabilities.documentRangeFormattingProvider = false
-            end,
-
-            capabilities = lsp_status.capabilities
-        }
+        -- require 'lspconfig'.tsserver.setup {
+        --     on_attach = function(client)
+        --         lsp_status.on_attach(client)
+        --         client.server_capabilities.documentFormattingProvider = false
+        --         client.server_capabilities.documentRangeFormattingProvider = false
+        --     end,
+        --
+        --     capabilities = lsp_status.capabilities
+        -- }
     end,
 
     -- Custom Hook to run after wards
     _post_config = function()
-        local lsp_status = require('lsp-status')
+        -- local lsp_status = require('lsp-status')
         require("mason").setup()
         require("mason-lspconfig").setup {
             ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright" }
         }
         require("mason-lspconfig").setup_handlers {
-            function(server_name)
-                if server_name == "clangd" then
-                    require("lspconfig")[server_name].setup {
+            ["jsonls"] = function()
+                require("lspconfig").jsonls.setup {
+                    capabilities = require('cmp_nvim_lsp').default_capabilities()
+                }
+            end,
+
+            ["clangd"] = function ()
+                    require("lspconfig").clangd.setup {
                         cmd = { "clangd", "-header-insertion=never" },
-                        on_attach = lsp_status.on_attach,
-                        capabilities = lsp_status.capabilities,
-                        handlers = lsp_status.extensions.clangd.setup(),
                         filetypes = { 'c', 'cpp' },
                     }
-                else
-                    require("lspconfig")[server_name].setup {
-                        on_attach = lsp_status.on_attach,
-                        capabilities = lsp_status.capabilities
-                    }
-                end
+            end,
+
+            function(server_name)
+                require("lspconfig")[server_name].setup {
+                    capabilities = require('cmp_nvim_lsp').default_capabilities()
+                }
             end,
         }
     end
