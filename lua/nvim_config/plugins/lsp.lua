@@ -1,14 +1,9 @@
 return {
     'neovim/nvim-lspconfig',
-    dependencies = 'nvim-lua/lsp-status.nvim',
     event = {
         "VeryLazy"
     },
-
     config = function()
-        local lsp_status = require('lsp-status')
-        lsp_status.register_progress()
-
         local opts = { noremap = true, silent = true }
         vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
@@ -42,21 +37,10 @@ return {
                 vim.cmd("w")
             end, 500)
         end, opts)
-
-        -- require 'lspconfig'.tsserver.setup {
-        --     on_attach = function(client)
-        --         lsp_status.on_attach(client)
-        --         client.server_capabilities.documentFormattingProvider = false
-        --         client.server_capabilities.documentRangeFormattingProvider = false
-        --     end,
-        --
-        --     capabilities = lsp_status.capabilities
-        -- }
     end,
 
     -- Custom Hook to run after wards
     _post_config = function()
-        -- local lsp_status = require('lsp-status')
         require("mason").setup()
         require("mason-lspconfig").setup {
             ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright" }

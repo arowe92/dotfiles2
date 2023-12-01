@@ -11,6 +11,14 @@ return {
     require 'nvim_config.plugins.treesitter',
 
     {
+        "j-hui/fidget.nvim",
+        lazy = false,
+        config = function ()
+            require"fidget".setup{}
+        end
+    },
+
+    {
         'lukas-reineke/indent-blankline.nvim',
         tag = "v2.20.8",
     },
@@ -39,8 +47,8 @@ return {
     {
         'numToStr/Comment.nvim',
         keys = {
-            { "<m-/>" },
-            { "<m-?>" }
+            { "<m-/>", mode={'n', 'x'} },
+            { "<m-?>", mode={'n', 'x'} }
         },
         config = function()
             require('Comment').setup({
@@ -210,8 +218,11 @@ return {
     {
         'tpope/vim-fugitive',
         cmd = { "Git", "Gedit" },
+        keys = {
+            { '<A-g>', desc="Git" }
+        },
         config = function()
-            vim.cmd [[nnoremap <A-g> :Git ]]
+            vim.keymap.set('n', '<A-g>', ':Git ')
         end
     },
 

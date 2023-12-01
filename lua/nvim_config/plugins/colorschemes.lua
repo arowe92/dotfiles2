@@ -3,6 +3,7 @@ return {
     'edenEast/nightfox.nvim',
     'folke/tokyonight.nvim',
     'rebelot/kanagawa.nvim',
+    'tiagovla/tokyodark.nvim',
     { "catppuccin/nvim", as = "catppuccin" },
 
     {
