@@ -57,7 +57,8 @@ _exists bat && export PAGER='bat -p'
 ## EVALS
 ###################################
 _exists fasd && eval "$(fasd --init auto)";
-unalias a && unalias s && unalias sd && unalias sf
+_exists fast && unalias a && unalias s && unalias sd && unalias sf
+_exists zoxide && eval "$(zoxide init zsh)"
 
 _exists thefuck && eval $(thefuck --alias 2>/dev/null)
 _exists starship && eval "$(starship init zsh)"

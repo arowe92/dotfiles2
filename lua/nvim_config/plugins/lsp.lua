@@ -43,7 +43,7 @@ return {
     _post_config = function()
         require("mason").setup()
         require("mason-lspconfig").setup {
-            ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright" }
+            --ensure_installed = { "rust_analyzer", "tsserver", "clangd", "pyright" }
         }
         require("mason-lspconfig").setup_handlers {
             ["jsonls"] = function()

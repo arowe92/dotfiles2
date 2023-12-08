@@ -1,9 +1,0 @@
-
-args=$#
-cols=`tput cols`
-lines=`tput lines`
-for var in "$@"
-do
-    $HOME/.config/ranger/scope.sh $var $cols $lines /tmp/cache False
-done
-

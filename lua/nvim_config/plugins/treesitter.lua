@@ -18,9 +18,9 @@ return {
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     config = function()
         local TS_CONFIG = {
-            ensure_installed = { "c", "lua", "rust", "typescript" },
+            -- ensure_installed = { "c", "lua", "rust", "typescript" },
             sync_install = false,
-            auto_install = true,
+            auto_install = false,
             highlight = {
                 enable = true,
             },
