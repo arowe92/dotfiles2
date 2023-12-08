@@ -1,4 +1,4 @@
-if [[ ! -d $HOME/.fzf ]]; then
+if [[ ! -d "$FZF_PATH" ]]; then
     echo "FZF Not Installed"
     return
 fi
@@ -13,18 +13,13 @@ export FZF_COMPLETION_TRIGGER='**'
 # Color scheme https://minsw.github.io/fzf-color-picker/
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' --color=fg:#d0d0d0,bg:#121212,hl:#5f87af --color=fg+:#d0d0d0,bg+:#262626,hl+:#5fd7ff --color=info:#afaf87,prompt:#d7005f,pointer:#af5fff --color=marker:#87ff00,spinner:#af5fff,header:#87afaf'
 
-# Setup fzf
-# ---------
-if [[ ! "$PATH" == *$HOME/.fzf/bin* ]]; then export PATH="${PATH:+${PATH}:}$HOME/.fzf/bin"
-fi
-
 # Auto-completion
 # ---------------
-[[ $- == *i* ]] && source "$HOME/.fzf/shell/completion.zsh" 2> /dev/null
+[[ $- == *i* ]] && source "$FZF_PATH/shell/completion.zsh" 2> /dev/null
 
 # Key bindings
 # ------------
-source "$HOME/.fzf/shell/key-bindings.zsh"
+source "$FZF_PATH/shell/key-bindings.zsh"
 
 # GIT heart FZF
 # -------------

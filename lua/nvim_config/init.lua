@@ -25,7 +25,7 @@ require("lazy").setup(load_plugins, {})
 require('nvim_config.plugins.lsp')._post_config()
 
 -- Load a custom lua
-if vim.fn.filereadable(env.HOME .. '/nvim.lua') then
+if vim.fn.filereadable(env.HOME .. '/nvim.lua') == '0' then
     dofile(env.HOME .. "/nvim.lua")
 end
 

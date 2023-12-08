@@ -1,3 +1,5 @@
+export DOTFILE_PATH="${0:a:h:h}"
+
 ###################################
 ## PLUGINS
 ###################################
@@ -7,8 +9,13 @@ autoload -Uz compinit && compinit
 autoload edit-command-line
 zle -N edit-command-line
 
-source ${ZDOTDIR:-~}/.antidote/antidote.zsh
-antidote load
+if [[ ! $HOME/.zsh_plugins.zsh -nt $DOTFILE_PATH/zsh_plugins.txt ]]; then
+	source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+	antidote bundle <$DOTFILE_PATH/zsh_plugins.txt > $HOME/.zsh_plugins.zsh
+fi
+source $HOME/.zsh_plugins.zsh
+
+#antidote load
 
 compinit
 
@@ -27,6 +34,7 @@ export PATH
 ###################################
 ## Env Aliases
 export ZSH="$HOME/.oh-my-zsh"
+export TMUX_SHELL="$(which zsh)"
 export TERM='xterm-256color'
 export COLORTERM=truecolor
 export SSH_KEY_PATH="~/.ssh/id_rsa"
@@ -37,7 +45,7 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket-$(tmux display-message -p '#{session_name}' 2>/dev/null)"
 export BAT_CONFIG_PATH="$DOTFILE_PATH/.config/bat.conf"
 export RIPGREP_CONFIG_PATH="$DOTFILE_PATH/.config/ripgreprc"
-export DOTFILE_PATH="${0:a:h:h}"
+export FZF_PATH="/home/linuxbrew/.linuxbrew/opt/fzf"
 
 # Pagers
 _exists () { command -v $1 > /dev/null }
