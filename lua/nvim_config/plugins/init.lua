@@ -10,19 +10,13 @@ return {
     require 'nvim_config.plugins.tree',
     require 'nvim_config.plugins.treesitter',
 
-    {
-        "j-hui/fidget.nvim",
-        lazy = false,
-        config = function ()
-            require"fidget".setup{}
-        end
-    },
 
-    {
-        'lukas-reineke/indent-blankline.nvim',
-        tag = "v2.20.8",
-    },
+    -- Display Marks
+    { 'kshenoy/vim-signature' },
+    { 'lukas-reineke/indent-blankline.nvim', },
 
+    -- Tmux
+    'roxma/vim-tmux-clipboard',
     {
         'christoomey/vim-tmux-navigator',
         keys = {
@@ -38,10 +32,6 @@ return {
             vim.cmd("noremap <silent> <C-l> :<C-U>TmuxNavigateRight<cr>")
         end
     },
-    'roxma/vim-tmux-clipboard',
-
-    'williamboman/mason.nvim',
-    'williamboman/mason-lspconfig.nvim',
 
     -- Commenting
     {
@@ -205,6 +195,7 @@ return {
 
     {
         "petertriho/nvim-scrollbar",
+        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         config = function()
             require("scrollbar").setup({
                 handlers = {
@@ -274,30 +265,63 @@ return {
         end
     },
 
-    -- Display Marks
-    { 'kshenoy/vim-signature' },
-
     -- Code Actions
-    -- {
-    --     'weilbith/nvim-code-action-menu',
-    --     config = function()
-    --         local nmapc = require 'nvim_config.utils'.nmapc
-    --         nmapc('<space>ca', 'CodeActionMenu')
-    --     end
-    -- },
+    {
+        'weilbith/nvim-code-action-menu',
+        cmd = { "CodeActionMenu" },
+        init = function()
+            local nmapc = require 'nvim_config.utils'.nmapc
+            nmapc('<space>ca', 'CodeActionMenu')
+        end
+    },
 
     -- "MiniMap on Right"
-    -- {
-    --     'gorbit99/codewindow.nvim',
-    --     config = function()
-    --         local codewindow = require('codewindow')
-    --         codewindow.setup({
-    --             auto_enable = false,
-    --             window_border = 'none',
-    --             minimap_width = 16,
-    --             width_multiplier = 4
-    --         })
-    --         codewindow.apply_default_keybinds()
-    --     end,
-    -- }
-}
+    {
+        'gorbit99/codewindow.nvim',
+        keys = {
+            { "<space>mm" },
+        },
+        config = function()
+            local codewindow = require('codewindow')
+            codewindow.setup({
+                auto_enable = false,
+                window_border = 'none',
+                minimap_width = 16,
+                width_multiplier = 4
+            })
+            vim.keymap.set('n', '<leader>mm', function()
+                codewindow.toggle_minimap()
+            end)
+        end,
+    },
+
+    -- Chat GPT
+    {
+        "robitx/gp.nvim",
+
+        cmd = {
+            "GpRewrite",
+            "GpAppend",
+            "GpPrepend",
+            "GpImplement",
+            "GpContext",
+            "GpChatNew",
+            "GpNextAgent",
+        },
+
+        config = function()
+            require("gp").setup()
+        end,
+
+        init = function()
+            local utils = require 'nvim_config.utils'
+            utils.mapc('<leader>tt', 'GpRewrite')
+            utils.mapc('<leader>ta', 'GpAppend')
+            utils.mapc('<leader>tp', 'GpPrepend')
+            utils.mapc('<leader>ti', 'GpImplement')
+            utils.mapc('<leader>tx', 'GpContext')
+            utils.mapc('<leader>tc', 'GpChatNew')
+            utils.mapc('<leader>tn', 'GpNextAgent')
+        end,
+    },
+    }

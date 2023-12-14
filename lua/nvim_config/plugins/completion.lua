@@ -23,10 +23,29 @@ return {
             end
         },
         'saadparwaiz1/cmp_luasnip',
+        'onsails/lspkind-nvim',
+
+        {
+            "zbirenbaum/copilot.lua",
+            cmd = "Copilot",
+            config = function()
+                require("copilot").setup({})
+            end,
+        },
+        {
+            "zbirenbaum/copilot-cmp",
+            after = { "copilot.lua" },
+            config = function ()
+                require("copilot_cmp").setup()
+            end
+        },
+
+
     },
 
     config = function()
         local cmp = require 'cmp'
+        local lspkind = require 'lspkind'
 
         vim.o.completeopt = "menu,menuone,noselect"
 
@@ -64,9 +83,21 @@ return {
             sources = cmp.config.sources({
                 { name = 'luasnip' },
                 { name = 'nvim_lsp' },
+                { name = "copilot" },
                 { name = 'buffer' },
                 { name = 'path' },
-            })
+            }),
+            formatting = {
+                format = lspkind.cmp_format({
+                    mode = 'symbol',
+                    maxwidth = 50,
+                    ellipsis_char = '...',
+                    symbol_map = { Copilot = "" },
+                    before = function (entry, vim_item)
+                        return vim_item
+                    end
+                })
+            }
         })
 
         -- Set configuration for specific filetype.
