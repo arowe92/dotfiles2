@@ -164,3 +164,10 @@ nnoremap <leader>r :%s/<C-r>///g<Left><Left>
 nnoremap <leader>R *:%s/<C-r>///g<Left><Left>
 vnoremap <leader>r :%s/<C-r>///g<Left><Left>
 vnoremap <leader>R :%s/<C-r>///g<Left><Left>
+
+" Toggles
+nnoremap <leader>tw :set wrap!<CR>
+
+" Filetype mappings
+autocmd FileType rust inoremap <buffer> <A-u> .unwrap()
+autocmd FileType rust inoremap <buffer> <A-c> .clone()

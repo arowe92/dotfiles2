@@ -200,7 +200,7 @@ return {
             require("scrollbar").setup({
                 handlers = {
                     gitsigns = true,
-                    search = true,
+                    search = false,
                 }
             })
         end
@@ -299,6 +299,102 @@ return {
     {
         "robitx/gp.nvim",
 
+        keys = {
+            -- Normal mode mappings
+            {
+                "<leader>ir",
+                "<cmd>GpRewrite<cr>",
+                desc = "Rewrite with GPT",
+                mode = "n"
+            },
+            {
+                "<leader>ia",
+                "<cmd>GpAppend<cr>",
+                desc = "Append with GPT",
+                mode = "n"
+            },
+            {
+                "<leader>ip",
+                "<cmd>GpPrepend<cr>",
+                desc = "Prepend with GPT",
+                mode = "n"
+            },
+            {
+                "<leader>ii",
+                "<cmd>GpImplement<cr>",
+                desc = "Implement with GPT",
+                mode = "n"
+            },
+            {
+                "<leader>ic",
+                "<cmd>GpContext<cr>",
+                desc = "Context with GPT",
+                mode = "n"
+            },
+            {
+                "<leader>in",
+                "<cmd>GpChatNew<cr>",
+                desc = "Start new chat with GPT",
+                mode = "n"
+            },
+            {
+                "<leader>it",
+                "<cmd>GpChatToggle<cr>",
+                desc = "Toggle chat with GPT",
+                mode = "n"
+            },
+            {
+                "<leader>ix",
+                "<cmd>GpNextAgent<cr>",
+                desc = "Switch to next GPT agent",
+                mode = "n"
+            },
+            
+            -- Visual mode mappings
+            {
+                "<leader>ir",
+                "<cmd>'<,'>GpRewrite<cr>",
+                desc = "Rewrite with GPT",
+                mode = "v"
+            },
+            {
+                "<leader>ia",
+                "<cmd>'<,'>GpAppend<cr>",
+                desc = "Append with GPT",
+                mode = "v"
+            },
+            {
+                "<leader>ip",
+                "<cmd>'<,'>GpPrepend<cr>",
+                desc = "Prepend with GPT",
+                mode = "v"
+            },
+            {
+                "<leader>ii",
+                "<cmd>'<,'>GpImplement<cr>",
+                desc = "Implement with GPT",
+                mode = "v"
+            },
+            {
+                "<leader>ic",
+                "<cmd>'<,'>GpContext<cr>",
+                desc = "Context with GPT",
+                mode = "v"
+            },
+            {
+                "<leader>in",
+                "<cmd>'<,'>GpChatNew<cr>",
+                desc = "Start new chat with GPT",
+                mode = "v"
+            },
+            {
+                "<leader>it",
+                "<cmd>'<,'>GpChatToggle<cr>",
+                desc = "Toggle chat with GPT",
+                mode = "v"
+            },
+        },
+
         cmd = {
             "GpRewrite",
             "GpAppend",
@@ -312,16 +408,53 @@ return {
         config = function()
             require("gp").setup()
         end,
-
-        init = function()
-            local utils = require 'nvim_config.utils'
-            utils.mapc('<leader>tt', 'GpRewrite')
-            utils.mapc('<leader>ta', 'GpAppend')
-            utils.mapc('<leader>tp', 'GpPrepend')
-            utils.mapc('<leader>ti', 'GpImplement')
-            utils.mapc('<leader>tx', 'GpContext')
-            utils.mapc('<leader>tc', 'GpChatNew')
-            utils.mapc('<leader>tn', 'GpNextAgent')
-        end,
     },
+    {
+        "folke/trouble.nvim",
+        branch = "dev", -- IMPORTANT!
+        cmd = "Trouble",
+        keys = {
+            {
+                "<leader>tt",
+                "<cmd>Trouble diagnostics toggle filter.buf=0 filter.severity=vim.diagnostic.severity.ERROR<cr>",
+                desc = "Diagnostics (Trouble)",
+            },
+            {
+                "<leader>tT",
+                "<cmd>Trouble diagnostics toggle filter.severity=vim.diagnostic.severity.ERROR<cr>",
+                desc = "Buffer Diagnostics (Trouble)",
+            },
+            {
+                "<leader>td",
+                "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+                desc = "Diagnostics (Trouble)",
+            },
+            {
+                "<leader>tD",
+                "<cmd>Trouble diagnostics toggle<cr>",
+                desc = "Buffer Diagnostics (Trouble)",
+            },
+            {
+                "<leader>ts",
+                "<cmd>Trouble symbols toggle focus=false<cr>",
+                desc = "Symbols (Trouble)",
+            },
+            {
+                "<leader>tl",
+                "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+                desc = "LSP Definitions / references / ... (Trouble)",
+            },
+            {
+                "<leader>tL",
+                "<cmd>Trouble loclist toggle<cr>",
+                desc = "Location List (Trouble)",
+            },
+            {
+                "<leader>tq",
+                "<cmd>Trouble qflist toggle<cr>",
+                desc = "Quickfix List (Trouble)",
+            },
+        },
+        opts = {},
     }
+}

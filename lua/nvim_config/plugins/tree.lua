@@ -1,15 +1,15 @@
 local CONFIG = {
     'nvim-tree/nvim-tree.lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    keys = {
-        "<leader>\\",
-        "<leader>|"
-    },
-    cmd = {
-        "NvimTreeToggle",
-        "NvimTreeOpen",
-        "NvimTreeFindFile",
-    },
+    -- keys = {
+    --     "<leader>\\",
+    --     "<leader>|"
+    -- },
+    -- cmd = {
+    --     "NvimTreeToggle",
+    --     "NvimTreeOpen",
+    --     "NvimTreeFindFile",
+    -- },
     config = function()
         vim.g.loaded_netrw = 1
         vim.g.loaded_netrwPlugin = 1
@@ -21,13 +21,13 @@ local CONFIG = {
                 ignore = false,
             },
             view = {
-                width = 50,
+                width = 30,
             },
             renderer = {
                 icons = {
                     glyphs = {
                         git = {
-                            unstaged = "",
+                            unstaged = "",
                             staged = "",
                             unmerged = "",
                             renamed = "➜",

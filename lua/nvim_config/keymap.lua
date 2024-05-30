@@ -27,6 +27,11 @@ nmapc('<M-Down>', 'tabnext')
 -- Misc
 vim.keymap.set('n', '<a-5>', ':%s///g<Left><Left><Left>')
 vim.keymap.set('t', '<c-h>', '<c-\\><c-n><c-h>')
+vim.keymap.set('v', 'Y', function ()
+    vim.cmd "set clipboard=unnamedplus"
+    vim.cmd "normal! y"
+    vim.cmd "set clipboard="
+end)
 
 -- Fuzzy Find Quick Keys
 nmapc('<C-p>', 'Files')
@@ -41,6 +46,7 @@ nmapc('<leader>/', 'Telescope current_buffer_fuzzy_find')
 -- Telescope
 nmapc('<leader>pp', 'Telescope find_files')
 nmapc('<leader>pg', 'Telescope git_files')
+nmapc('<leader>po', 'Telescope oldfiles')
 nmapc('<leader>pF', 'Telescope live_grep')
 nmapc('<leader>ph', 'Telescope help_tags')
 nmapc('<leader>pc', 'Telescope commands')
