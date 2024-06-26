@@ -24,10 +24,19 @@ return {
             highlight = {
                 enable = true,
             },
+            incremental_selection = {
+                enable = true,
+                keymaps = {
+                    init_selection = "gnn", -- set to `false` to disable one of the mappings
+                    node_incremental = "gne",
+                    scope_incremental = "gni",
+                    node_decremental = "gnu",
+                },
+            },
             rainbow = {
                 enable = true,
                 extended_mode = true,
-                max_file_lines = nil,
+                max_file_lines = 1000,
                 colors = {
                     "#5f93bf",
                     "#9f6da7",

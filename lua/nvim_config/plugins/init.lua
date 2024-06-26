@@ -12,8 +12,8 @@ return {
 
 
     -- Display Marks
-    { 'kshenoy/vim-signature' },
-    { 'lukas-reineke/indent-blankline.nvim', },
+    -- { 'kshenoy/vim-signature' },
+    -- { 'lukas-reineke/indent-blankline.nvim', },
 
     -- Tmux
     'roxma/vim-tmux-clipboard',
@@ -30,6 +30,7 @@ return {
             vim.cmd("noremap <silent> <C-j> :<C-U>TmuxNavigateDown<cr>")
             vim.cmd("noremap <silent> <C-k> :<C-U>TmuxNavigateUp<cr>")
             vim.cmd("noremap <silent> <C-l> :<C-U>TmuxNavigateRight<cr>")
+
         end
     },
 
@@ -94,7 +95,6 @@ return {
         "tpope/vim-repeat",
     },
 
-
     -- FZF
     {
         'junegunn/fzf',
@@ -135,32 +135,31 @@ return {
     },
 
     -- Git Signs
-    {
-        'lewis6991/gitsigns.nvim',
-        config = function()
-            require('gitsigns').setup({
-                signcolumn = false,
-                numhl      = true,
-            })
-
-            local utils = require 'nvim_config.utils'
-            utils.nmapc('<leader>gu', 'Gitsigns reset_hunk')
-            utils.nmapc('<leader>ga', 'Gitsigns stage_hunk')
-            utils.nmapc('<leader>gA', 'Gitsigns undo_stage_hunk')
-            utils.nmapc('<leader>gb', 'Gitsigns blame_line')
-            utils.nmapc('<leader>gr', 'Gitsigns refresh')
-            utils.nmapc('<leader>gq', 'Gitsigns setqflist')
-            utils.nmapc('<leader>gp', 'Gitsigns preview_hunk_inline')
-            utils.nmapc('<leader>gP', 'Gitsigns preview_hunk')
-            utils.nmapc(']g', 'Gitsigns next_hunk')
-            utils.nmapc('[g', 'Gitsigns prev_hunk')
-        end
-    },
+    -- {
+    --     'lewis6991/gitsigns.nvim',
+    --     config = function()
+    --         require('gitsigns').setup({
+    --             signcolumn = false,
+    --             numhl      = true,
+    --         })
+    --
+    --         local utils = require 'nvim_config.utils'
+    --         utils.nmapc('<leader>gu', 'Gitsigns reset_hunk')
+    --         utils.nmapc('<leader>ga', 'Gitsigns stage_hunk')
+    --         utils.nmapc('<leader>gA', 'Gitsigns undo_stage_hunk')
+    --         utils.nmapc('<leader>gb', 'Gitsigns blame_line')
+    --         utils.nmapc('<leader>gr', 'Gitsigns refresh')
+    --         utils.nmapc('<leader>gq', 'Gitsigns setqflist')
+    --         utils.nmapc('<leader>gp', 'Gitsigns preview_hunk_inline')
+    --         utils.nmapc('<leader>gP', 'Gitsigns preview_hunk')
+    --         utils.nmapc(']g', 'Gitsigns next_hunk')
+    --         utils.nmapc('[g', 'Gitsigns prev_hunk')
+    --     end
+    -- },
 
     -- Hop
     {
         'phaazon/hop.nvim',
-        commit = "caaccee",
         keys = {
             " j",
             " k"
@@ -184,27 +183,27 @@ return {
         end
     },
 
-    {
-        "nvim-zh/colorful-winsep.nvim",
-        config = function()
-            require('colorful-winsep').setup({
-                symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
-            })
-        end
-    },
+    -- {
+    --     "nvim-zh/colorful-winsep.nvim",
+    --     config = function()
+    --         require('colorful-winsep').setup({
+    --             symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
+    --         })
+    --     end
+    -- },
 
-    {
-        "petertriho/nvim-scrollbar",
-        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-        config = function()
-            require("scrollbar").setup({
-                handlers = {
-                    gitsigns = true,
-                    search = false,
-                }
-            })
-        end
-    },
+    -- {
+    --     "petertriho/nvim-scrollbar",
+    --     event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+    --     config = function()
+    --         require("scrollbar").setup({
+    --             handlers = {
+    --                 gitsigns = true,
+    --                 search = false,
+    --             }
+    --         })
+    --     end
+    -- },
 
     {
         'tpope/vim-fugitive',
@@ -232,48 +231,48 @@ return {
     },
 
     -- Highlight Git Conflicts
-    {
-        'akinsho/git-conflict.nvim',
-        tag = "*",
-        config = function()
-            require('git-conflict').setup({ default_mappings = false })
-            vim.keymap.set('n', 'co', '<Plug>(git-conflict-ours)')
-            vim.keymap.set('n', 'ct', '<Plug>(git-conflict-theirs)')
-            vim.keymap.set('n', 'cb', '<Plug>(git-conflict-both)')
-            vim.keymap.set('n', 'c0', '<Plug>(git-conflict-none)')
-            vim.keymap.set('n', ']x', '<Plug>(git-conflict-prev-conflict)')
-            vim.keymap.set('n', '[x', '<Plug>(git-conflict-next-conflict)')
-        end
-    },
+    -- {
+    --     'akinsho/git-conflict.nvim',
+    --     tag = "*",
+    --     config = function()
+    --         require('git-conflict').setup({ default_mappings = false })
+    --         vim.keymap.set('n', 'co', '<Plug>(git-conflict-ours)')
+    --         vim.keymap.set('n', 'ct', '<Plug>(git-conflict-theirs)')
+    --         vim.keymap.set('n', 'cb', '<Plug>(git-conflict-both)')
+    --         vim.keymap.set('n', 'c0', '<Plug>(git-conflict-none)')
+    --         vim.keymap.set('n', ']x', '<Plug>(git-conflict-prev-conflict)')
+    --         vim.keymap.set('n', '[x', '<Plug>(git-conflict-next-conflict)')
+    --     end
+    -- },
 
     -- Formatting through LSP
-    {
-        'jose-elias-alvarez/null-ls.nvim',
-        keys = {
-            { "<A-F>" },
-            { "<S-A-f>" },
-        },
-        config = function()
-            local null_ls = require("null-ls")
-            null_ls.setup({
-                sources = {
-                    null_ls.builtins.formatting.autopep8,
-                    null_ls.builtins.formatting.prettier,
-                    null_ls.builtins.formatting.buf,
-                },
-            })
-        end
-    },
+    -- {
+    --     'jose-elias-alvarez/null-ls.nvim',
+    --     keys = {
+    --         { "<A-F>" },
+    --         { "<S-A-f>" },
+    --     },
+    --     config = function()
+    --         local null_ls = require("null-ls")
+    --         null_ls.setup({
+    --             sources = {
+    --                 null_ls.builtins.formatting.autopep8,
+    --                 null_ls.builtins.formatting.prettier,
+    --                 null_ls.builtins.formatting.buf,
+    --             },
+    --         })
+    --     end
+    -- },
 
     -- Code Actions
-    {
-        'weilbith/nvim-code-action-menu',
-        cmd = { "CodeActionMenu" },
-        init = function()
-            local nmapc = require 'nvim_config.utils'.nmapc
-            nmapc('<space>ca', 'CodeActionMenu')
-        end
-    },
+    -- {
+    --     'weilbith/nvim-code-action-menu',
+    --     cmd = { "CodeActionMenu" },
+    --     init = function()
+    --         local nmapc = require 'nvim_config.utils'.nmapc
+    --         nmapc('<space>ca', 'CodeActionMenu')
+    --     end
+    -- },
 
     -- "MiniMap on Right"
     {
@@ -456,5 +455,73 @@ return {
             },
         },
         opts = {},
+    },
+
+    {
+        'ThePrimeagen/harpoon',
+        keys = {{
+            '<leader><leader>h',
+            function ()
+                require("harpoon.mark").add_file()
+            end 
+        }, {
+            '<leader><leader>a',
+            function ()
+                require("harpoon.mark").add_file()
+            end 
+        }, {
+            '<leader><leader>m',
+            function ()
+                require("harpoon.ui").toggle_quick_menu()
+            end
+        }, {
+            '<leader><leader>o',
+            function ()
+                require("harpoon.ui").nav_next()
+            end
+        }, {
+            '<leader><leader>n',
+            function ()
+                require("harpoon.ui").nav_prev()
+            end
+        }, {
+            '<leader><leader>c',
+            function ()
+                vim.ui.input({prompt = 'Add Command: '}, function (input)
+                    require("harpoon.tmux").add_cmd(input)
+                end
+                )
+            end
+        }, {
+            '<leader><leader>r',
+            function ()
+                require("harpoon.cmd-ui").toggle_quick_menu()
+            end
+        }, {
+            '<leader><leader>C',
+            function ()
+                vim.ui.input({prompt = 'Remove Command: '}, function (input)
+                    require("harpoon.tmux").rm_cmd(tonumber(input))
+                end
+                )
+            end
+        }},
+        config = function () 
+            require("harpoon").setup({
+                projects = {
+                    -- Yes $HOME works
+                    ["$HOME/personal/vim-with-me/server"] = {
+                        term = {
+                            cmds = {
+                                "./env && npx ts-node src/index.ts"
+                            }
+                        }
+                    }
+                }
+            })
+
+            require("telescope").load_extension('harpoon')
+        end
+
     }
 }
