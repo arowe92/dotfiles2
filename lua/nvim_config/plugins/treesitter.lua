@@ -1,9 +1,6 @@
 return {
     'nvim-treesitter/nvim-treesitter',
     version = false,
-    dependencies = {
-        'p00f/nvim-ts-rainbow',
-    },
     build = ':TSUpdate',
     event = { "VeryLazy" }, 
     init = function(plugin)
@@ -24,39 +21,15 @@ return {
             highlight = {
                 enable = true,
             },
-            incremental_selection = {
-                enable = true,
-                keymaps = {
-                    init_selection = "gnn", -- set to `false` to disable one of the mappings
-                    node_incremental = "gne",
-                    scope_incremental = "gni",
-                    node_decremental = "gnu",
-                },
-            },
-            rainbow = {
-                enable = true,
-                extended_mode = true,
-                max_file_lines = 1000,
-                colors = {
-                    "#5f93bf",
-                    "#9f6da7",
-                    "#9baa58",
-                    "#efaf79",
-                    "#a7796c",
-                    "#8da5c6",
-                    "#c5b666",
-                    "#a5c3a1",
-                },
-                termcolors = {
-                    "Red",
-                    "Green",
-                    "Yellow",
-                    "Blue",
-                    "Magenta",
-                    "Cyan",
-                    "White",
-                },
-            }
+            -- incremental_selection = {
+            --     enable = true,
+            --     keymaps = {
+            --         init_selection = "gnn", -- set to `false` to disable one of the mappings
+            --         node_incremental = "gne",
+            --         scope_incremental = "gni",
+            --         node_decremental = "gnu",
+            --     },
+            -- },
         }
         require 'nvim-treesitter.configs'.setup(TS_CONFIG)
     end

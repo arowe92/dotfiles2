@@ -4,7 +4,6 @@ return {
     require 'nvim_config.plugins.completion',
     require 'nvim_config.plugins.colorschemes',
     require 'nvim_config.plugins.lsp',
-    require 'nvim_config.plugins.multi_cursor',
     require 'nvim_config.plugins.statusline',
     require 'nvim_config.plugins.telescope',
     require 'nvim_config.plugins.tree',
@@ -13,7 +12,12 @@ return {
 
     -- Display Marks
     -- { 'kshenoy/vim-signature' },
-    -- { 'lukas-reineke/indent-blankline.nvim', },
+    { 
+        'lukas-reineke/indent-blankline.nvim', 
+        config = function () 
+            require 'ibl'.setup()
+        end
+    },
 
     -- Tmux
     'roxma/vim-tmux-clipboard',
@@ -135,31 +139,55 @@ return {
     },
 
     -- Git Signs
-    -- {
-    --     'lewis6991/gitsigns.nvim',
-    --     config = function()
-    --         require('gitsigns').setup({
-    --             signcolumn = false,
-    --             numhl      = true,
-    --         })
-    --
-    --         local utils = require 'nvim_config.utils'
-    --         utils.nmapc('<leader>gu', 'Gitsigns reset_hunk')
-    --         utils.nmapc('<leader>ga', 'Gitsigns stage_hunk')
-    --         utils.nmapc('<leader>gA', 'Gitsigns undo_stage_hunk')
-    --         utils.nmapc('<leader>gb', 'Gitsigns blame_line')
-    --         utils.nmapc('<leader>gr', 'Gitsigns refresh')
-    --         utils.nmapc('<leader>gq', 'Gitsigns setqflist')
-    --         utils.nmapc('<leader>gp', 'Gitsigns preview_hunk_inline')
-    --         utils.nmapc('<leader>gP', 'Gitsigns preview_hunk')
-    --         utils.nmapc(']g', 'Gitsigns next_hunk')
-    --         utils.nmapc('[g', 'Gitsigns prev_hunk')
-    --     end
-    -- },
+    {
+        'lewis6991/gitsigns.nvim',
+        config = function()
+            require('gitsigns').setup({
+                signcolumn = false,
+                numhl      = true,
+            })
+
+            local utils = require 'nvim_config.utils'
+            utils.nmapc('<leader>gu', 'Gitsigns reset_hunk')
+            utils.nmapc('<leader>ga', 'Gitsigns stage_hunk')
+            utils.nmapc('<leader>gA', 'Gitsigns undo_stage_hunk')
+            utils.nmapc('<leader>gb', 'Gitsigns blame_line')
+            utils.nmapc('<leader>gr', 'Gitsigns refresh')
+            utils.nmapc('<leader>gq', 'Gitsigns setqflist')
+            utils.nmapc('<leader>gp', 'Gitsigns preview_hunk_inline')
+            utils.nmapc('<leader>gP', 'Gitsigns preview_hunk')
+            utils.nmapc(']g', 'Gitsigns next_hunk')
+            utils.nmapc('[g', 'Gitsigns prev_hunk')
+        end
+    },
+
+    -- Multi Cursor
+    {
+        'mg979/vim-visual-multi',
+        init = function()
+            vim.g.VM_default_mappings = 1
+            vim.g.VM_maps = {
+                ['Find Under']         = "<M-d>",
+                ['Find Subword Under'] = '<M-d>',
+                ['Select All']         = '<M-D>',
+                ['Visual All']         = '<M-D>',
+                ["Add Cursor Down"]    = '<S-Down>',
+                ["Add Cursor Up"]      = '<S-Up>',
+                ['Visual Cursors']     = '<Tab>',
+                ['Visual Add']         = 'v',
+                ['Increase']           = '+',
+                ['Decrease']           = '-',
+                ['Toggle Mappings']    = '<space><space>',
+                ['Reselect Last']      = '\\gv',
+            }
+            vim.g.VM_case_setting = 'sensitive'
+            vim.g.VM_theme = 'purplegray'
+        end
+    },
 
     -- Hop
     {
-        'phaazon/hop.nvim',
+        'smoka7/hop.nvim',
         keys = {
             " j",
             " k"
@@ -168,7 +196,7 @@ return {
         config = function()
             local utils = require 'nvim_config.utils'
             local hop = require 'hop'
-            hop.setup()
+            hop.setup({})
 
             utils.mapc('<leader>j', 'HopVerticalAC')
             utils.mapc('<leader>k', 'HopVerticalBC')
@@ -410,7 +438,6 @@ return {
     },
     {
         "folke/trouble.nvim",
-        branch = "dev", -- IMPORTANT!
         cmd = "Trouble",
         keys = {
             {
@@ -528,6 +555,7 @@ return {
     {
         'MeanderingProgrammer/markdown.nvim',
         name = 'render-markdown', 
+        ft = "markdown",
         -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
@@ -537,15 +565,16 @@ return {
     },
 
     {
-        "scottmckendry/cyberdream.nvim",
-        lazy = false,
-        priority = 1000,    
-        config = function ()  
-            require("cyberdream").setup {
-                theme = {
-                    variant = "auto",
-                }
-            }
-        end
+        'nmac427/guess-indent.nvim',
+        config = function() 
+            require('guess-indent').setup {} 
+        end,
+    },
+
+    {
+        'HiPhish/rainbow-delimiters.nvim',
+        dependencies = {
+            'nvim-treesitter'
+        }
     }
 }

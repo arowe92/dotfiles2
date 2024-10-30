@@ -120,6 +120,9 @@ xnoremap X "_D
 noremap c "_c
 noremap C "_C
 
+" Copy to system
+xnoremap <leader>y "+y
+
 " silent search if wrap-around enabled
 map <silent> n n
 
