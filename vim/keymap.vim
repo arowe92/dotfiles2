@@ -171,6 +171,14 @@ vnoremap <leader>R :%s/<C-r>///g<Left><Left>
 " Toggles
 nnoremap <leader>tw :set wrap!<CR>
 
+" Toggle Auto Comments on
+nnoremap <leader>tc :set formatoptions-=cro<CR>
+nnoremap <leader>tC :set formatoptions+=cro<CR>
+
+" Toggle Auto Comments on
+nnoremap <leader>tm :set mouse=
+nnoremap <leader>tM :set mouse=a
+
 " Filetype mappings
 autocmd FileType rust inoremap <buffer> <A-u> .unwrap()
 autocmd FileType rust inoremap <buffer> <A-c> .clone()

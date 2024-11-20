@@ -21,6 +21,7 @@ set scrolloff=3 " Keep 3 lines below and above the cursor
 set foldmethod=indent
 set shortmess+=A
 set shortmess+=S
+set formatoptions-=cro
 
 " Vim-sensible options
 set autoindent

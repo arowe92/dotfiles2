@@ -34,8 +34,8 @@ vim.keymap.set('v', 'Y', function ()
 end)
 
 -- Fuzzy Find Quick Keys
-nmapc('<C-p>', 'Files')
-nmapc('<M-f>', 'Rg')
+nmapc('<C-p>', 'Telescope git_files')
+nmapc('<M-f>', 'Telescope live_grep')
 nmapc('<M-p>', 'Telescope buffers')
 nmapc('<S-M-p>', 'Telescope oldfiles')
 nmapc('<M-r>', 'Telescope commands')

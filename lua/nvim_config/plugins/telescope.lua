@@ -48,6 +48,9 @@ return {
                         symbol_width = 100
                     }
                 },
+                find_files = {
+                    hidden = true
+                }
             },
         })
 

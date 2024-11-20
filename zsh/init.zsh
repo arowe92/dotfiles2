@@ -43,8 +43,8 @@ export _FASD_BACKENDS="native spotlight recently-used current"
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 export NVIM_LISTEN_ADDRESS="/tmp/nvimsocket-$(tmux display-message -p '#{session_name}' 2>/dev/null)"
-export BAT_CONFIG_PATH="$DOTFILE_PATH/.config/bat.conf"
-export RIPGREP_CONFIG_PATH="$DOTFILE_PATH/.config/ripgreprc"
+export BAT_CONFIG_PATH="$DOTFILE_PATH/config/bat.conf"
+export RIPGREP_CONFIG_PATH="$DOTFILE_PATH/config/ripgreprc"
 export FZF_PATH="/home/linuxbrew/.linuxbrew/opt/fzf"
 
 # Pagers
