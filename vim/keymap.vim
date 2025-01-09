@@ -175,9 +175,14 @@ nnoremap <leader>tw :set wrap!<CR>
 nnoremap <leader>tc :set formatoptions-=cro<CR>
 nnoremap <leader>tC :set formatoptions+=cro<CR>
 
-" Toggle Auto Comments on
+" Toggle Mouse
 nnoremap <leader>tm :set mouse=
 nnoremap <leader>tM :set mouse=a
+
+" Toggle Invisible
+nnoremap <leader>ti :set listchars=tab:·┈,trail:￮,multispace:￮,lead:\ ,extends:▶,precedes:◀,nbsp:‿<CR>
+nnoremap <leader>tI :set listchars=tab:·┈,trail:￮,multispace:￮,lead:\ ,extends:▶,precedes:◀,nbsp:‿,space:·<CR>
+
 
 " Filetype mappings
 autocmd FileType rust inoremap <buffer> <A-u> .unwrap()

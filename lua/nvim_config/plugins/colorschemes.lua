@@ -1,10 +1,12 @@
 return {
+    'rktjmp/lush.nvim',
     'shaunsingh/moonlight.nvim',
     'edenEast/nightfox.nvim',
     'folke/tokyonight.nvim',
     'rebelot/kanagawa.nvim',
     'tiagovla/tokyodark.nvim',
     { "catppuccin/nvim", as = "catppuccin" },
+    "uloco/bluloco.nvim",
 
     {
         'rose-pine/neovim',

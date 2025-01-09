@@ -28,7 +28,7 @@ return {
             end, opts)
             vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)
             vim.keymap.set('n', '<space>cr', vim.lsp.buf.rename, opts)
-            -- vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
+            vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
             vim.keymap.set('n', '<m-.>', vim.lsp.buf.code_action, opts)
             vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
             vim.keymap.set('n', '<S-A-f>', function()
@@ -45,6 +45,7 @@ return {
         end,
     },
 
+    -- LSP Status
     {
         "j-hui/fidget.nvim",
         event = { "LspAttach" },
@@ -63,24 +64,9 @@ return {
             vim.cmd [[doautocmd User LspAttach]]
         end
         require("mason-lspconfig").setup_handlers {
-            ["jsonls"] = function()
-                require("lspconfig").jsonls.setup {
-                    capabilities = require('cmp_nvim_lsp').default_capabilities(),
-                    on_attach = on_attach
-                }
-            end,
-
-            ["clangd"] = function()
-                require("lspconfig").clangd.setup {
-                    cmd = { "clangd", "-header-insertion=never" },
-                    filetypes = { 'c', 'cpp' },
-                    on_attach = on_attach,
-                }
-            end,
-
             function(server_name)
                 require("lspconfig")[server_name].setup {
-                    capabilities = require('cmp_nvim_lsp').default_capabilities(),
+                    capabilities = require('blink.cmp').get_lsp_capabilities(),
                     on_attach = on_attach,
                 }
             end,

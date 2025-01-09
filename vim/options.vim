@@ -33,7 +33,7 @@ set laststatus=2
 set ruler
 set display+=lastline
 set encoding=utf-8
-set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+set listchars=tab:·┈,trail:￮,multispace:￮,lead:\ ,extends:▶,precedes:◀,nbsp:‿
 set tabpagemax=50
 set history=1000
 set viminfo^=!
@@ -60,3 +60,9 @@ if executable('rg')
     " Use rg over grep
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --ignore-vcs
 endif
+
+" Diagnistic symbols
+sign define DiagnosticSignError text= texthl=TextError linehl= numhl=
+sign define DiagnosticSignWarn  text= texthl=TextWarn  linehl= numhl=
+sign define DiagnosticSignInfo  text= texthl=TextInfo  linehl= numhl=
+sign define DiagnosticSignHint  text= texthl=TextHint  linehl= numhl=

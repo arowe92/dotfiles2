@@ -211,14 +211,14 @@ return {
         end
     },
 
-    -- {
-    --     "nvim-zh/colorful-winsep.nvim",
-    --     config = function()
-    --         require('colorful-winsep').setup({
-    --             symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
-    --         })
-    --     end
-    -- },
+    {
+        "nvim-zh/colorful-winsep.nvim",
+        config = function()
+            require('colorful-winsep').setup({
+                symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
+            })
+        end
+    },
 
     -- {
     --     "petertriho/nvim-scrollbar",
@@ -482,6 +482,11 @@ return {
             },
         },
         opts = {},
+        config = function ()
+            require('trouble').setup({
+                open_no_results = true,
+            })
+        end
     },
 
     {
@@ -556,9 +561,10 @@ return {
         'MeanderingProgrammer/markdown.nvim',
         name = 'render-markdown', 
         ft = "markdown",
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons' 
+        },
         config = function()
             require('render-markdown').setup({})
         end,
@@ -576,5 +582,22 @@ return {
         dependencies = {
             'nvim-treesitter'
         }
-    }
+    },
+
+    {
+        "rachartier/tiny-inline-diagnostic.nvim",
+        event = "VeryLazy", 
+        priority = 1000, 
+        config = function()
+            require('tiny-inline-diagnostic').setup()
+        end
+    },
+    {
+        "ibhagwan/fzf-lua",
+        event = "VeryLazy", 
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            require("fzf-lua").setup({})
+        end
+    },
 }
