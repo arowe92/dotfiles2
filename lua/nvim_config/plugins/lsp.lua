@@ -1,6 +1,10 @@
 return {
     'williamboman/mason.nvim',
     'williamboman/mason-lspconfig.nvim',
+    {
+        "nvimtools/none-ls.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" }
+    },
 
     {
         'neovim/nvim-lspconfig',
@@ -71,5 +75,17 @@ return {
                 }
             end,
         }
+
+        local mason_registry = require("mason-registry")
+        local prettier = mason_registry.get_package("prettier")
+
+        local null_ls = require("null-ls")
+        null_ls.setup({
+            sources = {
+                null_ls.builtins.formatting.prettier.with({
+                    command = prettier:get_install_path() .. "/node_modules/.bin/prettier",
+                }),
+            },
+        })
     end
 }
