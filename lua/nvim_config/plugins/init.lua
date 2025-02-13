@@ -11,7 +11,7 @@ return {
 
 
     -- Display Marks
-    -- { 'kshenoy/vim-signature' },
+    { 'kshenoy/vim-signature' },
     { 
         'lukas-reineke/indent-blankline.nvim', 
         config = function () 
@@ -39,25 +39,25 @@ return {
     },
 
     -- Commenting
-    {
-        'numToStr/Comment.nvim',
-        keys = {
-            { "<m-/>", mode={'n', 'x'} },
-            { "<m-?>", mode={'n', 'x'} }
-        },
-        config = function()
-            require('Comment').setup({
-                toggler = {
-                    line = '<m-/>',
-                    block = '<m-?>',
-                },
-            })
-            -- Commenting
-            vim.keymap.set('x', '<m-?>', '<Plug>(comment_toggle_blockwise_visual)')
-            vim.keymap.set('x', '<m-/>', '<Plug>(comment_toggle_linewise_visual)')
-        end
-
-    },
+    -- {
+    --     'numToStr/Comment.nvim',
+    --     keys = {
+    --         { "<m-/>", mode={'n', 'x'} },
+    --         { "<m-?>", mode={'n', 'x'} }
+    --     },
+    --     config = function()
+    --         require('Comment').setup({
+    --             toggler = {
+    --                 line = '<m-/>',
+    --                 block = '<m-?>',
+    --             },
+    --         })
+    --         -- Commenting
+    --         vim.keymap.set('x', '<m-?>', '<Plug>(comment_toggle_blockwise_visual)')
+    --         vim.keymap.set('x', '<m-/>', '<Plug>(comment_toggle_linewise_visual)')
+    --     end
+    --
+    -- },
 
     -- BufferLine
     {
@@ -598,6 +598,9 @@ return {
         dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
             require("fzf-lua").setup({})
+            local config = require("fzf-lua.config")
+            local actions = require("trouble.sources.fzf").actions
+            config.defaults.actions.files["ctrl-t"] = actions.open
         end
     },
 
