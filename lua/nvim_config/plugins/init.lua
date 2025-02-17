@@ -39,25 +39,25 @@ return {
     },
 
     -- Commenting
-    -- {
-    --     'numToStr/Comment.nvim',
-    --     keys = {
-    --         { "<m-/>", mode={'n', 'x'} },
-    --         { "<m-?>", mode={'n', 'x'} }
-    --     },
-    --     config = function()
-    --         require('Comment').setup({
-    --             toggler = {
-    --                 line = '<m-/>',
-    --                 block = '<m-?>',
-    --             },
-    --         })
-    --         -- Commenting
-    --         vim.keymap.set('x', '<m-?>', '<Plug>(comment_toggle_blockwise_visual)')
-    --         vim.keymap.set('x', '<m-/>', '<Plug>(comment_toggle_linewise_visual)')
-    --     end
-    --
-    -- },
+    {
+        'numToStr/Comment.nvim',
+        keys = {
+            { "<m-/>", mode={'n', 'x'} },
+            { "<m-?>", mode={'n', 'x'} }
+        },
+        config = function()
+            require('Comment').setup({
+                toggler = {
+                    line = '<m-/>',
+                    block = '<m-?>',
+                },
+            })
+            -- Commenting
+            vim.keymap.set('x', '<m-?>', '<Plug>(comment_toggle_blockwise_visual)')
+            vim.keymap.set('x', '<m-/>', '<Plug>(comment_toggle_linewise_visual)')
+        end
+    
+    },
 
     -- BufferLine
     {
