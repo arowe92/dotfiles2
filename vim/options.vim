@@ -1,6 +1,8 @@
 
 set wrap
 set number
+" Disable line numbers in terminal mode
+autocmd TermOpen * setlocal nonumber
 set hlsearch
 set smartcase
 set ignorecase
@@ -58,7 +60,7 @@ endif
 
 if executable('rg')
     " Use rg over grep
-    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --ignore-vcs
+    set grepprg=rg\ --vimgrep\ --hidden
 endif
 
 " Diagnistic symbols
@@ -66,3 +68,8 @@ sign define DiagnosticSignError text= texthl=TextError linehl= numhl=
 sign define DiagnosticSignWarn  text= texthl=TextWarn  linehl= numhl=
 sign define DiagnosticSignInfo  text= texthl=TextInfo  linehl= numhl=
 sign define DiagnosticSignHint  text= texthl=TextHint  linehl= numhl=
+
+" Auto Command to set formatopions on all files
+autocmd FileType * set formatoptions-=cro
+
+

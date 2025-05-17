@@ -12,9 +12,9 @@ return {
 
     -- Display Marks
     { 'kshenoy/vim-signature' },
-    { 
-        'lukas-reineke/indent-blankline.nvim', 
-        config = function () 
+    {
+        'lukas-reineke/indent-blankline.nvim',
+        config = function ()
             require 'ibl'.setup()
         end
     },
@@ -45,6 +45,7 @@ return {
             { "<m-/>", mode={'n', 'x'} },
             { "<m-?>", mode={'n', 'x'} }
         },
+        enabled = not vim.g.vscode,
         config = function()
             require('Comment').setup({
                 toggler = {
@@ -56,13 +57,14 @@ return {
             vim.keymap.set('x', '<m-?>', '<Plug>(comment_toggle_blockwise_visual)')
             vim.keymap.set('x', '<m-/>', '<Plug>(comment_toggle_linewise_visual)')
         end
-    
+   
     },
 
     -- BufferLine
     {
         'akinsho/bufferline.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
+        enabled = not vim.g.vscode,
         config = function()
             local utils = require 'nvim_config.utils'
             require('bufferline').setup({
@@ -82,6 +84,7 @@ return {
     {
         'goolord/alpha-nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
+        enabled = not vim.g.vscode,
         config = function()
             require 'alpha'.setup(require 'alpha.themes.startify'.config)
         end
@@ -103,6 +106,7 @@ return {
     {
         'junegunn/fzf',
         build = ':call fzf#install()',
+        enabled = not vim.g.vscode,
         cmd = {
             "Files",
             "Rg",
@@ -141,6 +145,7 @@ return {
     -- Git Signs
     {
         'lewis6991/gitsigns.nvim',
+        enabled = not vim.g.vscode,
         config = function()
             require('gitsigns').setup({
                 signcolumn = false,
@@ -164,6 +169,7 @@ return {
     -- Multi Cursor
     {
         'mg979/vim-visual-multi',
+        enabled = not vim.g.vscode,
         init = function()
             vim.g.VM_default_mappings = 1
             vim.g.VM_maps = {
@@ -213,6 +219,7 @@ return {
 
     {
         "nvim-zh/colorful-winsep.nvim",
+        enabled = not vim.g.vscode,
         config = function()
             require('colorful-winsep').setup({
                 symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
@@ -376,7 +383,7 @@ return {
                 desc = "Switch to next GPT agent",
                 mode = "n"
             },
-            
+           
             -- Visual mode mappings
             {
                 "<leader>ir",
@@ -495,12 +502,12 @@ return {
             '<leader><leader>h',
             function ()
                 require("harpoon.mark").add_file()
-            end 
+            end
         }, {
             '<leader><leader>a',
             function ()
                 require("harpoon.mark").add_file()
-            end 
+            end
         }, {
             '<leader><leader>m',
             function ()
@@ -538,32 +545,34 @@ return {
                 )
             end
         }},
-        config = function () 
+        config = function ()
             require("harpoon").setup({
                 projects = {
                     -- Yes $HOME works
-                    ["$HOME/personal/vim-with-me/server"] = {
-                        term = {
-                            cmds = {
-                                "./env && npx ts-node src/index.ts"
-                            }
-                        }
-                    }
+                    -- ["$HOME/work/haxor/windows_sb2/"] = {
+                    --     term = {
+                    --         cmds = {
+                    --             "npm run build",
+                    --             "./build.ps1",
+                    --             "npm run start"
+                    --         }
+                    --     }
+                    -- }
                 }
             })
 
-            require("telescope").load_extension('harpoon')
+            --require("telescope").load_extension('harpoon')
         end
 
-    }, 
+    },
 
     {
         'MeanderingProgrammer/markdown.nvim',
-        name = 'render-markdown', 
+        name = 'render-markdown',
         ft = "markdown",
         dependencies = {
             'nvim-treesitter/nvim-treesitter',
-            'nvim-tree/nvim-web-devicons' 
+            'nvim-tree/nvim-web-devicons'
         },
         config = function()
             require('render-markdown').setup({})
@@ -572,8 +581,8 @@ return {
 
     {
         'nmac427/guess-indent.nvim',
-        config = function() 
-            require('guess-indent').setup {} 
+        config = function()
+            require('guess-indent').setup {}
         end,
     },
 
@@ -586,27 +595,31 @@ return {
 
     {
         "rachartier/tiny-inline-diagnostic.nvim",
-        event = "VeryLazy", 
-        priority = 1000, 
+        event = "VeryLazy",
+        priority = 1000,
         config = function()
             require('tiny-inline-diagnostic').setup()
         end
     },
     {
         "ibhagwan/fzf-lua",
-        event = "VeryLazy", 
+        event = "VeryLazy",
         dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
-            require("fzf-lua").setup({})
-            local config = require("fzf-lua.config")
-            local actions = require("trouble.sources.fzf").actions
-            config.defaults.actions.files["ctrl-t"] = actions.open
+            require("fzf-lua").setup({
+                  grep = {
+                    rg_opts = "--hidden --column --line-number --no-heading --color=always --smart-case"
+                  }
+            })
+            -- local config = require("fzf-lua.config")
+            -- local actions = require("trouble.sources.fzf").actions
+            -- config.defaults.actions.files["ctrl-t"] = actions.open
         end
     },
 
     -- {
     -- 'norcalli/nvim-colorizer.lua',
-    -- config = function() 
+    -- config = function()
     --     require('colorizer').setup()
     -- end
     -- }

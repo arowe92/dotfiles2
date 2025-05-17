@@ -1,12 +1,14 @@
 return {
   'saghen/blink.cmp',
   version = 'v0.*',
+  enabled = not vim.g.vscode,
   dependencies = {
         {
             "zbirenbaum/copilot.lua",
             cmd = "Copilot",
             config = function()
                 require("copilot").setup({
+                    suggestion = { enabled = false },
                     panel = {
                         enabled = true,
                         auto_refresh = false,
@@ -34,7 +36,8 @@ return {
         },
     },
     keymap = {
-      preset = 'super-tab' 
+      preset = 'super-tab',
+      ["<M-Space>"] = { "hide", "show" }
     },
 
     appearance = {
