@@ -44,11 +44,20 @@ vim.api.nvim_create_autocmd('Colorscheme', {
         io.popen('echo colorscheme ' .. vim.api.nvim_command_output('color') .. ' > ' .. env.COLORSCHEME)
     end
 })
-require('rose-pine').setup({
-    variant = 'main',
-    dark_variant = 'main',
-    disable_italics = true
-})
+
+-- Load fzf-lua colors
+-- This has to be after plugin loading
+local base = vim.env.TEMP .. "/colors/pack/fzf-lua/opt"
+local handle = vim.loop.fs_scandir(base)
+if handle then
+    while true do
+      local name, t = vim.loop.fs_scandir_next(handle)
+      if not name then break end
+      if t == "directory" then
+        vim.opt.runtimepath:append(base .. "/" .. name)
+      end
+    end
+end
 
 if vim.fn.filereadable(env.COLORSCHEME) then
     vim.cmd('silent source ' .. env.COLORSCHEME)

@@ -1,4 +1,4 @@
-$env:DOTFILE_PATH="$PSScriptRoot"
+$env:DOTFILE_PATH="$PSScriptRoot\.."
 
 Invoke-Expression (&starship init powershell)
 

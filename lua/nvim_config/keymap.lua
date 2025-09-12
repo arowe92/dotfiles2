@@ -4,10 +4,12 @@ local nmap = require('nvim_config.utils').nmap
 local nmapc2 = require('nvim_config.utils').nmapc_text
 
 -- Edit Files
+nmapc('<leader>en', "e ~/notes.md")
+nmapc('<leader>et', "e ~/todo.md")
+
 nmapc('<leader>ed', "e " .. DOTFILE_PATH)
 nmapc('<leader>ep', "e " .. DOTFILE_PATH .. '/lua/nvim_config/plugins/init.lua')
 nmapc('<leader>ek', "e " .. DOTFILE_PATH .. '/lua/nvim_config/keymap.lua')
-nmapc('<leader>en', "e " .. DOTFILE_PATH .. '/lua/nvim_config/functions.lua')
 nmapc('<leader>ei', "e " .. DOTFILE_PATH .. '/lua/nvim_config/init.lua')
 nmapc('<leader>ev', "e " .. DOTFILE_PATH .. '/.vimrc')
 

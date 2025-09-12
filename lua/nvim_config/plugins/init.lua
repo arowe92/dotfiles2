@@ -9,6 +9,25 @@ return {
     require 'nvim_config.plugins.tree',
     require 'nvim_config.plugins.treesitter',
 
+    -- Claude Code
+    {
+        "greggh/claude-code.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim", -- Required for git operations
+        },
+        config = function()
+            require("claude-code").setup({
+                keymaps = {
+                    -- toggle = {
+                        -- normal = "<C-h>",
+                        -- terminal = "<C-h>",
+                    -- },
+                    window_navigation = false
+                },
+            })
+            vim.keymap.set('n', '<leader>cc', '<cmd>ClaudeCode<cr>', { desc = "Claude Code" })
+        end
+    },
 
     -- Display Marks
     { 'kshenoy/vim-signature' },
@@ -609,8 +628,12 @@ return {
             require("fzf-lua").setup({
                   grep = {
                     rg_opts = "--hidden --column --line-number --no-heading --color=always --smart-case"
+                  },
+                  awesome_colorschemes = {
+                      packpath = vim.env.TEMP .. "/nvim-colors"
                   }
             })
+
             -- local config = require("fzf-lua.config")
             -- local actions = require("trouble.sources.fzf").actions
             -- config.defaults.actions.files["ctrl-t"] = actions.open
