@@ -28,5 +28,14 @@ return {
             require("cyberdream").setup {
             }
         end
+    },
+
+    {
+        "marko-cerovac/material.nvim",
+        config = function()
+            vim.g.material_style = "darker"
+        end
     }
+
+
 }

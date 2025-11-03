@@ -36,7 +36,6 @@ vim.keymap.set('v', 'Y', function ()
 end)
 
 -- Fuzzy Find Quick Keys
--- nmapc('<C-p>', 'Telescope git_files')
 nmapc('<C-p>', 'FzfLua files')
 nmapc('<M-f>', 'FzfLua live_grep')
 nmapc('<M-p>', 'FzfLua buffers')
@@ -44,26 +43,29 @@ nmapc('<S-M-p>', 'FzfLua oldfiles')
 nmapc('<M-r>', 'FzfLua commands')
 nmapc('<S-M-r>', 'FzfLua command_history')
 nmapc('<M-t>', 'FzfLua lsp_document_symbols')
-nmapc('<leader>/', 'FzfLua current_buffer_fuzzy_find')
+nmapc('<leader>/', 'FzfLua lgrep_curbuf')
 vim.keymap.set('n', '<c-t>', ':Telescope ')
 
 -- Telescope
-nmapc('<leader>pp', 'FzfLua find_files')
+nmapc('<leader>pp', 'FzfLua files')
 nmapc('<leader>pg', 'FzfLua git_files')
 nmapc('<leader>po', 'FzfLua oldfiles')
 nmapc('<leader>pF', 'FzfLua live_grep')
 nmapc('<leader>ph', 'FzfLua help_tags')
 nmapc('<leader>pc', 'FzfLua commands')
-nmapc('<leader>pf', 'FzfLua current_buffer_fuzzy_find')
+nmapc('<leader>pf', 'FzfLua lgrep_curbuf')
 nmapc('<leader>pr', 'FzfLua resume')
-nmapc('<leader>pd', 'FzfLua diagnostics')
 nmapc('<leader>pm', 'FzfLua marks')
+nmapc('<leader>pk', 'FzfLua keymaps')
 
--- FZF
-nmapc('<leader>pi', 'Include')
-nmapc('<leader>pC', 'FuzzyCheckout')
-nmapc('<leader>pG', 'FuzzyGedit')
-nmapc('<leader>pR', 'FuzzyReset')
+nmapc('<leader>pd', 'FzfLua lsp_document_diagnostics')
+nmapc('<leader>pw', 'FzfLua lsp_workspace_diagnostics')
+nmapc('<leader>pR', 'FzfLua lsp_references')
+nmapc('<leader>pD', 'FzfLua lsp_declarations')
+nmapc('<leader>pF', 'FzfLua lsp_definitions')
+nmapc('<leader>pA', 'FzfLua lsp_code_actions')
+
+nmapc('<leader>pz', 'FzfLua')
 
 -- Find Word anywhere
 nmapc('gw', 'exe "Rg ".expand("<cword>")')

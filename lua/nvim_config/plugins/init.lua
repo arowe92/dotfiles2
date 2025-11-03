@@ -261,7 +261,7 @@ return {
 
     {
         'tpope/vim-fugitive',
-        cmd = { "Git", "Gedit" },
+        cmd = { "Git", "Gedit", "Gblame" },
         keys = {
             { '<A-g>', desc="Git" }
         },
@@ -634,10 +634,32 @@ return {
                   }
             })
 
-            -- local config = require("fzf-lua.config")
-            -- local actions = require("trouble.sources.fzf").actions
-            -- config.defaults.actions.files["ctrl-t"] = actions.open
+            local config = require("fzf-lua.config")
+            local actions = require("trouble.sources.fzf").actions
+            config.defaults.actions.files["ctrl-t"] = actions.open
         end
+    },
+
+    { "tiagovla/scope.nvim", config = true },
+
+    {
+        "github/copilot.vim",
+        cmd = "Copilot",
+        event = "BufWinEnter",
+        init = function()
+            vim.g.copilot_no_maps = true
+        end,
+        config = function()
+            -- Block the normal Copilot suggestions
+            vim.api.nvim_create_augroup("github_copilot", { clear = true })
+            vim.api.nvim_create_autocmd({ "FileType", "BufUnload" }, {
+                group = "github_copilot",
+                callback = function(args)
+                    vim.fn["copilot#On" .. args.event]()
+                end,
+            })
+            vim.fn["copilot#OnFileType"]()
+        end,
     },
 
     -- {

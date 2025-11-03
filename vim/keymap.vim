@@ -56,6 +56,9 @@ nnoremap <S-Tab> <C-^>
 "" Tabs
 noremap <C-x>k :tabn<CR>
 noremap <C-x>j :tabp<CR>
+noremap <C-x><C-t> :tabnew<CR>
+noremap <C-x>w :tabclose<CR>
+noremap <C-x>d :bd<CR>
 
 " QuickFix Managing
 nnoremap <silent> <leader>qo <cmd>copen<CR>
