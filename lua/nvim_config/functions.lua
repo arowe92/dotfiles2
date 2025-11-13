@@ -1,5 +1,5 @@
 -- Smart Insert
-function AIndent(mode)
+local function smart_insert(mode)
     local lineChars = vim.fn.getline('.')
     if lineChars:gsub("%s+", ""):len() == 0 then
         return '"_cc'
@@ -8,11 +8,10 @@ function AIndent(mode)
     end
 end
 
-vim.keymap.set('n', 'A', "v:lua.AIndent('A')", { expr = true })
-
+vim.keymap.set('n', 'A', function() return smart_insert('A') end, { expr = true })
 
 -- Easy Append
-function ToggleTail(char)
+local function toggle_tail(char)
     local lineChars = vim.fn.getline('.')
     if lineChars:sub(-1) == char then
         return '$x'

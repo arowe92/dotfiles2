@@ -41,23 +41,15 @@ vim.api.nvim_create_autocmd('Colorscheme', {
     group = 'colors',
     pattern = { '*' },
     callback = function()
-        io.popen('echo colorscheme ' .. vim.api.nvim_command_output('color') .. ' > ' .. env.COLORSCHEME)
+        local f = io.open(env.COLORSCHEME, 'w')
+        if f then
+            f:write('colorscheme ' .. vim.api.nvim_command_output('color'))
+            f:close()
+        end
     end
 })
 
--- Load fzf-lua colors
--- This has to be after plugin loading
--- local base = vim.env.TEMP .. "/nvim-colors/pack/fzf-lua/opt"
--- local handle = vim.loop.fs_scandir(base)
--- while true do
---   local name, t = vim.loop.fs_scandir_next(handle)
---   if not name then break end
---   if t == "directory" then
---     vim.opt.runtimepath:append(base .. "/" .. name)
---   end
--- end
-
-if vim.fn.filereadable(env.COLORSCHEME) then
+if vim.fn.filereadable(env.COLORSCHEME) == 1 then
     vim.cmd('silent source ' .. env.COLORSCHEME)
 else
     vim.cmd('colorscheme carbonfox')
