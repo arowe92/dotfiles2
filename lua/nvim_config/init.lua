@@ -22,7 +22,11 @@ require 'nvim_config.keymap'
 require 'nvim_config.options'
 
 require("lazy").setup(load_plugins, {})
-require('nvim_config.plugins.lsp')._post_config()
+
+-- Skip LSP post-config in lite mode
+if not env.LITE_MODE then
+    require('nvim_config.plugins.lsp')._post_config()
+end
 
 -- Load a custom lua
 if vim.fn.filereadable(env.HOME .. '/nvim.lua') == 1 then

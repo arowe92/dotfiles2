@@ -35,7 +35,9 @@ return {
         config = function()
             vim.g.material_style = "darker"
         end
-    }
+    },
+
+    'Shatur/neovim-ayu'
 
 
 }

@@ -1,17 +1,29 @@
 -- Plugin List
+local env = require('nvim_config.env')
+local lite_mode = env.LITE_MODE
+
+-- Helper to conditionally load configured plugins
+local function load_plugin(module_name)
+    if lite_mode then
+        return {}
+    end
+    return require(module_name)
+end
+
 return {
-    -- Configured Plugins
-    require 'nvim_config.plugins.completion',
+    -- Configured Plugins (disabled in lite mode)
+    load_plugin('nvim_config.plugins.completion'),
     require 'nvim_config.plugins.colorschemes',
-    require 'nvim_config.plugins.lsp',
-    require 'nvim_config.plugins.statusline',
-    require 'nvim_config.plugins.telescope',
-    require 'nvim_config.plugins.tree',
-    require 'nvim_config.plugins.treesitter',
+    load_plugin('nvim_config.plugins.lsp'),
+    load_plugin('nvim_config.plugins.statusline'),
+    load_plugin('nvim_config.plugins.telescope'),
+    load_plugin('nvim_config.plugins.tree'),
+    load_plugin('nvim_config.plugins.treesitter'),
 
     -- Claude Code
     {
         "greggh/claude-code.nvim",
+        enabled = not lite_mode,
         dependencies = {
             "nvim-lua/plenary.nvim", -- Required for git operations
         },
@@ -83,7 +95,7 @@ return {
     {
         'akinsho/bufferline.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
-        enabled = not vim.g.vscode,
+        enabled = not vim.g.vscode and not lite_mode,
         config = function()
             local utils = require 'nvim_config.utils'
             require('bufferline').setup({
@@ -103,7 +115,7 @@ return {
     {
         'goolord/alpha-nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
-        enabled = not vim.g.vscode,
+        enabled = not vim.g.vscode and not lite_mode,
         config = function()
             require 'alpha'.setup(require 'alpha.themes.startify'.config)
         end
@@ -164,7 +176,7 @@ return {
     -- Git Signs
     {
         'lewis6991/gitsigns.nvim',
-        enabled = not vim.g.vscode,
+        enabled = not vim.g.vscode and not lite_mode,
         config = function()
             require('gitsigns').setup({
                 signcolumn = false,
@@ -207,6 +219,20 @@ return {
             }
             vim.g.VM_case_setting = 'sensitive'
             vim.g.VM_theme = 'purplegray'
+
+            -- Fix blink.cmp arrow keys after VM exits
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'visual_multi_exit',
+                callback = function()
+                    -- Force blink.cmp to reapply its keymaps
+                    vim.defer_fn(function()
+                        local blink = require('blink.cmp')
+                        if blink and blink.setup_keymaps then
+                            blink.setup_keymaps()
+                        end
+                    end, 10)
+                end,
+            })
         end
     },
 
@@ -238,7 +264,7 @@ return {
 
     {
         "nvim-zh/colorful-winsep.nvim",
-        enabled = not vim.g.vscode,
+        enabled = not vim.g.vscode and not lite_mode,
         config = function()
             require('colorful-winsep').setup({
                 symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
@@ -263,10 +289,10 @@ return {
         'tpope/vim-fugitive',
         cmd = { "Git", "Gedit", "Gblame" },
         keys = {
-            { '<A-g>', desc="Git" }
+            {'<C-g>', ':Git '}
         },
         config = function()
-            vim.keymap.set('n', '<A-g>', ':Git ')
+            vim.keymap.set('n', '<C-g>', ':Git ')
         end
     },
 
@@ -506,12 +532,43 @@ return {
                 "<cmd>Trouble qflist toggle<cr>",
                 desc = "Quickfix List (Trouble)",
             },
+            {
+                "<leader>tf",
+                desc = "Send Trouble results to fzf-lua",
+            },
         },
         opts = {},
         config = function ()
             require('trouble').setup({
                 open_no_results = true,
             })
+
+            -- Add hotkey to send trouble results to fzf-lua via quickfix
+            vim.keymap.set('n', '<leader>tf', function()
+                -- Get current trouble items
+                local trouble = require('trouble')
+                local items = trouble.get_items()
+
+                if not items or #items == 0 then
+                    vim.notify("No Trouble items to send to fzf-lua", vim.log.levels.WARN)
+                    return
+                end
+
+                -- Convert trouble items to quickfix format
+                local qf_items = {}
+                for _, item in ipairs(items) do
+                    table.insert(qf_items, {
+                        filename = item.filename or item.source,
+                        lnum = item.lnum or item.pos and item.pos[1] or 1,
+                        col = item.col or item.pos and item.pos[2] or 1,
+                        text = item.text or item.message or "",
+                    })
+                end
+
+                -- Set quickfix list and open in fzf-lua
+                vim.fn.setqflist(qf_items)
+                require('fzf-lua').quickfix()
+            end, { desc = 'Send Trouble results to fzf-lua' })
         end
     },
 
@@ -607,6 +664,7 @@ return {
 
     {
         'HiPhish/rainbow-delimiters.nvim',
+        enabled = not lite_mode,
         dependencies = {
             'nvim-treesitter'
         }
@@ -614,6 +672,7 @@ return {
 
     {
         "rachartier/tiny-inline-diagnostic.nvim",
+        enabled = not lite_mode,
         event = "VeryLazy",
         priority = 1000,
         config = function()
@@ -622,6 +681,7 @@ return {
     },
     {
         "ibhagwan/fzf-lua",
+        enabled = not lite_mode,
         event = "VeryLazy",
         dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
@@ -637,6 +697,11 @@ return {
             local config = require("fzf-lua.config")
             local actions = require("trouble.sources.fzf").actions
             config.defaults.actions.files["ctrl-t"] = actions.open
+
+            -- Add hotkey to send all fzf-lua results to trouble
+            vim.keymap.set('n', '<leader>ft', function()
+                require('trouble').open('fzf')
+            end, { desc = 'Send fzf-lua results to Trouble' })
         end
     },
 
@@ -644,6 +709,7 @@ return {
 
     {
         "github/copilot.vim",
+        enabled = not lite_mode,
         cmd = "Copilot",
         event = "BufWinEnter",
         init = function()
