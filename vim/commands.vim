@@ -113,3 +113,6 @@ finally                              " Execute even if exception is raised
 endtry
 endfunction
 com! ShowMaps call s:ShowMaps()      " Enable :ShowMaps to call the function
+
+" Open terminal with PowerShell (keeps default shell for :! commands)
+command! Term terminal powershell

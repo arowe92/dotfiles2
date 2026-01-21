@@ -20,3 +20,42 @@ if (Test-Path "$env:HOMEPATH\profile.ps1") {
 }
 
 $env:EDITOR="nvim"
+
+function nvr {
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)]
+        [string[]]$Files
+    )
+
+    if ($env:NVIM) {
+        foreach ($file in $Files) {
+            $fullPath = Resolve-Path $file -ErrorAction SilentlyContinue
+            if (-not $fullPath) {
+                $fullPath = Join-Path (Get-Location) $file
+            }
+            nvim --server $env:NVIM --remote $fullPath
+        }
+    } else {
+        neovide @Files
+    }
+}
+
+function ncd {
+    param(
+        [Parameter(Position=0)]
+        [string]$Path = "."
+    )
+
+    $fullPath = Resolve-Path $Path -ErrorAction SilentlyContinue
+    if (-not $fullPath) {
+        Write-Error "Directory not found: $Path"
+        return
+    }
+
+    if ($env:NVIM) {
+        $escaped = $fullPath -replace '\\', '/'
+        nvim --server $env:NVIM --remote-send "<C-\><C-n>:cd $escaped | lua require('nvim-tree.api').tree.change_root(vim.fn.getcwd())<CR>"
+    }
+
+    Set-Location $fullPath
+}

@@ -1,0 +1,257 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+    // ===== Workspace / Global =====
+    {
+        "context": "Workspace",
+        "bindings": {
+            // File finder (like Ctrl-p in nvim)
+            "ctrl-p": "file_finder::Toggle",
+            // Live grep (like Alt-f in nvim)
+            "alt-f": "pane::DeploySearch",
+            // Buffers (like Alt-p in nvim)
+            "alt-p": "tab_switcher::Toggle",
+            // Command palette (like Alt-r in nvim)
+            "alt-r": "command_palette::Toggle",
+            // Close buffer (like Ctrl-w in nvim)
+            "ctrl-w": "pane::CloseActiveItem",
+            // Quit (like Ctrl-q in nvim)
+            "ctrl-q": "zed::Quit",
+            // Save file (like Ctrl-s in nvim)
+            "ctrl-s": "workspace::Save",
+            // Select all (like Alt-a in nvim)
+            "alt-a": "editor::SelectAll",
+            // Document symbols (like Alt-t in nvim)
+            "alt-t": "outline::Toggle",
+            // Tab navigation (like Alt-Up/Down in nvim)
+            "alt-up": "pane::ActivatePreviousItem",
+            "alt-down": "pane::ActivateNextItem",
+            // Buffer navigation (like Alt-Left/Right in nvim BufferLine)
+            "alt-left": "pane::ActivatePreviousItem",
+            "alt-right": "pane::ActivateNextItem",
+            // Resize project panel (like Alt-= / Alt-- in nvim)
+            "alt-=": "workspace::ZoomIn",
+            "alt--": "workspace::ZoomOut",
+            // Pane focus with Ctrl-h/j/k/l (works globally)
+            "ctrl-h": "workspace::ActivatePaneLeft",
+            "ctrl-l": "workspace::ActivatePaneRight",
+            "ctrl-j": "workspace::ActivatePaneDown",
+            "ctrl-k": "workspace::ActivatePaneUp",
+            "shift+ctrl+/": "project_panel::ToggleFocus",
+        },
+    },
+
+    // ===== Workspace / Global =====
+    {
+        "context": "Workspace && vim_mode != insert",
+        "bindings": {},
+    },
+
+    // ===== Project Panel (File Tree) =====
+    {
+        "context": "ProjectPanel",
+        "bindings": {
+            // Navigation like nvim-tree
+            "l": "project_panel::Open",
+            "h": "project_panel::CollapseSelectedEntry",
+            "shift-h": "project_panel::CollapseAllEntries",
+            "shift-l": "project_panel::ExpandSelectedEntry",
+            // Enter to open
+            "enter": "project_panel::Open",
+            // Open in split
+            "ctrl-v": "project_panel::OpenPermanent",
+            // Change root (like Ctrl-] / Ctrl-[ in nvim-tree)
+            "ctrl-]": "project_panel::FoldDirectory",
+            "ctrl-[": "project_panel::UnfoldDirectory",
+            // File operations
+            "a": "project_panel::NewFile",
+            "shift-a": "project_panel::NewDirectory",
+            "r": "project_panel::Rename",
+            "d": "project_panel::Delete",
+            "y": "project_panel::Copy",
+            "x": "project_panel::Cut",
+            "p": "project_panel::Paste",
+            // Focus back to editor
+            "escape": "workspace::ActivatePane",
+            "ctrl-l": "workspace::ActivatePaneRight",
+            // Refresh
+            "shift-r": "pane::RevealInProjectPanel",
+        },
+    },
+
+    // ===== Editor - All Modes =====
+    {
+        "context": "Editor",
+        "bindings": {
+            // Save file
+            "ctrl-s": "workspace::Save",
+            // Close buffer (like Ctrl-w in nvim)
+            "ctrl-w": "pane::CloseActiveItem",
+            // Tab navigation (like Alt-Up/Down in nvim)
+            "alt-up": "pane::ActivatePreviousItem",
+            "alt-down": "pane::ActivateNextItem",
+            // Buffer navigation (like Alt-Left/Right in nvim BufferLine)
+            "alt-left": "pane::ActivatePreviousItem",
+            "alt-right": "pane::ActivateNextItem",
+            // Pane focus with Ctrl-h/j/k/l
+            "ctrl-h": "workspace::ActivatePaneLeft",
+            "ctrl-l": "workspace::ActivatePaneRight",
+            "ctrl-j": "workspace::ActivatePaneDown",
+            "ctrl-k": "workspace::ActivatePaneUp",
+        },
+    },
+
+    // ===== Editor - Insert Mode =====
+    {
+        "context": "Editor && vim_mode == insert",
+        "bindings": {
+            // jk/kj to escape (like nvim)
+            "j k": "vim::NormalBefore",
+            "k j": "vim::NormalBefore",
+            // Paste from register (like Ctrl-v in nvim insert mode)
+            "ctrl-v": "editor::Paste",
+            // Move to end of line (like Ctrl-e in nvim)
+            "ctrl-e": "editor::MoveToEndOfLine",
+            // Easy indenting (like Alt-H/L in nvim)
+            "alt-shift-h": "editor::Outdent",
+            "alt-shift-l": "editor::Indent",
+            // Easy line moving (like Alt-J/K in nvim)
+            "alt-shift-j": "editor::MoveLineDown",
+            "alt-shift-k": "editor::MoveLineUp",
+            // New line when completion open (like Alt-Enter in nvim)
+            "alt-enter": "editor::Newline",
+        },
+    },
+
+    // ===== Editor - Normal Mode =====
+    {
+        "context": "Editor && vim_mode == normal",
+        "bindings": {
+            // Project panel / File tree (like leader \ and | in nvim)
+            "space \\": "project_panel::ToggleFocus",
+            "space |": "pane::RevealInProjectPanel",
+            // H/L to go to start/end of line (like nvim)
+            "shift-h": "vim::FirstNonWhitespace",
+            "shift-l": "vim::EndOfLine",
+            // v for block mode, Ctrl-v for visual (swapped like nvim)
+            "v": "vim::ToggleVisualBlock",
+            "ctrl-v": "vim::ToggleVisual",
+            // Easy indenting
+            "alt-h": "editor::Outdent",
+            "alt-l": "editor::Indent",
+            // Easy line moving
+            "alt-j": "editor::MoveLineDown",
+            "alt-k": "editor::MoveLineUp",
+            // De-highlight (like leader H in nvim) - use :noh in command mode
+            // "space h": no equivalent action available,
+            // Increment/decrement (like Alt-8/7 in nvim)
+            "alt-8": "vim::Increment",
+            "alt-7": "vim::Decrement",
+            // Buffer navigation (like Ctrl-x h/l in nvim)
+            "ctrl-x l": "pane::ActivateNextItem",
+            "ctrl-x h": "pane::ActivatePreviousItem",
+            // Tab navigation (like Ctrl-x j/k in nvim)
+            "ctrl-x k": "workspace::ActivateNextPane",
+            "ctrl-x j": "workspace::ActivatePreviousPane",
+            // New tab (like Ctrl-x Ctrl-t in nvim)
+            "ctrl-x ctrl-t": "workspace::NewFile",
+            // Close buffer (like Ctrl-x d in nvim)
+            "ctrl-x d": "pane::CloseActiveItem",
+            // Pane creation (like Ctrl-x Ctrl-j/k/h/l in nvim)
+            "ctrl-x ctrl-j": "pane::SplitDown",
+            "ctrl-x ctrl-k": "pane::SplitUp",
+            "ctrl-x ctrl-l": "pane::SplitRight",
+            "ctrl-x ctrl-h": "pane::SplitLeft",
+            // Resize panes (like leader +/-/= in nvim)
+            "space =": "workspace::ZoomIn",
+            "space -": "workspace::ZoomOut",
+            // Toggle wrap (like leader tw in nvim)
+            "space t w": "editor::ToggleSoftWrap",
+            // QuickFix / Diagnostics (like leader q in nvim)
+            "space q o": "diagnostics::Deploy",
+            "space q c": "workspace::CloseAllDocks",
+            "space q q": "diagnostics::Deploy",
+            // Search/Replace (like leader r in nvim)
+            "space r": "pane::DeploySearch",
+            // Switch buffer (like Shift-Tab in nvim)
+            "shift-tab": "pane::AlternateFile",
+            // Insert line above/below (like leader sk/sj in nvim)
+            "space s k": "editor::AddSelectionAbove",
+            "space s j": "editor::AddSelectionBelow",
+            // Find word under cursor (like gw in nvim)
+            "g w": "pane::DeploySearch",
+            // LSP actions (like leader p* in nvim)
+            "space p d": "diagnostics::Deploy",
+            "space p r": "editor::FindAllReferences",
+            "space p i": "editor::GoToDefinition",
+            "space p a": "editor::ToggleCodeActions",
+            // Fuzzy finders (like leader p* in nvim)
+            "space p p": "file_finder::Toggle",
+            "space p f": "buffer_search::Deploy",
+            "space p shift-f": "pane::DeploySearch",
+            "space p h": "zed::OpenKeymap",
+            "space p c": "command_palette::Toggle",
+            "space p m": "go_to_line::Toggle",
+            "space p k": "zed::OpenKeymap",
+            // Copy file path (like leader yf in nvim)
+            "space y f": "workspace::CopyPath",
+            // Quit all (like ZZ/Zz in nvim)
+            "shift-z shift-z": "zed::Quit",
+
+            // Easy line moving (like Alt-J/K in nvim)
+            "alt-shift-h": "editor::Outdent",
+            "alt-shift-l": "editor::Indent",
+            "alt-shift-j": "editor::MoveLineDown",
+            "alt-shift-k": "editor::MoveLineUp",
+        },
+    },
+
+    // ===== Editor - Visual Mode =====
+    {
+        "context": "Editor && vim_mode == visual",
+        "bindings": {
+            // H/L to go to start/end of line (like nvim)
+            "shift-h": "vim::FirstNonWhitespace",
+            "shift-l": "vim::EndOfLine",
+            // Easy indenting and stay in visual mode
+            "alt-h": "editor::Outdent",
+            "alt-l": "editor::Indent",
+            // Easy line moving
+            "alt-j": "editor::MoveLineDown",
+            "alt-k": "editor::MoveLineUp",
+            // Copy to system clipboard (like leader y in nvim)
+            "space y": "editor::Copy",
+            // Increment sequence (like Ctrl-g in nvim)
+            "ctrl-g": "vim::Increment",
+        },
+    },
+
+    // ===== Pane Navigation =====
+    {
+        "context": "Pane",
+        "bindings": {
+            // Pane selection with Ctrl-h/j/k/l
+            "ctrl-h": "workspace::ActivatePaneLeft",
+            "ctrl-l": "workspace::ActivatePaneRight",
+            "ctrl-j": "workspace::ActivatePaneDown",
+            "ctrl-k": "workspace::ActivatePaneUp",
+        },
+    },
+
+    // ===== Terminal =====
+    {
+        "context": "Terminal",
+        "bindings": {
+            // Pane navigation from terminal
+            "ctrl-h": "workspace::ActivatePaneLeft",
+            "ctrl-l": "workspace::ActivatePaneRight",
+            "ctrl-j": "workspace::ActivatePaneDown",
+            "ctrl-k": "workspace::ActivatePaneUp",
+        },
+    },
+]
