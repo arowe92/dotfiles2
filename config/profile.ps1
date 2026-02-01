@@ -19,7 +19,7 @@ if (Test-Path "$env:HOMEPATH\profile.ps1") {
     . "$env:HOMEPATH\profile.ps1"
 }
 
-$env:EDITOR="nvim"
+$env:EDITOR="zed -w"
 
 function nvr {
     param(

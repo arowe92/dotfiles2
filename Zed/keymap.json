@@ -42,7 +42,8 @@
             "ctrl-l": "workspace::ActivatePaneRight",
             "ctrl-j": "workspace::ActivatePaneDown",
             "ctrl-k": "workspace::ActivatePaneUp",
-            "shift+ctrl+/": "project_panel::ToggleFocus",
+            "shift-ctrl-/": "project_panel::ToggleFocus",
+            "alt-shift-enter": "workspace::ToggleZoom",
         },
     },
 
@@ -77,7 +78,7 @@
             "x": "project_panel::Cut",
             "p": "project_panel::Paste",
             // Focus back to editor
-            "escape": "workspace::ActivatePane",
+            // "escape": "workspace::ActivatePane",
             "ctrl-l": "workspace::ActivatePaneRight",
             // Refresh
             "shift-r": "pane::RevealInProjectPanel",
@@ -103,6 +104,14 @@
             "ctrl-l": "workspace::ActivatePaneRight",
             "ctrl-j": "workspace::ActivatePaneDown",
             "ctrl-k": "workspace::ActivatePaneUp",
+            "alt-/": "editor::ToggleComments",
+
+            // Easy indenting (like Alt-H/L in nvim)
+            "alt-shift-h": "editor::Outdent",
+            "alt-shift-l": "editor::Indent",
+            // Easy line moving (like Alt-J/K in nvim)
+            "alt-shift-j": "editor::MoveLineDown",
+            "alt-shift-k": "editor::MoveLineUp",
         },
     },
 
@@ -117,12 +126,6 @@
             "ctrl-v": "editor::Paste",
             // Move to end of line (like Ctrl-e in nvim)
             "ctrl-e": "editor::MoveToEndOfLine",
-            // Easy indenting (like Alt-H/L in nvim)
-            "alt-shift-h": "editor::Outdent",
-            "alt-shift-l": "editor::Indent",
-            // Easy line moving (like Alt-J/K in nvim)
-            "alt-shift-j": "editor::MoveLineDown",
-            "alt-shift-k": "editor::MoveLineUp",
             // New line when completion open (like Alt-Enter in nvim)
             "alt-enter": "editor::Newline",
         },
@@ -141,12 +144,6 @@
             // v for block mode, Ctrl-v for visual (swapped like nvim)
             "v": "vim::ToggleVisualBlock",
             "ctrl-v": "vim::ToggleVisual",
-            // Easy indenting
-            "alt-h": "editor::Outdent",
-            "alt-l": "editor::Indent",
-            // Easy line moving
-            "alt-j": "editor::MoveLineDown",
-            "alt-k": "editor::MoveLineUp",
             // De-highlight (like leader H in nvim) - use :noh in command mode
             // "space h": no equivalent action available,
             // Increment/decrement (like Alt-8/7 in nvim)
@@ -189,6 +186,7 @@
             "space p d": "diagnostics::Deploy",
             "space p r": "editor::FindAllReferences",
             "space p i": "editor::GoToDefinition",
+            "g k": "editor::GoToDefinition",
             "space p a": "editor::ToggleCodeActions",
             // Fuzzy finders (like leader p* in nvim)
             "space p p": "file_finder::Toggle",
@@ -202,12 +200,6 @@
             "space y f": "workspace::CopyPath",
             // Quit all (like ZZ/Zz in nvim)
             "shift-z shift-z": "zed::Quit",
-
-            // Easy line moving (like Alt-J/K in nvim)
-            "alt-shift-h": "editor::Outdent",
-            "alt-shift-l": "editor::Indent",
-            "alt-shift-j": "editor::MoveLineDown",
-            "alt-shift-k": "editor::MoveLineUp",
         },
     },
 
@@ -218,12 +210,6 @@
             // H/L to go to start/end of line (like nvim)
             "shift-h": "vim::FirstNonWhitespace",
             "shift-l": "vim::EndOfLine",
-            // Easy indenting and stay in visual mode
-            "alt-h": "editor::Outdent",
-            "alt-l": "editor::Indent",
-            // Easy line moving
-            "alt-j": "editor::MoveLineDown",
-            "alt-k": "editor::MoveLineUp",
             // Copy to system clipboard (like leader y in nvim)
             "space y": "editor::Copy",
             // Increment sequence (like Ctrl-g in nvim)
@@ -252,6 +238,42 @@
             "ctrl-l": "workspace::ActivatePaneRight",
             "ctrl-j": "workspace::ActivatePaneDown",
             "ctrl-k": "workspace::ActivatePaneUp",
+        },
+    },
+    {
+        "context": "Workspace",
+        "bindings": {
+            "ctrl-shift-1": "agent::ToggleFocus",
+        },
+    },
+    {
+        "context": "Workspace",
+        "bindings": {
+            "ctrl-shift-2": "outline_panel::ToggleFocus",
+        },
+    },
+    {
+        "context": "Workspace",
+        "bindings": {
+            "ctrl-alt-shift-n": "vim::ResizePaneLeft",
+        },
+    },
+    {
+        "context": "Workspace",
+        "bindings": {
+            "ctrl-alt-shift-o": "vim::ResizePaneRight",
+        },
+    },
+    {
+        "context": "AgentPanel",
+        "bindings": {
+            "ctrl-c": "editor::Copy",
+        },
+    },
+    {
+        "context": "Editor",
+        "bindings": {
+            "alt-o": "editor::SwitchSourceHeader",
         },
     },
 ]
