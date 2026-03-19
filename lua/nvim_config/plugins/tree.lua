@@ -1,15 +1,15 @@
 local CONFIG = {
     'nvim-tree/nvim-tree.lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    -- keys = {
-    --     "<leader>\\",
-    --     "<leader>|"
-    -- },
-    -- cmd = {
-    --     "NvimTreeToggle",
-    --     "NvimTreeOpen",
-    --     "NvimTreeFindFile",
-    -- },
+    keys = {
+        "<leader>\\",
+        "<leader>|"
+    },
+    cmd = {
+        "NvimTreeToggle",
+        "NvimTreeOpen",
+        "NvimTreeFindFile",
+    },
     config = function()
         vim.g.loaded_netrw = 1
         vim.g.loaded_netrwPlugin = 1

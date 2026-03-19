@@ -35,7 +35,7 @@ set laststatus=2
 set ruler
 set display+=lastline
 set encoding=utf-8
-set listchars=tab:·┈,trail:￮,multispace:￮,lead:\ ,extends:▶,precedes:◀,nbsp:‿
+set listchars=tab:·┈,trail:￮,multispace:￮,lead:·,extends:▶,precedes:◀,nbsp:‿
 set tabpagemax=50
 set history=1000
 set viminfo^=!

@@ -45,6 +45,7 @@ return {
     { 'kshenoy/vim-signature' },
     {
         'lukas-reineke/indent-blankline.nvim',
+        event = "BufReadPost",
         config = function ()
             require 'ibl'.setup()
         end
@@ -265,6 +266,7 @@ return {
     {
         "nvim-zh/colorful-winsep.nvim",
         enabled = not vim.g.vscode and not lite_mode,
+        event = "WinNew",
         config = function()
             require('colorful-winsep').setup({
                 symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
@@ -665,6 +667,7 @@ return {
     {
         'HiPhish/rainbow-delimiters.nvim',
         enabled = not lite_mode,
+        event = "BufReadPost",
         dependencies = {
             'nvim-treesitter'
         }
