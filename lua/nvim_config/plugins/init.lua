@@ -53,20 +53,21 @@ return {
 
     -- Tmux
     'roxma/vim-tmux-clipboard',
-    {
-        'christoomey/vim-tmux-navigator',
-        keys = {
-            { "<C-h>" },
-            { "<C-j>" },
-            { "<C-k>" },
-            { "<C-l>" },
-        },
-        config = function()
-            vim.cmd("noremap <silent> <C-h> :<C-U>TmuxNavigateLeft<cr>")
-            vim.cmd("noremap <silent> <C-j> :<C-U>TmuxNavigateDown<cr>")
-            vim.cmd("noremap <silent> <C-k> :<C-U>TmuxNavigateUp<cr>")
-            vim.cmd("noremap <silent> <C-l> :<C-U>TmuxNavigateRight<cr>")
 
+    -- Smart edge-aware split navigation across nvim + WezTerm/tmux panes
+    {
+        'mrjones2014/smart-splits.nvim',
+        lazy = false,
+        config = function()
+            require('smart-splits').setup({
+                -- auto-detect WezTerm/tmux/Kitty; explicit for safety
+                multiplexer_integration = nil, -- nil = auto
+                at_edge = 'wrap',
+            })
+            vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left,  { silent = true })
+            vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down,  { silent = true })
+            vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up,    { silent = true })
+            vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right, { silent = true })
         end
     },
 

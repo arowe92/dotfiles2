@@ -22,6 +22,12 @@ nmapc('<leader>xf', "luafile %")
 nmapc('<M-Up>', 'tabprev')
 nmapc('<M-Down>', 'tabnext')
 
+-- Splits: <C-x><C-h/j/k/l> creates a split in that direction
+vim.keymap.set('n', '<C-x><C-j>', '<C-w>s<C-w>j', { silent = true })
+vim.keymap.set('n', '<C-x><C-k>', '<C-w>s',       { silent = true })
+vim.keymap.set('n', '<C-x><C-l>', '<C-w>v<C-w>l', { silent = true })
+vim.keymap.set('n', '<C-x><C-h>', '<C-w>v',       { silent = true })
+
 -- Misc
 vim.keymap.set('n', '<a-5>', ':%s///g<Left><Left><Left>')
 vim.keymap.set('t', '<c-h>', '<c-\\><c-n><c-h>')
@@ -77,6 +83,12 @@ vim.keymap.set('n', '<leader>xr', function()
     require('nvim_config')
 end)
 
+-- Commenting via builtin gc/gcc
+vim.keymap.set('n', '<m-/>', 'gcc', { remap = true })
+vim.keymap.set('x', '<m-/>', 'gc',  { remap = true })
+vim.keymap.set('n', '<m-?>', 'gbc', { remap = true })
+vim.keymap.set('x', '<m-?>', 'gb',  { remap = true })
+
 nmapc('<M-CR>', 'popup PopUp')
 vim.cmd('aunmenu PopUp')
 vim.cmd('noremenu PopUp.Declaration <cmd>lua vim.lsp.buf.declaration()<cr>')
@@ -89,4 +101,5 @@ vim.cmd('noremenu PopUp.References <cmd>lua vim.lsp.buf.references()<cr>')
 vim.cmd('noremenu PopUp.Signature <cmd>lua vim.lsp.buf.signature_help()<cr>')
 vim.cmd('noremenu PopUp.-2- <NOP>')
 vim.cmd('noremenu PopUp.Rename <cmd>lua vim.lsp.buf.rename()<cr>')
+
 

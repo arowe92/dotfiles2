@@ -21,7 +21,9 @@ require 'nvim_config.functions'
 require 'nvim_config.keymap'
 require 'nvim_config.options'
 
-require("lazy").setup(load_plugins, {})
+require("lazy").setup(load_plugins, {
+    lockfile = env.DOTFILE_PATH .. "/lazy-lock.json",
+})
 
 -- Skip LSP post-config in lite mode
 if not env.LITE_MODE then
