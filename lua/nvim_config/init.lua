@@ -20,15 +20,11 @@ vim.cmd('source ' .. env.DOTFILE_PATH .. '/vim/init.vim')
 require 'nvim_config.functions'
 require 'nvim_config.keymap'
 require 'nvim_config.options'
+require 'nvim_config.ask_vim'
 
 require("lazy").setup(load_plugins, {
     lockfile = env.DOTFILE_PATH .. "/lazy-lock.json",
 })
-
--- Skip LSP post-config in lite mode
-if not env.LITE_MODE then
-    require('nvim_config.plugins.lsp')._post_config()
-end
 
 -- Load a custom lua
 if vim.fn.filereadable(env.HOME .. '/nvim.lua') == 1 then

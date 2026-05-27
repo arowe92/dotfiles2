@@ -15,6 +15,7 @@ return {
     load_plugin('nvim_config.plugins.completion'),
     require 'nvim_config.plugins.colorschemes',
     load_plugin('nvim_config.plugins.lsp'),
+    load_plugin('nvim_config.plugins.formatting'),
     load_plugin('nvim_config.plugins.statusline'),
     load_plugin('nvim_config.plugins.telescope'),
     load_plugin('nvim_config.plugins.tree'),
@@ -42,7 +43,11 @@ return {
     },
 
     -- Display Marks
-    { 'kshenoy/vim-signature' },
+    {
+        'chentoast/marks.nvim',
+        event = 'VeryLazy',
+        opts = {},
+    },
     {
         'lukas-reineke/indent-blankline.nvim',
         event = "BufReadPost",
@@ -71,28 +76,7 @@ return {
         end
     },
 
-    -- Commenting
-    {
-        'numToStr/Comment.nvim',
-        keys = {
-            { "<m-/>", mode={'n', 'x'} },
-            { "<m-?>", mode={'n', 'x'} }
-        },
-        enabled = not vim.g.vscode,
-        config = function()
-            require('Comment').setup({
-                toggler = {
-                    line = '<m-/>',
-                    block = '<m-?>',
-                },
-            })
-            -- Commenting
-            vim.keymap.set('x', '<m-?>', '<Plug>(comment_toggle_blockwise_visual)')
-            vim.keymap.set('x', '<m-/>', '<Plug>(comment_toggle_linewise_visual)')
-        end
-   
-    },
-
+    -- Commenting handled by builtin gc/gcc (nvim 0.10+); <m-/> mapped here.
     -- BufferLine
     {
         'akinsho/bufferline.nvim',
@@ -123,56 +107,16 @@ return {
         end
     },
 
-    -- Surround / Sandwich
+    -- Surround
     {
-        'ur4ltz/surround.nvim',
-        config = function()
-            require 'surround'.setup { mappings_style = 'sandwich' }
-        end
+        'kylechui/nvim-surround',
+        version = '*',
+        event = 'VeryLazy',
+        opts = {},
     },
 
     {
         "tpope/vim-repeat",
-    },
-
-    -- FZF
-    {
-        'junegunn/fzf',
-        build = ':call fzf#install()',
-        enabled = not vim.g.vscode,
-        cmd = {
-            "Files",
-            "Rg",
-            "Include"
-        },
-        commit = "9cb7a364a31bdb882d873807774bdcf6fad0c9e4",
-        dependencies = {
-            {
-                'junegunn/fzf.vim',
-                commit = "d6aa21476b2854694e6aa7b0941b8992a906c5ec",
-            }
-        },
-        config = function()
-            vim.g.fzf_layout = { tmux = '-p80%,60%' }
-
-            vim.g.fzf_colors = {
-                fg = { 'fg', 'Normal' },
-                bg = { 'bg', 'Normal' },
-                hl = { 'fg', 'Comment' },
-                ["fg+"] = { 'fg', 'CursorLine', 'CursorColumn', 'Normal' },
-                ["bg+"] = { 'bg', 'CursorLine', 'CursorColumn' },
-                ["hl+"] = { 'fg', 'Statement' },
-                info = { 'fg', 'PreProc' },
-                border = { 'fg', 'Ignore' },
-                prompt = { 'fg', 'Conditional' },
-                pointer = { 'fg', 'Exception' },
-                marker = { 'fg', 'Keyword' },
-                spinner = { 'fg', 'Label' },
-                header = { 'fg', 'Comment' }
-            }
-
-            require('nvim_config.env').MODULES.fzf = true
-        end
     },
 
     -- Git Signs
@@ -238,30 +182,27 @@ return {
         end
     },
 
-    -- Hop
+    -- Flash: replaces hop + clever-f. Handles leader-jumps and f/F/t/T.
     {
-        'smoka7/hop.nvim',
-        keys = {
-            " j",
-            " k"
+        'folke/flash.nvim',
+        event = 'VeryLazy',
+        opts = {
+            modes = {
+                char = {
+                    enabled = true,
+                    multi_line = false,
+                    keys = { 'f', 'F', 't', 'T', ';', ',' },
+                },
+            },
         },
-        cmd = { "HopVerticalAC", "HopVerticalBC" },
-        config = function()
-            local utils = require 'nvim_config.utils'
-            local hop = require 'hop'
-            hop.setup({})
-
-            utils.mapc('<leader>j', 'HopVerticalAC')
-            utils.mapc('<leader>k', 'HopVerticalBC')
-        end
-    },
-
-    {
-        'rhysd/clever-f.vim',
-        keys = { "f", "F", "t", "T" },
-        config = function()
-            vim.g.clever_f_across_no_line = true
-        end
+        keys = {
+            { 's',         mode = { 'n', 'x', 'o' }, function() require('flash').jump() end,              desc = 'Flash' },
+            { 'S',         mode = { 'n', 'x', 'o' }, function() require('flash').treesitter() end,        desc = 'Flash Treesitter' },
+            { 'r',         mode = 'o',                function() require('flash').remote() end,            desc = 'Remote Flash' },
+            { 'R',         mode = { 'o', 'x' },       function() require('flash').treesitter_search() end, desc = 'Treesitter Search' },
+            { '<leader>j', mode = 'n',                function() require('flash').jump({ search = { mode = 'search', max_length = 0 }, label = { after = { 0, 0 } }, pattern = '^' }) end, desc = 'Flash vertical (down)' },
+            { '<leader>k', mode = 'n',                function() require('flash').jump({ search = { mode = 'search', max_length = 0 }, label = { after = { 0, 0 } }, pattern = '^' }) end, desc = 'Flash vertical (up)' },
+        },
     },
 
     {
@@ -312,50 +253,6 @@ return {
             nmapc('<M->>', 'SidewaysRight')
         end
     },
-
-    -- Highlight Git Conflicts
-    -- {
-    --     'akinsho/git-conflict.nvim',
-    --     tag = "*",
-    --     config = function()
-    --         require('git-conflict').setup({ default_mappings = false })
-    --         vim.keymap.set('n', 'co', '<Plug>(git-conflict-ours)')
-    --         vim.keymap.set('n', 'ct', '<Plug>(git-conflict-theirs)')
-    --         vim.keymap.set('n', 'cb', '<Plug>(git-conflict-both)')
-    --         vim.keymap.set('n', 'c0', '<Plug>(git-conflict-none)')
-    --         vim.keymap.set('n', ']x', '<Plug>(git-conflict-prev-conflict)')
-    --         vim.keymap.set('n', '[x', '<Plug>(git-conflict-next-conflict)')
-    --     end
-    -- },
-
-    -- Formatting through LSP
-    -- {
-    --     'jose-elias-alvarez/null-ls.nvim',
-    --     keys = {
-    --         { "<A-F>" },
-    --         { "<S-A-f>" },
-    --     },
-    --     config = function()
-    --         local null_ls = require("null-ls")
-    --         null_ls.setup({
-    --             sources = {
-    --                 null_ls.builtins.formatting.autopep8,
-    --                 null_ls.builtins.formatting.prettier,
-    --                 null_ls.builtins.formatting.buf,
-    --             },
-    --         })
-    --     end
-    -- },
-
-    -- Code Actions
-    -- {
-    --     'weilbith/nvim-code-action-menu',
-    --     cmd = { "CodeActionMenu" },
-    --     init = function()
-    --         local nmapc = require 'nvim_config.utils'.nmapc
-    --         nmapc('<space>ca', 'CodeActionMenu')
-    --     end
-    -- },
 
     -- "MiniMap on Right"
     {
@@ -712,24 +609,15 @@ return {
     { "tiagovla/scope.nvim", config = true },
 
     {
-        "github/copilot.vim",
+        "zbirenbaum/copilot.lua",
         enabled = not lite_mode,
         cmd = "Copilot",
-        event = "BufWinEnter",
-        init = function()
-            vim.g.copilot_no_maps = true
-        end,
-        config = function()
-            -- Block the normal Copilot suggestions
-            vim.api.nvim_create_augroup("github_copilot", { clear = true })
-            vim.api.nvim_create_autocmd({ "FileType", "BufUnload" }, {
-                group = "github_copilot",
-                callback = function(args)
-                    vim.fn["copilot#On" .. args.event]()
-                end,
-            })
-            vim.fn["copilot#OnFileType"]()
-        end,
+        event = "InsertEnter",
+        opts = {
+            -- blink-copilot drives completion; disable the native panel/suggestion UI
+            suggestion = { enabled = false },
+            panel = { enabled = false },
+        },
     },
 
     -- {

@@ -2,6 +2,9 @@ $env:DOTFILE_PATH="$PSScriptRoot\.."
 
 Invoke-Expression (&starship init powershell)
 
+# Git tab completion (git br <Tab>, git checkout <Tab>, etc.)
+Import-Module posh-git
+
 $env:RIPGREP_CONFIG_PATH="$env:DOTFILE_PATH\config\ripgreprc"
 
 function gs { git status }

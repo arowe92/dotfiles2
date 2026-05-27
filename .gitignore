@@ -1,0 +1,16 @@
+# Windows reserved-name file accidentally created by stray redirects
+nul
+
+# OS junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor / tooling
+*.swp
+*.swo
+*~
+.vscode/settings.json
+
+# Logs
+*.log
