@@ -1,6 +1,13 @@
 $env:DOTFILE_PATH="$PSScriptRoot\.."
+$env:PATH = "$env:DOTFILE_PATH\bin;$env:PATH"
 
-Invoke-Expression (&starship init powershell)
+if (Get-Command starship -ErrorAction SilentlyContinue) {
+    Invoke-Expression (&starship init powershell)
+}
+
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& { (zoxide init powershell | Out-String) })
+}
 
 # Git tab completion (git br <Tab>, git checkout <Tab>, etc.)
 Import-Module posh-git

@@ -120,11 +120,11 @@ config.keys = {
   -- zoom / kill
   { key = 'm',     mods = 'LEADER|CTRL', action = act.TogglePaneZoomState },
   { key = 'Enter', mods = 'LEADER|ALT',  action = act.TogglePaneZoomState },
-  { key = 'x',     mods = 'LEADER|CTRL', action = act.CloseCurrentPane { confirm = true } },
-  { key = 'q',     mods = 'LEADER|CTRL', action = act.CloseCurrentTab  { confirm = true } },
+  { key = 'x',     mods = 'LEADER|CTRL', action = act.CloseCurrentPane { confirm = false } },
+  { key = 'w',     mods = 'LEADER',      action = act.CloseCurrentTab  { confirm = false } },
 
   -- rename tab (tmux C-r)
-  { key = 'r', mods = 'LEADER|CTRL', action = act.PromptInputLine {
+  { key = 'r', mods = 'LEADER', action = act.PromptInputLine {
       description = 'Rename tab',
       action = wezterm.action_callback(function(window, _, line)
         if line then window:active_tab():set_title(line) end

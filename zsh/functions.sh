@@ -292,19 +292,6 @@ bindkey -s '^Fo' '`fasd_echo`\t'
 ###############################
 bindkey -s '^Fp' 'nvim `fasd_echo`\n'
 
-###############################
-# Search Flags Widget
-# @hotkey
-###############################
-fzf-flags-widget() {
-    local result=$(flags.py \
-        | fzf-tmux $FZF_TMUX_OPTS \
-        | awk '{print $2}')
-    LBUFFER+=$result
-}
-zle -N fzf-flags-widget
-bindkey '^F^F' fzf-flags-widget
-
 ## Sandbox
 cheatsheet-widget() {
     tmux popup -w 50% -h 50% bat $HOME/Documents/notes.md

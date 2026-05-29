@@ -1,7 +1,0 @@
-#!/bin/sh
-
-flags.py $@ \
-    | fzf-tmux $FZF_TMUX_OPTS -m \
-    | awk '{print $2}' \
-    | xargs
-
